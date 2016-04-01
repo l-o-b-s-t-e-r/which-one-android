@@ -1,0 +1,19 @@
+dataClass=com.android.project.User
+tableName=user
+# --table-fields-start--
+# --field-start--
+fieldName=mUserId
+columnName=user_id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=mUserName
+columnName=user_name
+# --field-end--
+# --field-start--
+fieldName=mUserPassword
+columnName=user_password
+# --field-end--
+# --table-fields-end--
+# --table-end--
+################################

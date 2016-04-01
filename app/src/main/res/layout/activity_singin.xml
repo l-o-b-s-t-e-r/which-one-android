@@ -41,5 +41,6 @@
         android:text="@string/sign_id"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"
+        android:onClick="addUser"
         />
 </RelativeLayout>
