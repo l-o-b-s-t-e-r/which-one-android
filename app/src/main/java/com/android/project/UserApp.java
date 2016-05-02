@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Lobster on 01.04.16.
  */
 
-public class User implements Serializable{
+public class UserApp implements Serializable {
 
     @DatabaseField(generatedId = true, columnName = "user_id")
     private long mUserId;
@@ -19,7 +19,7 @@ public class User implements Serializable{
     @DatabaseField(columnName = "user_password")
     private String mUserPassword;
 
-    public User(){
+    public UserApp() {
 
     }
 

@@ -1,5 +1,5 @@
-dataClass=com.android.project.User
-tableName=user
+dataClass=com.android.project.UserApp
+tableName=userApp
 # --table-fields-start--
 # --field-start--
 fieldName=mUserId

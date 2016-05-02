@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.bmuschko.tomcat'
+
+group = 'com.project'
+version = '1.0-SNAPSHOT'
+
+description = """"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.4'
+    }
+}
+
+repositories {
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    def tomcatVersion = '7.0.59'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '4.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-web', version: '4.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-orm', version: '4.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '4.2.1.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context-support', version: '4.2.1.RELEASE'
+    compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
+    compile group: 'org.apache.velocity', name: 'velocity-tools', version: '2.0'
+    compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1204-jdbc41'
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.3.Final'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.3.Final'
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+    providedCompile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
+}
