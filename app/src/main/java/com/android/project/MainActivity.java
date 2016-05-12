@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button buttonSignIn = (Button) findViewById(R.id.btn_sign_in);
         buttonSignIn.setOnClickListener(this);
-
-        //MyClass myClass = new MyClass();
     }
 
     private DatabaseHelper mGetHelper() {

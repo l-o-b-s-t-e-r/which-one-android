@@ -3,4 +3,5 @@
     <string name="user_name_hint">Name</string>
     <string name="user_password_hint">Password</string>
     <string name="sign_id">Sign in</string>
+    <string name="title_activity_wall">WallActivity</string>
 </resources>
