@@ -14,8 +14,7 @@
         </activity>
         <activity
             android:name=".WallActivity"
-            android:label="@string/title_activity_wall"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_wall">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
