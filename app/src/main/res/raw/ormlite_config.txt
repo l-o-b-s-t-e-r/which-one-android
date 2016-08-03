@@ -1,4 +1,4 @@
-dataClass=com.android.project.UserApp
+dataClass=com.android.project.model.UserApp
 tableName=userApp
 # --table-fields-start--
 # --field-start--

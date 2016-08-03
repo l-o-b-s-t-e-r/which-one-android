@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="base_uri">http://10.0.3.2:8080/decider</string>
+    <string name="base_uri">http://10.0.3.2:8080/project/</string>
 </resources>
