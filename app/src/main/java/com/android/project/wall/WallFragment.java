@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -51,6 +52,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -111,5 +113,14 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         Intent intent = new Intent(getContext(), UserPageActivity.class);
         intent.putExtra(UserPageActivity.USER_NAME, userName);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_update) {
+            mActionListener.loadLastRecords();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
