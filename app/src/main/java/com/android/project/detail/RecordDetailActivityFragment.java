@@ -1,7 +1,9 @@
 package com.android.project.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.util.RecordServiceImpl;
+import com.android.project.wall.WallFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +60,10 @@ public class RecordDetailActivityFragment extends Fragment implements DetailPres
                         mRecord.getRecordId(),
                         mRecord.getOptions().get(checkedId).getOptionName()
                 );
+
+                Intent broadcastIntent = new Intent("com.android.project.wall");
+                broadcastIntent.putExtra(WallFragment.RECORD_ID, mRecord.getRecordId());
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(broadcastIntent);
 
                 mRecord.getOptions()
                         .get(checkedId)

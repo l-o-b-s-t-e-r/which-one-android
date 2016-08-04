@@ -1,4 +1,4 @@
-package com.android.project.adapter;
+package com.android.project.wall;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -10,16 +10,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.project.R;
-import com.android.project.util.SquareImageView;
+import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.login.LogInActivity;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
-import com.android.project.wall.WallPresenter;
+import com.android.project.util.SquareImageView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,12 +34,12 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     private static final String TAG = WallRecyclerViewAdapter.class.getName();
     private Context mContext;
-    private List<Record> mCardContents;
+    private Map<Long, Record> mCardContents;
     private WallPresenter.ActionListener mActionListener;
 
     public WallRecyclerViewAdapter(Context context, WallPresenter.ActionListener actionListener) {
         mContext = context;
-        mCardContents = new ArrayList<>();
+        mCardContents = new LinkedHashMap<>();
         mActionListener = actionListener;
     }
 
@@ -52,17 +53,24 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setContent(mCardContents.get(position));
+        holder.setContent((Record) mCardContents.values().toArray()[position]);
         if (position == mCardContents.size()-1){
-            mActionListener.loadNextRecords(mCardContents.get(position).getRecordId());
+            mActionListener.loadNextRecords(((Record) mCardContents.values().toArray()[position]).getRecordId());
         }
     }
 
     public void updateData(List<Record> records) {
         if (!records.isEmpty()) {
-            mCardContents.addAll(records);
+            for (Record r : records) {
+                mCardContents.put(r.getRecordId(), r);
+            }
             notifyDataSetChanged();
         }
+    }
+
+    public void updateRecord(Record record) {
+        mCardContents.put(record.getRecordId(), record);
+        notifyDataSetChanged();
     }
 
     @Override

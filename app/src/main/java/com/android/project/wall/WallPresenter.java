@@ -1,14 +1,7 @@
 package com.android.project.wall;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-
-import com.android.project.adapter.RecordRecyclerViewAdapter;
-import com.android.project.model.Image;
 import com.android.project.model.Record;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -19,6 +12,8 @@ public interface WallPresenter {
 
     interface View {
 
+        void updateRecord(Record record);
+
         void showRecords(List<Record> records);
 
         void showRecordDetail(Long recordId);
@@ -28,6 +23,8 @@ public interface WallPresenter {
     }
 
     interface ActionListener{
+
+        void loadRecord(Long recordId);
 
         void loadLastRecords();
 
