@@ -70,6 +70,11 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     public void updateRecord(Record record) {
         mCardContents.put(record.getRecordId(), record);
+        notifyDataSetChanged(); //change to notifyItemChanged();
+    }
+
+    public void cleanData() {
+        mCardContents.clear();
         notifyDataSetChanged();
     }
 

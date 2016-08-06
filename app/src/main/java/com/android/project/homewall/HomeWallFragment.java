@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
-import com.android.project.detail.RecordDetailActivityFragment;
 import com.android.project.login.LogInActivity;
 import com.android.project.model.Record;
 import com.android.project.userpage.UserPageActivity;
@@ -69,6 +68,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
+
         return view;
     }
 
@@ -80,7 +80,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     @Override
     public void openRecordDetail(Long recordId) {
         Intent intent = new Intent(getContext(), RecordDetailActivity.class);
-        intent.putExtra(RecordDetailActivityFragment.RECORD_ID, recordId);
+        intent.putExtra(RecordDetailActivity.RECORD_ID, recordId);
         startActivity(intent);
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,8 +17,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.android.project.R;
@@ -53,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     private PictureLoader mPictureLoader;
     private MainPresenter.ActionListener mActionListener;
+    private WallFragment mWallFragment;
+    private Animation mUpdateAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         TabLayout tabLayout = ButterKnife.findById(this, R.id.tab_layout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        mWallFragment = (WallFragment) WallFragment.newInstance(tabLayout);
         List<Fragment> fragments = Arrays.asList(
-                                        WallFragment.newInstance(tabLayout),
+                mWallFragment,
                                         HomeWallFragment.newInstance(LogInActivity.USER_NAME, tabLayout)
                                     );
 
@@ -83,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        FloatingActionButton fab = ButterKnife.findById(this, R.id.fab);
+        final FloatingActionButton fab = ButterKnife.findById(this, R.id.fab);
+        final CoordinatorLayout.LayoutParams fabLayoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
         if (fab!=null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,6 +102,72 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 }
             });
         }
+
+        mUpdateAnimation = AnimationUtils.loadAnimation(this, R.anim.update);
+        final Animation fabAnimationShowRight = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_right);
+        final Animation fabAnimationHideRight = AnimationUtils.loadAnimation(this, R.anim.fab_hide_changing_right);
+        final Animation fabAnimationShowLeft = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_left);
+        final Animation fabAnimationHideLeft = AnimationUtils.loadAnimation(this, R.anim.fab_hide_changing_left);
+
+        fabAnimationHideRight.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fabLayoutParams.gravity = Gravity.BOTTOM | Gravity.START;
+                fab.setLayoutParams(fabLayoutParams);
+                fab.startAnimation(fabAnimationShowRight);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        fabAnimationHideLeft.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fabLayoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+                fab.setLayoutParams(fabLayoutParams);
+                fab.startAnimation(fabAnimationShowLeft);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (fab.getVisibility() == View.GONE) {
+                    fab.setVisibility(View.VISIBLE);
+                }
+
+                switch (position) {
+                    case 0:
+                        fab.startAnimation(fabAnimationHideLeft);
+                        return;
+                    case 1:
+                        fab.startAnimation(fabAnimationHideRight);
+                        return;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @OnClick(R.id.avatar)
@@ -152,7 +228,20 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_record_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem updateItem = menu.findItem(R.id.action_update);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
+        updateActionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(mUpdateAnimation);
+                mWallFragment.updateWall();
+            }
+        });
+
+        updateItem.setActionView(updateActionView);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();

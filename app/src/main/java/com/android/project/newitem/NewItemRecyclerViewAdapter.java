@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Lobster on 23.07.16.
@@ -38,11 +39,16 @@ public class NewItemRecyclerViewAdapter extends RecyclerView.Adapter<NewItemRecy
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setContent(mImages.get(position));
+        holder.setContent(mImages.get(position), position);
     }
 
     public void addItem(File picturePath) {
         mImages.add(picturePath);
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(int position) {
+        mImages.remove(position);
         notifyDataSetChanged();
     }
 
@@ -60,13 +66,21 @@ public class NewItemRecyclerViewAdapter extends RecyclerView.Adapter<NewItemRecy
         @BindView(R.id.image)
         ImageView image;
 
+        private int mPosition;
+
         public ViewHolder(CardView cardView) {
             super(cardView);
             ButterKnife.bind(this, cardView);
         }
 
-        public void setContent(File imageFile) {
+        public void setContent(File imageFile, int position) {
+            mPosition = position;
             image.setImageBitmap(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+        }
+
+        @OnClick(R.id.delete_image)
+        public void onClick() {
+            removeItem(mPosition);
         }
 
     }

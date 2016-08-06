@@ -61,6 +61,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
+
         return super.onOptionsItemSelected(item);
     }
 

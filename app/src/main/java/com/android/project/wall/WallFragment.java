@@ -12,13 +12,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
-import com.android.project.detail.RecordDetailActivityFragment;
 import com.android.project.model.Record;
 import com.android.project.userpage.UserPageActivity;
 import com.android.project.util.RecordServiceImpl;
@@ -104,7 +102,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @Override
     public void showRecordDetail(Long recordId) {
         Intent intent = new Intent(getContext(), RecordDetailActivity.class);
-        intent.putExtra(RecordDetailActivityFragment.RECORD_ID, recordId);
+        intent.putExtra(RecordDetailActivity.RECORD_ID, recordId);
         startActivity(intent);
     }
 
@@ -115,12 +113,8 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         startActivity(intent);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_update) {
-            mActionListener.loadLastRecords();
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void updateWall() {
+        mRecyclerViewAdapter.cleanData();
+        mActionListener.loadLastRecords();
     }
 }

@@ -7,7 +7,10 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -34,8 +37,10 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
     private final int MAX_IMAGES = 9;
     private final int MAX_OPTIONS = 9;
     private final String OPTION_TITLE = "Option #";
+
     @BindView(R.id.options_container)
     LinearLayout container;
+
     private PictureLoader mPictureLoader;
     private NewItemRecyclerViewAdapter mRecyclerViewAdapter;
     private NewItemPresenter.ActionListener mActionListener;
@@ -43,8 +48,12 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_item_activity);
+        setContentView(R.layout.activity_new_item);
         ButterKnife.bind(this);
+
+        Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
         mActionListener = new NewItemPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
@@ -56,36 +65,26 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
 
     }
 
-    @OnClick(R.id.btn_post)
+    @OnClick(R.id.done)
     void postRecord() {
+        if (mRecyclerViewAdapter.getItemCount() < 1 || container.getChildCount() < 1) {
+            return; //show message
+        }
+
         String optionTitle;
         List<String> allOptions = new ArrayList<>();
 
         for (int i = 0; i < container.getChildCount(); i++) {
             EditText option = (EditText) container.getChildAt(i).findViewById(R.id.option_title);
-            optionTitle = option.getText().toString();
-            if (!allOptions.contains(optionTitle)) {
+            optionTitle = option.getText().toString().trim();
+            if (!optionTitle.isEmpty() && !allOptions.contains(optionTitle)) {
                 allOptions.add(optionTitle);
             } else {
-                return;
+                return; //show message
             }
         }
 
         mActionListener.sendRecord(mRecyclerViewAdapter.getAllImages(), allOptions, LogInActivity.USER_NAME);
-    }
-
-    @OnClick(R.id.add_option)
-    void addOption() {
-        if (container.getChildCount() < MAX_OPTIONS) {
-            container.addView(QuizViewBuilder.createNewOption(this, container, OPTION_TITLE + mRecyclerViewAdapter.getItemCount()));
-        }
-    }
-
-    @OnClick(R.id.add_image)
-    void addImage() {
-        if (mRecyclerViewAdapter.getItemCount() < MAX_IMAGES) {
-            startActivityForResult(mPictureLoader.getChooserIntent(), LOAD_IMAGE);
-        }
     }
 
     @Override
@@ -95,7 +94,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
 
     private void setImage(File picturePath) {
         mRecyclerViewAdapter.addItem(picturePath);
-        container.addView(QuizViewBuilder.createNewOption(this, container, OPTION_TITLE + (mRecyclerViewAdapter.getItemCount() - 1)));
+        container.addView(QuizViewBuilder.createNewOption(this, container));
     }
 
     @Override
@@ -114,5 +113,32 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
                 setImage(new File(imagePath));
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_new_record, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.action_add_image:
+                if (mRecyclerViewAdapter.getItemCount() < MAX_IMAGES) {
+                    startActivityForResult(mPictureLoader.getChooserIntent(), LOAD_IMAGE);
+                }
+                break;
+            case R.id.action_add_option:
+                if (container.getChildCount() < MAX_OPTIONS) {
+                    container.addView(QuizViewBuilder.createNewOption(this, container));
+                }
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

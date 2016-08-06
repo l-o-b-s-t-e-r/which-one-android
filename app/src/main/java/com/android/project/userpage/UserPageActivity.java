@@ -1,9 +1,9 @@
 package com.android.project.userpage;
 
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.main.MainPresenter;
@@ -23,8 +23,8 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     ImageView background;
     @BindView(R.id.avatar)
     ImageView avatar;
-    @BindView(R.id.user_name)
-    TextView userName;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
 
     private MainPresenter.ActionListener mActionListener;
 
@@ -33,6 +33,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_page);
         ButterKnife.bind(this);
+        collapsingToolbar.setTitle("");
 
         mActionListener = new MainPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
         mActionListener.loadUserInfo(getIntent().getExtras().getString(USER_NAME));
@@ -40,7 +41,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     public void showUserInfo(User user) {
-        userName.setText(user.getName());
+        collapsingToolbar.setTitle(user.getName());
 
         Picasso.with(this)
                 .load(getString(R.string.base_uri) + user.getAvatar())

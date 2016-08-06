@@ -39,6 +39,7 @@
         <activity
             android:name=".newitem.NewItemActivity"
             android:label="@string/title_activity_new_item_activitye"
+            android:parentActivityName=".main.MainActivity"
             android:theme="@style/AppTheme" />
         <activity android:name=".userpage.UserPageActivity" />
         <activity

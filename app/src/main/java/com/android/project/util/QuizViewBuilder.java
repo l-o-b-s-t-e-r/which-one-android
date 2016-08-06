@@ -53,14 +53,12 @@ public class QuizViewBuilder {
         return radioButton;
     }
 
-    public static View createNewOption(Context context, final ViewGroup parent, String optionTitle) {
+    public static View createNewOption(Context context, final ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.quiz_new_option, null);
 
         EditText title = ButterKnife.findById(view, R.id.option_title);
         ImageView delete = ButterKnife.findById(view, R.id.delete);
-
-        title.setText(optionTitle);
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
