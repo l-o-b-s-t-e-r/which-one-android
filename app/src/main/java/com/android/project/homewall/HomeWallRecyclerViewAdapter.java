@@ -1,9 +1,9 @@
 package com.android.project.homewall;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -45,10 +45,10 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.homewall_card, parent, false);
 
-        return new ViewHolder(cardView);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -85,9 +85,9 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
         private int currentAnimatedImage;
         private boolean changeImage;
 
-        public ViewHolder(CardView cardView) {
-            super(cardView);
-            ButterKnife.bind(this, cardView);
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
 
             mAnimation = AnimationUtils.loadAnimation(mContext, R.anim.items_appearance);
             mAnimation.setAnimationListener(new Animation.AnimationListener() {
