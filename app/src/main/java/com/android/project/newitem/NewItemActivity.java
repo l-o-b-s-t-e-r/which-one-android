@@ -20,7 +20,6 @@ import com.android.project.main.MainActivity;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
 import com.android.project.util.QuizViewBuilder;
-import com.android.project.util.RecordServiceImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
-        mActionListener = new NewItemPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
+        mActionListener = new NewItemPresenterImpl(this);
 
         mRecyclerViewAdapter = new NewItemRecyclerViewAdapter();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.new_item_recycler);

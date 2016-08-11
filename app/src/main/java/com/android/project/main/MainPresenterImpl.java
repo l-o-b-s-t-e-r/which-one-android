@@ -1,26 +1,32 @@
 package com.android.project.main;
 
+import com.android.project.cofig.DaggerMainComponent;
 import com.android.project.model.User;
 import com.android.project.util.RecordService;
 
 import java.io.File;
 
+import javax.inject.Inject;
+
 /**
  * Created by macos on 26.07.16.
  */
+
 public class MainPresenterImpl implements MainPresenter.ActionListener {
 
-    private RecordService mRecordService;
+    @Inject
+    public RecordService recordService;
+
     private MainPresenter.View mMainView;
 
-    public MainPresenterImpl(RecordService recordService, MainPresenter.View mainView) {
-        mRecordService = recordService;
+    public MainPresenterImpl(MainPresenter.View mainView) {
         mMainView = mainView;
+        DaggerMainComponent.create().inject(this);
     }
 
     @Override
     public void loadUserInfo(String name) {
-        mRecordService.getUserInfo(name, new RecordService.LoadUserInfo() {
+        recordService.getUserInfo(name, new RecordService.LoadUserInfo() {
             @Override
             public void onUserInfoLoaded(User user) {
                 mMainView.showUserInfo(user);
@@ -30,7 +36,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     @Override
     public void updateBackground(File imageFile, String name) {
-        mRecordService.updateBackground(imageFile, name, new RecordService.LoadUserInfo() {
+        recordService.updateBackground(imageFile, name, new RecordService.LoadUserInfo() {
             @Override
             public void onUserInfoLoaded(User user) {
                 mMainView.showUserInfo(user);
@@ -40,7 +46,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     @Override
     public void updateAvatar(File imageFile, String name) {
-        mRecordService.updateAvatar(imageFile, name, new RecordService.LoadUserInfo() {
+        recordService.updateAvatar(imageFile, name, new RecordService.LoadUserInfo() {
             @Override
             public void onUserInfoLoaded(User user) {
                 mMainView.showUserInfo(user);

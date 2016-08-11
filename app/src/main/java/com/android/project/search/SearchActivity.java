@@ -14,7 +14,6 @@ import android.view.Window;
 import com.android.project.R;
 import com.android.project.model.User;
 import com.android.project.userpage.UserPageActivity;
-import com.android.project.util.RecordServiceImpl;
 import com.android.project.util.SuggestionProvider;
 
 import java.util.List;
@@ -43,7 +42,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
 
         String searchQuery = getIntent().getStringExtra(SearchManager.QUERY);
 
-        mActionListener = new SearchPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
+        mActionListener = new SearchPresenterImpl(this);
         mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, mActionListener);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

@@ -1,8 +1,10 @@
 package com.android.project.detail;
 
+import com.android.project.cofig.DaggerMainComponent;
 import com.android.project.model.Record;
 import com.android.project.util.RecordService;
-import com.android.project.util.RecordServiceImpl;
+
+import javax.inject.Inject;
 
 /**
  * Created by Lobster on 22.06.16.
@@ -11,17 +13,19 @@ import com.android.project.util.RecordServiceImpl;
 public class DetailPresenterImpl implements DetailPresenter.ActionListener {
 
     private static final String TAG = DetailPresenterImpl.class.getName();
-    private RecordServiceImpl mRecordService;
+    @Inject
+    public RecordService recordService;
     private DetailPresenter.View mDetailView;
 
-    public DetailPresenterImpl(RecordServiceImpl recordService, DetailPresenter.View detailView) {
-        mRecordService = recordService;
+    public DetailPresenterImpl(DetailPresenter.View detailView) {
         mDetailView = detailView;
+        DaggerMainComponent.create().inject(this);
+
     }
 
     @Override
     public void loadRecord(Long recordId) {
-        mRecordService.getRecordById(recordId, new RecordService.LoadRecord() {
+        recordService.getRecordById(recordId, new RecordService.LoadRecord() {
             @Override
             public void recordLoaded(Record record) {
                 mDetailView.showRecord(record);
@@ -31,6 +35,6 @@ public class DetailPresenterImpl implements DetailPresenter.ActionListener {
 
     @Override
     public void sendVote(String userName, Long recordId, String option) {
-        mRecordService.sendVote(userName, recordId, option);
+        recordService.sendVote(userName, recordId, option);
     }
 }

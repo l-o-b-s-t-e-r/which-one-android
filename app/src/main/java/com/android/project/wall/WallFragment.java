@@ -19,7 +19,6 @@ import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
 import com.android.project.model.Record;
 import com.android.project.userpage.UserPageActivity;
-import com.android.project.util.RecordServiceImpl;
 
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         View view = inflater.inflate(R.layout.wall_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        mActionListener = new WallPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
+        mActionListener = new WallPresenterImpl(this);
         mRecyclerViewAdapter = new WallRecyclerViewAdapter(view.getContext(), mActionListener);
         mActionListener.loadLastRecords();
 

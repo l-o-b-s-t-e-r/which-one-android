@@ -1,10 +1,12 @@
 package com.android.project.homewall;
 
+import com.android.project.cofig.DaggerMainComponent;
 import com.android.project.model.Record;
 import com.android.project.util.RecordService;
-import com.android.project.util.RecordServiceImpl;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by Lobster on 29.07.16.
@@ -13,18 +15,19 @@ import java.util.List;
 public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     private static final String TAG = HomeWallPresenterImpl.class.getName();
-    private RecordServiceImpl mRecordService;
+    @Inject
+    public RecordService recordService;
     private HomeWallPresenter.View mHomeWallView;
 
-    public HomeWallPresenterImpl(RecordServiceImpl recordService, HomeWallPresenter.View homeWallView) {
-        mRecordService = recordService;
+    public HomeWallPresenterImpl(HomeWallPresenter.View homeWallView) {
         mHomeWallView = homeWallView;
+        DaggerMainComponent.create().inject(this);
 
     }
 
     @Override
     public void loadLastRecords(String userName) {
-        mRecordService.getLastUserRecords(userName, new RecordService.LoadLastUserRecordsCallback() {
+        recordService.getLastUserRecords(userName, new RecordService.LoadLastUserRecordsCallback() {
             @Override
             public void onLastUserRecordsLoaded(List<Record> records) {
                 mHomeWallView.updateRecords(records);
@@ -34,7 +37,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public void loadNextRecords(String userName, Long lastLoadedRecordId) {
-        mRecordService.getNextUserRecords(userName, lastLoadedRecordId, new RecordService.LoadNextUserRecordsCallback() {
+        recordService.getNextUserRecords(userName, lastLoadedRecordId, new RecordService.LoadNextUserRecordsCallback() {
             @Override
             public void onNextUserRecordsLoaded(List<Record> records) {
                 mHomeWallView.updateRecords(records);

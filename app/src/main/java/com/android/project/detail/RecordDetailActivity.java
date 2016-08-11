@@ -14,8 +14,9 @@ import com.android.project.login.LogInActivity;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
-import com.android.project.util.RecordServiceImpl;
 import com.android.project.wall.WallFragment;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,12 +24,11 @@ import butterknife.ButterKnife;
 public class RecordDetailActivity extends AppCompatActivity implements DetailPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
-
+    @Inject
+    public DetailPresenter.ActionListener actionListener;
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
-
     private Record mRecord;
-    private DetailPresenter.ActionListener mActionListener;
     private DetailRecyclerViewAdapter mRecyclerViewAdapter;
 
     @Override
@@ -40,20 +40,19 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         mRecyclerViewAdapter = new DetailRecyclerViewAdapter(this);
 
         RecyclerView recyclerView = ButterKnife.findById(this, R.id.record_recycler);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 
-        mActionListener = new DetailPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
-        mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
+        actionListener = new DetailPresenterImpl(this);
+        actionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                mActionListener.sendVote(
+                actionListener.sendVote(
                         LogInActivity.USER_NAME,
                         mRecord.getRecordId(),
                         mRecord.getOptions().get(checkedId).getOptionName()

@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/avatar"
         android:layout_alignTop="@+id/avatar"
-        android:gravity="center"
+        android:layout_toRightOf="@+id/avatar"
+        android:gravity="left|center_vertical"
         android:text="Item"
         android:textSize="30sp" />
 

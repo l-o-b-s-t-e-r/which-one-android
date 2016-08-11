@@ -16,7 +16,6 @@ import com.android.project.detail.RecordDetailActivity;
 import com.android.project.login.LogInActivity;
 import com.android.project.model.Record;
 import com.android.project.userpage.UserPageActivity;
-import com.android.project.util.RecordServiceImpl;
 
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
             userName = bundle.getString(UserPageActivity.USER_NAME);
         }
 
-        mActionListener = new HomeWallPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
+        mActionListener = new HomeWallPresenterImpl(this);
         mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(getContext(), mActionListener);
         mActionListener.loadLastRecords(userName);
 

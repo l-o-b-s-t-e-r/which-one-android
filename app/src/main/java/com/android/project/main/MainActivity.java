@@ -28,13 +28,14 @@ import android.widget.ImageView;
 
 import com.android.project.R;
 import com.android.project.adapter.TabAdapter;
+import com.android.project.cofig.DaggerMainComponent;
+import com.android.project.cofig.MainModule;
 import com.android.project.homewall.HomeWallFragment;
 import com.android.project.login.LogInActivity;
 import com.android.project.model.User;
 import com.android.project.newitem.NewItemActivity;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
-import com.android.project.util.RecordServiceImpl;
 import com.android.project.wall.WallFragment;
 import com.squareup.picasso.Picasso;
 
@@ -68,11 +69,15 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         setContentView(R.layout.activity_wall);
         ButterKnife.bind(this);
 
+        DaggerMainComponent.builder()
+                .mainModule(new MainModule())
+                .build();
+
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
-        mActionListener = new MainPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
+        mActionListener = new MainPresenterImpl(this);
         mActionListener.loadUserInfo(LogInActivity.USER_NAME);
 
 

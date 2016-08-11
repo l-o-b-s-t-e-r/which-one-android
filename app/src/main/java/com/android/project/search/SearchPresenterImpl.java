@@ -1,10 +1,12 @@
 package com.android.project.search;
 
+import com.android.project.cofig.DaggerMainComponent;
 import com.android.project.model.User;
 import com.android.project.util.RecordService;
-import com.android.project.util.RecordServiceImpl;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by Lobster on 01.08.16.
@@ -13,17 +15,18 @@ import java.util.List;
 public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     private static final String TAG = SearchPresenterImpl.class.getName();
-    private RecordServiceImpl mRecordService;
+    @Inject
+    public RecordService recordService;
     private SearchPresenter.View mSearchView;
 
-    public SearchPresenterImpl(RecordServiceImpl recordService, SearchPresenter.View searchView) {
-        mRecordService = recordService;
+    public SearchPresenterImpl(SearchPresenter.View searchView) {
         mSearchView = searchView;
+        DaggerMainComponent.create().inject(this);
     }
 
     @Override
     public void loadUsers(String searchQuery) {
-        mRecordService.getUsers(searchQuery, new RecordService.LoadUsers() {
+        recordService.getUsers(searchQuery, new RecordService.LoadUsers() {
             @Override
             public void usersLoaded(List<User> user) {
                 mSearchView.showUsers(user);
@@ -33,7 +36,7 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     @Override
     public void loadNextUsers(String searchQuery, Long lastLoadedUserId) {
-        mRecordService.getUsersFromId(searchQuery, lastLoadedUserId, new RecordService.LoadUsers() {
+        recordService.getUsersFromId(searchQuery, lastLoadedUserId, new RecordService.LoadUsers() {
             @Override
             public void usersLoaded(List<User> user) {
                 mSearchView.showUsers(user);

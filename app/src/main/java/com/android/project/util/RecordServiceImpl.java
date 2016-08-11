@@ -24,11 +24,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RecordServiceImpl implements RecordService {
 
     private static final String TAG = RecordServiceImpl.class.getName();
+    private static final String BASE_URL = "http://10.0.3.2:8080/project/";
+
     private RestRequestService mService;
 
-    public RecordServiceImpl(String baseUrl){
+    public RecordServiceImpl() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

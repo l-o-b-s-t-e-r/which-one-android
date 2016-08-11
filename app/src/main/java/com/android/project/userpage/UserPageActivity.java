@@ -9,7 +9,6 @@ import com.android.project.R;
 import com.android.project.main.MainPresenter;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.model.User;
-import com.android.project.util.RecordServiceImpl;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -35,7 +34,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         ButterKnife.bind(this);
         collapsingToolbar.setTitle("");
 
-        mActionListener = new MainPresenterImpl(new RecordServiceImpl(getString(R.string.base_uri)), this);
+        mActionListener = new MainPresenterImpl(this);
         mActionListener.loadUserInfo(getIntent().getExtras().getString(USER_NAME));
     }
 
