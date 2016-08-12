@@ -34,7 +34,6 @@ import com.android.project.homewall.HomeWallFragment;
 import com.android.project.login.LogInActivity;
 import com.android.project.model.User;
 import com.android.project.newitem.NewItemActivity;
-import com.android.project.util.ImageBehavior;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
 import com.android.project.wall.WallFragment;
