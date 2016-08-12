@@ -12,7 +12,7 @@ import android.view.animation.AnimationUtils;
 import com.android.project.R;
 
 /**
- * Created by macos on 05.08.16.
+ * Created by Lobster on 05.08.16.
  */
 public class FabBehavior extends FloatingActionButton.Behavior implements Animation.AnimationListener {
 

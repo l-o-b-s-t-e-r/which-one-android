@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            app:contentScrim="@color/colorPrimary"
             app:expandedTitleMarginBottom="24dp"
             app:expandedTitleMarginStart="16dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
@@ -31,7 +31,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/background_top"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="pin" />
 
             <ImageButton
                 android:id="@+id/load_background"
@@ -42,22 +42,14 @@
                 android:layout_marginRight="6dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_camera"
-                app:layout_collapseMode="parallax" />
-
-            <com.android.project.util.SquareImageView
-                android:id="@+id/avatar"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:src="@drawable/user"
-                sq_image:cornerRadius="20.0" />
+                app:layout_collapseMode="pin" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:theme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -81,6 +73,17 @@
             android:layout_height="match_parent"
             android:layout_below="@id/tab_layout" />
     </RelativeLayout>
+
+
+    <com.android.project.util.SquareImageView
+        android:id="@+id/avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="75dp"
+        android:layout_gravity="top"
+        android:src="@drawable/user"
+        sq_image:cornerRadius="20.0"
+        app:layout_behavior="com.android.project.util.ImageBehavior"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
