@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.android.project.R;
-import com.android.project.login.LogInActivity;
+import com.android.project.login.SignInActivity;
 import com.android.project.main.MainActivity;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
@@ -83,7 +83,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
             }
         }
 
-        mActionListener.sendRecord(mRecyclerViewAdapter.getAllImages(), allOptions, LogInActivity.USER_NAME);
+        mActionListener.sendRecord(mRecyclerViewAdapter.getAllImages(), allOptions, SignInActivity.USER_NAME);
     }
 
     @Override

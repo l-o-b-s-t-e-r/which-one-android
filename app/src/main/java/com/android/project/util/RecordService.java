@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface RecordService {
 
+    void signIn(String name, String password, SignInCallBack callback);
+
     void getNextRecords(Long recordId, LoadNextRecordsCallback callback);
 
     void getLastRecords(LoadLastRecordsCallback callback);
@@ -34,6 +36,10 @@ public interface RecordService {
     void getUsersFromId(String searchQuery, Long userId, LoadUsers callback);
 
     void sendVote(String userName, Long recordId, String option);
+
+    interface SignInCallBack {
+        void signInStatus(Integer requestCode);
+    }
 
     interface LoadNextRecordsCallback {
         void onNextRecordsLoaded(List<Record> records);

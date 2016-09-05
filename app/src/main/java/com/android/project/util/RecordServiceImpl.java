@@ -23,9 +23,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class RecordServiceImpl implements RecordService {
 
+    public static final String BASE_URL = "http://10.0.3.2:8080/project/";
     private static final String TAG = RecordServiceImpl.class.getName();
-    private static final String BASE_URL = "http://10.0.3.2:8080/project/";
-
+    //public static final String BASE_URL = "http://52.27.160.199:8080/project/";
     private RestRequestService mService;
 
     public RecordServiceImpl() {
@@ -35,6 +35,22 @@ public class RecordServiceImpl implements RecordService {
                 .build();
 
         mService = retrofit.create(RestRequestService.class);
+    }
+
+    @Override
+    public void signIn(String name, String password, final SignInCallBack callback) {
+        Call<Void> signInCall = mService.signIn(name, password);
+        signInCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.signInStatus(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override

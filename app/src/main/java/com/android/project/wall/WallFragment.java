@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
+import com.android.project.login.SignInActivity;
 import com.android.project.model.Record;
 import com.android.project.userpage.UserPageActivity;
 
@@ -108,7 +109,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @Override
     public void showUserPage(String userName) {
         Intent intent = new Intent(getContext(), UserPageActivity.class);
-        intent.putExtra(UserPageActivity.USER_NAME, userName);
+        intent.putExtra(SignInActivity.USER_NAME, userName);
         startActivity(intent);
     }
 

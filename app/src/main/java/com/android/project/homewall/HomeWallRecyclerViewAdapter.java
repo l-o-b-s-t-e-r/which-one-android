@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.android.project.R;
 import com.android.project.model.Record;
+import com.android.project.util.RecordServiceImpl;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -111,7 +112,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                         }
 
                         Picasso.with(mContext)
-                                .load(mContext.getString(R.string.base_uri) + mRecord.getImages().get(currentAnimatedImage).getImage())
+                                .load(RecordServiceImpl.BASE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
                                 .into(image);
                     }
 
@@ -128,10 +129,9 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
         public void setContent(Record record) {
             mRecord = record;
             mAnimation.setDuration(animationDuration(record.getImages().size()));
-            //Log.i("ANIMATION DURATION", String.valueOf(mAnimation.getDuration()));
 
             Picasso.with(mContext)
-                    .load(mContext.getString(R.string.base_uri) + mRecord.getImages().get(currentAnimatedImage).getImage())
+                    .load(RecordServiceImpl.BASE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
                     .placeholder(R.drawable.background_top)
                     .into(image, new Callback() {
                         @Override

@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.RadioGroup;
 
 import com.android.project.R;
-import com.android.project.login.LogInActivity;
+import com.android.project.login.SignInActivity;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
@@ -53,7 +53,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 actionListener.sendVote(
-                        LogInActivity.USER_NAME,
+                        SignInActivity.USER_NAME,
                         mRecord.getRecordId(),
                         mRecord.getOptions().get(checkedId).getOptionName()
                 );
@@ -65,7 +65,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
                 mRecord.getOptions()
                         .get(checkedId)
                         .getVotes()
-                        .add(LogInActivity.USER_NAME);
+                        .add(SignInActivity.USER_NAME);
 
                 radioGroup.removeAllViews();
                 int allVotesCount = mRecord.getAllVotes().size();
@@ -82,7 +82,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         mRecyclerViewAdapter.updateData(record.getImages());
 
         radioGroup.removeAllViews();
-        if (!mRecord.getAllVotes().contains(LogInActivity.USER_NAME)) {
+        if (!mRecord.getAllVotes().contains(SignInActivity.USER_NAME)) {
             for (int i = 0; i < record.getOptions().size(); i++) {
                 radioGroup.addView(QuizViewBuilder.createBaseOption(this, record.getOptions().get(i), i));
             }

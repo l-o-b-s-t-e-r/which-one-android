@@ -28,14 +28,13 @@ import android.widget.ImageView;
 
 import com.android.project.R;
 import com.android.project.adapter.TabAdapter;
-import com.android.project.cofig.DaggerMainComponent;
-import com.android.project.cofig.MainModule;
 import com.android.project.homewall.HomeWallFragment;
-import com.android.project.login.LogInActivity;
+import com.android.project.login.SignInActivity;
 import com.android.project.model.User;
 import com.android.project.newitem.NewItemActivity;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
+import com.android.project.util.RecordServiceImpl;
 import com.android.project.wall.WallFragment;
 import com.squareup.picasso.Picasso;
 
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @BindView(R.id.avatar)
     ImageView avatar;
 
+    private String mUserName;
     private PictureLoader mPictureLoader;
     private MainPresenter.ActionListener mActionListener;
     private WallFragment mWallFragment;
@@ -69,16 +69,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         setContentView(R.layout.activity_wall);
         ButterKnife.bind(this);
 
-        DaggerMainComponent.builder()
-                .mainModule(new MainModule())
-                .build();
-
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mUserName = getIntent().getExtras().getString(SignInActivity.USER_NAME);
+
         mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
         mActionListener = new MainPresenterImpl(this);
-        mActionListener.loadUserInfo(LogInActivity.USER_NAME);
+        mActionListener.loadUserInfo(mUserName);
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -90,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         mWallFragment = (WallFragment) WallFragment.newInstance(tabLayout);
         List<Fragment> fragments = Arrays.asList(
                 mWallFragment,
-                                        HomeWallFragment.newInstance(LogInActivity.USER_NAME, tabLayout)
+                HomeWallFragment.newInstance(tabLayout)
                                     );
 
         FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments, Arrays.asList("WALL","HOME"));
@@ -193,9 +191,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 sendBroadcast(mPictureLoader.addPictureToGallery());
                 switch (requestCode){
                     case UPDATE_AVATAR:
-                        mActionListener.updateAvatar(mPictureLoader.getPictureFile(), LogInActivity.USER_NAME); break;
+                        mActionListener.updateAvatar(mPictureLoader.getPictureFile(), mUserName);
+                        break;
                     case UPDATE_BACKGROUND:
-                        mActionListener.updateBackground(mPictureLoader.getPictureFile(), LogInActivity.USER_NAME); break;
+                        mActionListener.updateBackground(mPictureLoader.getPictureFile(), mUserName);
+                        break;
 
                     default: break;
                 }
@@ -208,9 +208,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 String imagePath = cursor.getString(cursor.getColumnIndex(picturePath[0]));
                 switch (requestCode){
                     case UPDATE_AVATAR:
-                        mActionListener.updateAvatar(new File(imagePath), LogInActivity.USER_NAME); break;
+                        mActionListener.updateAvatar(new File(imagePath), mUserName);
+                        break;
                     case UPDATE_BACKGROUND:
-                        mActionListener.updateBackground(new File(imagePath), LogInActivity.USER_NAME); break;
+                        mActionListener.updateBackground(new File(imagePath), mUserName);
+                        break;
 
                     default: break;
                 }
@@ -220,13 +222,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showUserInfo(User user) {
+        Log.i(TAG, "User info: " + user.toString());
         Picasso.with(this)
-                .load(getString(R.string.base_uri)+user.getAvatar())
+                .load(RecordServiceImpl.BASE_URL + user.getAvatar())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(avatar);
 
         Picasso.with(this)
-                .load(getString(R.string.base_uri)+user.getBackground())
+                .load(RecordServiceImpl.BASE_URL + user.getBackground())
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }
@@ -255,4 +258,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sign_out:
+                Intent intent = new Intent(this, SignInActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

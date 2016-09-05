@@ -11,10 +11,11 @@ import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.adapter.RecordRecyclerViewAdapter;
-import com.android.project.login.LogInActivity;
+import com.android.project.login.SignInActivity;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
+import com.android.project.util.RecordServiceImpl;
 import com.android.project.util.SquareImageView;
 import com.squareup.picasso.Picasso;
 
@@ -111,7 +112,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     mActionListener.sendVote(
-                            LogInActivity.USER_NAME,
+                            SignInActivity.USER_NAME,
                             mRecord.getRecordId(),
                             mRecord.getOptions().get(checkedId).getOptionName()
                     );
@@ -119,7 +120,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                     mRecord.getOptions()
                             .get(checkedId)
                             .getVotes()
-                            .add(LogInActivity.USER_NAME);
+                            .add(SignInActivity.USER_NAME);
 
 
                     radioGroup.removeAllViews();
@@ -141,12 +142,12 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             text.setText(record.getTitle());
 
             Picasso.with(mContext)
-                    .load(mContext.getString(R.string.base_uri)+record.getAvatar())
+                    .load(RecordServiceImpl.BASE_URL + record.getAvatar())
                     .placeholder(R.mipmap.ic_launcher)
                     .into(avatar);
 
             radioGroup.removeAllViews();
-            if (!mRecord.getAllVotes().contains(LogInActivity.USER_NAME)) {
+            if (!mRecord.getAllVotes().contains(SignInActivity.USER_NAME)) {
                 for (int i = 0; i < record.getOptions().size(); i++) {
                     radioGroup.addView(QuizViewBuilder.createBaseOption(mContext, record.getOptions().get(i), i));
                 }

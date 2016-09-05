@@ -14,8 +14,9 @@
     <string name="title_activity_new_item_activitye">NewItemActivitye</string>
     <string name="search">search</string>
     <string name="search_dialog_title">Search</string>
-    <string name="log_out">Log Out</string>
+    <string name="sign_out">Sign out</string>
     <string name="update">Update</string>
     <string name="action_add_image">Add image</string>
     <string name="action_add_option">Add option</string>
+    <string name="sign_up">sign up</string>
 </resources>

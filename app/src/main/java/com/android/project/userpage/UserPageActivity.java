@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.android.project.R;
+import com.android.project.login.SignInActivity;
 import com.android.project.main.MainPresenter;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.model.User;
+import com.android.project.util.RecordServiceImpl;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -35,7 +37,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         collapsingToolbar.setTitle("");
 
         mActionListener = new MainPresenterImpl(this);
-        mActionListener.loadUserInfo(getIntent().getExtras().getString(USER_NAME));
+        mActionListener.loadUserInfo(getIntent().getExtras().getString(SignInActivity.USER_NAME));
     }
 
     @Override
@@ -43,12 +45,12 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         collapsingToolbar.setTitle(user.getName());
 
         Picasso.with(this)
-                .load(getString(R.string.base_uri) + user.getAvatar())
+                .load(RecordServiceImpl.BASE_URL + user.getAvatar())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(avatar);
 
         Picasso.with(this)
-                .load(getString(R.string.base_uri) + user.getBackground())
+                .load(RecordServiceImpl.BASE_URL + user.getBackground())
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }

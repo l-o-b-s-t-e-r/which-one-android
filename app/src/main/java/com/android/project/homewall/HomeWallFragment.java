@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
-import com.android.project.login.LogInActivity;
+import com.android.project.login.SignInActivity;
 import com.android.project.model.Record;
-import com.android.project.userpage.UserPageActivity;
 
 import java.util.List;
 
@@ -33,13 +32,9 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
 
     }
 
-    public static Fragment newInstance(String userName, TabLayout tabLayout) {
+    public static Fragment newInstance(TabLayout tabLayout) {
         HomeWallFragment fragment = new HomeWallFragment();
         tabLayout.addTab(tabLayout.newTab());
-
-        Bundle args = new Bundle();
-        args.putString(LogInActivity.USER_NAME, userName);
-        fragment.setArguments(args);
 
         return fragment;
     }
@@ -50,14 +45,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         View view = inflater.inflate(R.layout.fragment_home_wall, container, false);
         ButterKnife.bind(this, view);
 
-        String userName;
-        Bundle bundle = getActivity().getIntent().getExtras();
-        if (bundle == null) {
-            bundle = getArguments();
-            userName = bundle.getString(LogInActivity.USER_NAME);
-        } else {
-            userName = bundle.getString(UserPageActivity.USER_NAME);
-        }
+        String userName = getActivity().getIntent().getExtras().getString(SignInActivity.USER_NAME);
 
         mActionListener = new HomeWallPresenterImpl(this);
         mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(getContext(), mActionListener);

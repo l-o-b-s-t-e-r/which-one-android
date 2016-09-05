@@ -20,6 +20,9 @@ import retrofit2.http.Query;
 
 public interface RestRequestService {
 
+    @GET("sign_in")
+    Call<Void> signIn(@Query("name") String name, @Query("password") String password);
+
     @GET("get_last_records")
     Call<List<Record>> getLastRecords();
 

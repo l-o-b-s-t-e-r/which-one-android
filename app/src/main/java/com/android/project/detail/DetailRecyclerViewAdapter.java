@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.model.Image;
+import com.android.project.util.RecordServiceImpl;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -72,7 +73,7 @@ public class DetailRecyclerViewAdapter extends RecyclerView.Adapter<DetailRecycl
 
         public void setContent(final Image image) {
             Picasso.with(mContext)
-                    .load(mContext.getString(R.string.base_uri) + image.getImage())
+                    .load(RecordServiceImpl.BASE_URL + image.getImage())
                     .error(R.drawable.ic_error)
                     .into(imageView, new Callback() {
                         @Override
