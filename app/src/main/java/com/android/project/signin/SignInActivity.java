@@ -1,7 +1,8 @@
-package com.android.project.login;
+package com.android.project.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.android.project.R;
 import com.android.project.cofig.DatabaseHelper;
 import com.android.project.main.MainActivity;
 import com.android.project.model.UserApp;
+import com.android.project.signup.SignUpDialog;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
@@ -31,9 +33,9 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     //public static final String USER_NAME = "tvShowGT";
     protected static final String TAG = SignInActivity.class.getSimpleName();
     @BindView(R.id.editTextName)
-    EditText name;
+    EditText editTextName;
     @BindView(R.id.editTextPassword)
-    EditText password;
+    EditText editTextPassword;
     private DatabaseHelper mDatabaseHelper = null;
     private SignInPresenter.ActionListener mActionListener;
 
@@ -47,8 +49,24 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     }
 
     @OnClick(R.id.btn_sign_in)
-    void onClick() {
-        mActionListener.signIn(name.getText().toString(), password.getText().toString());
+    void onSignInClick() {
+        if (editTextName.getText().toString().trim().isEmpty()) {
+            editTextName.setError(getString(R.string.empty_field));
+            return;
+        }
+
+        if (editTextPassword.getText().toString().trim().isEmpty()) {
+            editTextPassword.setError(getString(R.string.empty_field));
+            return;
+        }
+
+        mActionListener.signIn(editTextName.getText().toString().trim(), editTextPassword.getText().toString().trim());
+    }
+
+    @OnClick(R.id.btn_sign_up)
+    void onSignUpClick() {
+        DialogFragment signUpDialogFragment = new SignUpDialog();
+        signUpDialogFragment.show(getSupportFragmentManager(), "sign_up_dialog");
     }
 
     private DatabaseHelper mGetHelper() {
@@ -83,10 +101,11 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     public void openUserPage(Integer requestCode) {
         if (requestCode == HttpURLConnection.HTTP_OK) {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(USER_NAME, name.getText().toString());
+            intent.putExtra(USER_NAME, editTextName.getText().toString());
             startActivity(intent);
         } else {
-            Log.i(TAG, "BAD");
+            Toast.makeText(SignInActivity.this, "Ups :(", Toast.LENGTH_SHORT).show();
+            editTextName.setError(getString(R.string.wrong_password_or_name));
         }
     }
 }

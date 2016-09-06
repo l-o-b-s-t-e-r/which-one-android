@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.android.project.R;
-import com.android.project.login.SignInActivity;
 import com.android.project.main.MainActivity;
+import com.android.project.signin.SignInActivity;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
 import com.android.project.util.QuizViewBuilder;

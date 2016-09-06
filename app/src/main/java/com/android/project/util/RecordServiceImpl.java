@@ -38,7 +38,39 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void signIn(String name, String password, final SignInCallBack callback) {
+    public void signUp(String name, String password, final SignUpCallback callback) {
+        Call<Void> signUpCall = mService.signUp(name, password);
+        signUpCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.signUpStatus(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void checkName(String name, final CheckNameCallback callback) {
+        Call<Void> checkNameCall = mService.checkName(name);
+        checkNameCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.checkNameResult(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void signIn(String name, String password, final SignInCallback callback) {
         Call<Void> signInCall = mService.signIn(name, password);
         signInCall.enqueue(new Callback<Void>() {
             @Override

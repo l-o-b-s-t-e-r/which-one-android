@@ -1,4 +1,4 @@
-package com.android.project.login;
+package com.android.project.signin;
 
 import com.android.project.cofig.DaggerMainComponent;
 import com.android.project.util.RecordService;
@@ -17,12 +17,12 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
 
     public SignInPresenterImpl(SignInPresenter.View signInView) {
         mSignInView = signInView;
-        DaggerMainComponent.create().ingect(this);
+        DaggerMainComponent.create().inject(this);
     }
 
     @Override
     public void signIn(String name, String password) {
-        recordService.signIn(name, password, new RecordService.SignInCallBack() {
+        recordService.signIn(name, password, new RecordService.SignInCallback() {
             @Override
             public void signInStatus(Integer requestCode) {
                 mSignInView.openUserPage(requestCode);

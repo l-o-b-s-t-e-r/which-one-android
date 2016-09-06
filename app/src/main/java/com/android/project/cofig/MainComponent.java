@@ -2,10 +2,11 @@ package com.android.project.cofig;
 
 import com.android.project.detail.DetailPresenterImpl;
 import com.android.project.homewall.HomeWallPresenterImpl;
-import com.android.project.login.SignInPresenterImpl;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.newitem.NewItemPresenterImpl;
 import com.android.project.search.SearchPresenterImpl;
+import com.android.project.signin.SignInPresenterImpl;
+import com.android.project.signup.SignUpPresenterImpl;
 import com.android.project.wall.WallPresenterImpl;
 
 import javax.inject.Singleton;
@@ -32,6 +33,8 @@ public interface MainComponent {
 
     void inject(SearchPresenterImpl presenter);
 
-    void ingect(SignInPresenterImpl presenter);
+    void inject(SignInPresenterImpl presenter);
+
+    void inject(SignUpPresenterImpl presenter);
 
 }

@@ -132,7 +132,6 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
             Picasso.with(mContext)
                     .load(RecordServiceImpl.BASE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
-                    .placeholder(R.drawable.background_top)
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {

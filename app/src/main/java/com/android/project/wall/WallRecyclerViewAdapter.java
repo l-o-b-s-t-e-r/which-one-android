@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.adapter.RecordRecyclerViewAdapter;
-import com.android.project.login.SignInActivity;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
+import com.android.project.signin.SignInActivity;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.util.RecordServiceImpl;
 import com.android.project.util.SquareImageView;

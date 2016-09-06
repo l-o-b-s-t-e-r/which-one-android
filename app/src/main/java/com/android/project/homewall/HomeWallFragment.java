@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
-import com.android.project.login.SignInActivity;
 import com.android.project.model.Record;
+import com.android.project.signin.SignInActivity;
 
 import java.util.List;
 

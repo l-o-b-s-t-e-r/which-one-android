@@ -10,9 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.RadioGroup;
 
 import com.android.project.R;
-import com.android.project.login.SignInActivity;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
+import com.android.project.signin.SignInActivity;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.wall.WallFragment;
 

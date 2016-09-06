@@ -6,10 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.android.project.R;
-import com.android.project.login.SignInActivity;
 import com.android.project.main.MainPresenter;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.model.User;
+import com.android.project.signin.SignInActivity;
 import com.android.project.util.RecordServiceImpl;
 import com.squareup.picasso.Picasso;
 
