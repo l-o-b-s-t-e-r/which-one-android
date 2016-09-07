@@ -7,12 +7,16 @@ public interface SignUpPresenter {
     interface View {
         void showCheckNameResult(Integer requestCode);
 
+        void showCheckEmailResult(Integer requestCode);
+
         void openUserPage(Integer requestCode);
     }
 
     interface ActionListener {
         void checkName(String name);
 
-        void signUp(String name, String password);
+        void checkEmail(String email);
+
+        void signUp(String name, String password, String email);
     }
 }

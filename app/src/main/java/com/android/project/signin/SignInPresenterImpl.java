@@ -22,11 +22,23 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
 
     @Override
     public void signIn(String name, String password) {
-        recordService.signIn(name, password, new RecordService.SignInCallback() {
+        recordService.signIn(name, password, new RecordService.Checking() {
             @Override
-            public void signInStatus(Integer requestCode) {
+            public void checkResult(Integer requestCode) {
                 mSignInView.openUserPage(requestCode);
             }
         });
     }
+
+    @Override
+    public void remindInfo(String email) {
+        recordService.remindInfo(email, new RecordService.Checking() {
+            @Override
+            public void checkResult(Integer requestCode) {
+                mSignInView.remindInfoResult(requestCode);
+            }
+        });
+    }
+
+
 }

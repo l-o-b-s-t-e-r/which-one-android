@@ -19,4 +19,6 @@
     <string name="action_add_image">Add image</string>
     <string name="action_add_option">Add option</string>
     <string name="sign_up">sign up</string>
+    <string name="email">Email</string>
+    <string name="forgot_name_password">Forgot name or password?</string>
 </resources>

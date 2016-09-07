@@ -22,21 +22,33 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     @Override
     public void checkName(String name) {
-        recordService.checkName(name, new RecordService.CheckNameCallback() {
+        recordService.checkName(name, new RecordService.Checking() {
             @Override
-            public void checkNameResult(Integer requestCode) {
+            public void checkResult(Integer requestCode) {
                 mSignUpView.showCheckNameResult(requestCode);
             }
         });
     }
 
     @Override
-    public void signUp(String name, String password) {
-        recordService.signUp(name, password, new RecordService.SignUpCallback() {
+    public void checkEmail(String email) {
+        recordService.checkEmail(email, new RecordService.Checking() {
             @Override
-            public void signUpStatus(Integer requestCode) {
+            public void checkResult(Integer requestCode) {
+                mSignUpView.showCheckEmailResult(requestCode);
+            }
+        });
+    }
+
+    @Override
+    public void signUp(String name, String password, String email) {
+        recordService.signUp(name, password, email, new RecordService.Checking() {
+            @Override
+            public void checkResult(Integer requestCode) {
                 mSignUpView.openUserPage(requestCode);
             }
         });
     }
+
+
 }

@@ -1,6 +1,8 @@
 package com.android.project.util;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,7 @@ public class QuizViewBuilder {
     private static final String PERCENT_TEMPLATE = "0.00%";
     private static DecimalFormat mFormat = new DecimalFormat(PERCENT_TEMPLATE);
 
-    public static View createFinalOption(Context context, Option option, int allVotesCount) {
+    public static View createFinalOption(Context context, Option option, int allVotesCount, boolean userVote) {
         int currentVotesCount = option.getVotes().size();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.quiz_option, null);
@@ -37,6 +39,9 @@ public class QuizViewBuilder {
 
         progressBar.setMax(allVotesCount);
         progressBar.setProgress(currentVotesCount);
+        if (userVote) {
+            progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        }
 
         title.setText(option.getOptionName());
         voteCount.setText(String.valueOf(currentVotesCount));

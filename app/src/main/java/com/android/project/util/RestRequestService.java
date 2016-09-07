@@ -21,10 +21,16 @@ import retrofit2.http.Query;
 public interface RestRequestService {
 
     @GET("sign_up")
-    Call<Void> signUp(@Query("name") String name, @Query("password") String password);
+    Call<Void> signUp(@Query("name") String name, @Query("password") String password, @Query("email") String email);
 
     @GET("check_name")
     Call<Void> checkName(@Query("name") String name);
+
+    @GET("check_email")
+    Call<Void> checkEmail(@Query("email") String email);
+
+    @GET("remind_info")
+    Call<Void> remindInfo(@Query("email") String email);
 
     @GET("sign_in")
     Call<Void> signIn(@Query("name") String name, @Query("password") String password);

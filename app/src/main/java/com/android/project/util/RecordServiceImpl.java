@@ -38,12 +38,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void signUp(String name, String password, final SignUpCallback callback) {
-        Call<Void> signUpCall = mService.signUp(name, password);
+    public void signUp(String name, String password, String email, final Checking callback) {
+        Call<Void> signUpCall = mService.signUp(name, password, email);
         signUpCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                callback.signUpStatus(response.code());
+                callback.checkResult(response.code());
             }
 
             @Override
@@ -54,12 +54,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void checkName(String name, final CheckNameCallback callback) {
+    public void checkName(String name, final Checking callback) {
         Call<Void> checkNameCall = mService.checkName(name);
         checkNameCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                callback.checkNameResult(response.code());
+                callback.checkResult(response.code());
             }
 
             @Override
@@ -70,12 +70,44 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void signIn(String name, String password, final SignInCallback callback) {
+    public void signIn(String name, String password, final Checking callback) {
         Call<Void> signInCall = mService.signIn(name, password);
         signInCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                callback.signInStatus(response.code());
+                callback.checkResult(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void checkEmail(String email, final Checking callback) {
+        Call<Void> checkEmailCall = mService.checkEmail(email);
+        checkEmailCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.checkResult(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void remindInfo(String email, final Checking callback) {
+        Call<Void> remindInfoCall = mService.remindInfo(email);
+        remindInfoCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.checkResult(response.code());
             }
 
             @Override

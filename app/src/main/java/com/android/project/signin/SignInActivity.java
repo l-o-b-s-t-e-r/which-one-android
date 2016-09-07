@@ -2,11 +2,15 @@ package com.android.project.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.project.R;
@@ -27,15 +31,18 @@ import butterknife.OnClick;
 
 public class SignInActivity extends AppCompatActivity implements SignInPresenter.View {
 
-    //public static final String USER_NAME = "person";
-    public static final String USER_NAME = "sanfran";
     //public static final String USER_NAME = "tvShowBB";
     //public static final String USER_NAME = "tvShowGT";
     protected static final String TAG = SignInActivity.class.getSimpleName();
+    //public static final String USER_NAME = "person";
+    public static String USER_NAME = "sanfran";
     @BindView(R.id.editTextName)
     EditText editTextName;
     @BindView(R.id.editTextPassword)
     EditText editTextPassword;
+    @BindView(R.id.forgot_password)
+    TextView textViewForgot;
+
     private DatabaseHelper mDatabaseHelper = null;
     private SignInPresenter.ActionListener mActionListener;
 
@@ -46,6 +53,34 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         ButterKnife.bind(this);
 
         mActionListener = new SignInPresenterImpl(this);
+    }
+
+    @OnClick(R.id.forgot_password)
+    void onForgotTextViewClick() {
+        final View view = View.inflate(this, R.layout.remind_dialog, null);
+
+        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppThemeDialogSignUp)
+                .setView(view)
+                .setTitle("REMIND INFO")
+                .create();
+
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "SEND", new Message());
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTextEmail = ButterKnife.findById(view, R.id.email);
+                String email = editTextEmail.getText().toString().trim();
+                if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    mActionListener.remindInfo(email);
+                    dialog.dismiss();
+                } else {
+                    editTextEmail.setError(getString(R.string.incorrect_email));
+                }
+            }
+        });
     }
 
     @OnClick(R.id.btn_sign_in)
@@ -100,12 +135,25 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     @Override
     public void openUserPage(Integer requestCode) {
         if (requestCode == HttpURLConnection.HTTP_OK) {
+            USER_NAME = editTextName.getText().toString().trim();
+
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(USER_NAME, editTextName.getText().toString());
+            intent.putExtra(USER_NAME, editTextName.getText().toString().trim());
             startActivity(intent);
         } else {
             Toast.makeText(SignInActivity.this, "Ups :(", Toast.LENGTH_SHORT).show();
             editTextName.setError(getString(R.string.wrong_password_or_name));
+        }
+    }
+
+    @Override
+    public void remindInfoResult(Integer requestCode) {
+        if (requestCode == HttpURLConnection.HTTP_OK) {
+            Log.i(TAG, "Info has sent successfully");
+            Toast.makeText(this, "Info has sent successfully", Toast.LENGTH_LONG).show();
+        } else {
+            Log.i(TAG, "Info has not sent. Please check email and try again.");
+            Toast.makeText(this, "Info has not sent. Please check email and try again.", Toast.LENGTH_LONG).show();
         }
     }
 }

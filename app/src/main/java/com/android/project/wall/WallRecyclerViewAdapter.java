@@ -126,7 +126,11 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                     radioGroup.removeAllViews();
                     int allVotesCount = mRecord.getAllVotes().size();
                     for (Option o: mRecord.getOptions()){
-                        radioGroup.addView(QuizViewBuilder.createFinalOption(mContext, o, allVotesCount));
+                        radioGroup.addView(QuizViewBuilder.createFinalOption(
+                                mContext,
+                                o,
+                                allVotesCount,
+                                o.getVotes().contains(SignInActivity.USER_NAME)));
                     }
                 }
             });
@@ -154,7 +158,11 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             } else {
                 int allVotesCount = mRecord.getAllVotes().size();
                 for (Option o: mRecord.getOptions()){
-                    radioGroup.addView(QuizViewBuilder.createFinalOption(mContext, o, allVotesCount));
+                    radioGroup.addView(QuizViewBuilder.createFinalOption(
+                            mContext,
+                            o,
+                            allVotesCount,
+                            o.getVotes().contains(SignInActivity.USER_NAME)));
                 }
             }
 

@@ -6,9 +6,13 @@ package com.android.project.signin;
 public interface SignInPresenter {
     interface View {
         void openUserPage(Integer requestCode);
+
+        void remindInfoResult(Integer requestCode);
     }
 
     interface ActionListener {
         void signIn(String name, String password);
+
+        void remindInfo(String email);
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -52,10 +53,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private static final int UPDATE_AVATAR = 1;
     private static final int UPDATE_BACKGROUND = 2;
 
-    @BindView(R.id.background)
-    ImageView background;
     @BindView(R.id.avatar)
     ImageView avatar;
+    @BindView(R.id.background)
+    ImageView background;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
 
     private String mUserName;
     private PictureLoader mPictureLoader;
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         setSupportActionBar(toolbar);
 
         mUserName = getIntent().getExtras().getString(SignInActivity.USER_NAME);
+        collapsingToolbar.setTitle(mUserName);
 
         mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
         mActionListener = new MainPresenterImpl(this);

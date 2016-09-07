@@ -28,6 +28,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
     public DetailPresenter.ActionListener actionListener;
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
+
     private Record mRecord;
     private DetailRecyclerViewAdapter mRecyclerViewAdapter;
 
@@ -70,7 +71,11 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
                 radioGroup.removeAllViews();
                 int allVotesCount = mRecord.getAllVotes().size();
                 for (Option o : mRecord.getOptions()) {
-                    radioGroup.addView(QuizViewBuilder.createFinalOption(RecordDetailActivity.this, o, allVotesCount));
+                    radioGroup.addView(QuizViewBuilder.createFinalOption(
+                            RecordDetailActivity.this,
+                            o,
+                            allVotesCount,
+                            o.getVotes().contains(SignInActivity.USER_NAME)));
                 }
             }
         });
@@ -89,7 +94,11 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         } else {
             int allVotesCount = mRecord.getAllVotes().size();
             for (Option o : mRecord.getOptions()) {
-                radioGroup.addView(QuizViewBuilder.createFinalOption(this, o, allVotesCount));
+                radioGroup.addView(QuizViewBuilder.createFinalOption(
+                        this,
+                        o,
+                        allVotesCount,
+                        o.getVotes().contains(SignInActivity.USER_NAME)));
             }
         }
     }

@@ -30,14 +30,24 @@
         android:hint="@string/user_password_hint"
         android:inputType="textPassword" />
 
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/editTextName"
+        android:layout_alignRight="@id/editTextName"
+        android:layout_below="@id/editTextPassword"
+        android:gravity="right"
+        android:text="@string/forgot_name_password"
+        android:textColor="@android:color/holo_blue_dark" />
 
     <Button
         android:id="@+id/btn_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/editTextName"
-        android:layout_alignRight="@id/editTextPassword"
-        android:layout_below="@id/editTextPassword"
+        android:layout_alignRight="@id/editTextName"
+        android:layout_below="@id/forgot_password"
         android:text="@string/sign_id" />
 
     <Button
@@ -45,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/editTextName"
-        android:layout_alignRight="@id/editTextPassword"
+        android:layout_alignRight="@id/editTextName"
         android:layout_below="@id/btn_sign_in"
         android:text="@string/sign_up" />
 

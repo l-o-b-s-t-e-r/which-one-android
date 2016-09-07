@@ -11,11 +11,15 @@ import java.util.List;
  */
 public interface RecordService {
 
-    void signUp(String name, String password, SignUpCallback callback);
+    void signUp(String name, String password, String email, Checking callback);
 
-    void checkName(String name, CheckNameCallback callback);
+    void checkName(String name, Checking callback);
 
-    void signIn(String name, String password, SignInCallback callback);
+    void checkEmail(String email, Checking callback);
+
+    void remindInfo(String email, Checking callback);
+
+    void signIn(String name, String password, Checking callback);
 
     void getNextRecords(Long recordId, LoadNextRecordsCallback callback);
 
@@ -41,16 +45,8 @@ public interface RecordService {
 
     void sendVote(String userName, Long recordId, String option);
 
-    interface CheckNameCallback {
-        void checkNameResult(Integer requestCode);
-    }
-
-    interface SignUpCallback {
-        void signUpStatus(Integer requestCode);
-    }
-
-    interface SignInCallback {
-        void signInStatus(Integer requestCode);
+    interface Checking {
+        void checkResult(Integer requestCode);
     }
 
     interface LoadNextRecordsCallback {
