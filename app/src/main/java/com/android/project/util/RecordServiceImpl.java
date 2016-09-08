@@ -38,12 +38,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void signUp(String name, String password, String email, final Checking callback) {
+    public void signUp(String name, String password, String email) {
         Call<Void> signUpCall = mService.signUp(name, password, email);
         signUpCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                callback.checkResult(response.code());
+                Log.i(TAG, "Request code: " + String.valueOf(response.code()));
             }
 
             @Override

@@ -1,7 +1,6 @@
 package com.android.project.signup;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -12,8 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.project.R;
-import com.android.project.main.MainActivity;
-import com.android.project.signin.SignInActivity;
 
 import java.net.HttpURLConnection;
 
@@ -130,6 +127,8 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
         }
 
         mActionListener.signUp(mName, mPassword, mEmail);
+        Toast.makeText(getContext(), "We have sent a verification to your email.", Toast.LENGTH_SHORT).show();
+        dismiss();
     }
 
     @Override
@@ -143,17 +142,6 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
     public void showCheckEmailResult(Integer requestCode) {
         if (requestCode == HttpURLConnection.HTTP_BAD_REQUEST) {
             editTextEmail.setError(getString(R.string.existing_email));
-        }
-    }
-
-    @Override
-    public void openUserPage(Integer requestCode) {
-        if (requestCode == HttpURLConnection.HTTP_OK) {
-            Intent intent = new Intent(getContext(), MainActivity.class);
-            intent.putExtra(SignInActivity.USER_NAME, mName);
-            startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), "Ups :(", Toast.LENGTH_SHORT).show();
         }
     }
 }

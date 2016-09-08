@@ -8,8 +8,6 @@ public interface SignUpPresenter {
         void showCheckNameResult(Integer requestCode);
 
         void showCheckEmailResult(Integer requestCode);
-
-        void openUserPage(Integer requestCode);
     }
 
     interface ActionListener {

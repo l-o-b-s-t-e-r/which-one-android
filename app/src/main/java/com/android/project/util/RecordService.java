@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface RecordService {
 
-    void signUp(String name, String password, String email, Checking callback);
+    void signUp(String name, String password, String email);
 
     void checkName(String name, Checking callback);
 

@@ -42,12 +42,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     @Override
     public void signUp(String name, String password, String email) {
-        recordService.signUp(name, password, email, new RecordService.Checking() {
-            @Override
-            public void checkResult(Integer requestCode) {
-                mSignUpView.openUserPage(requestCode);
-            }
-        });
+        recordService.signUp(name, password, email);
     }
 
 
