@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SearchEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -47,7 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainPresenter.View{
+public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
     private static final String TAG = MainActivity.class.getName();
     private static final int UPDATE_AVATAR = 1;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
 
-    private String mUserName;
+    private String mUsername;
     private PictureLoader mPictureLoader;
     private MainPresenter.ActionListener mActionListener;
     private WallFragment mWallFragment;
@@ -75,12 +76,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mUserName = getIntent().getExtras().getString(SignInActivity.USER_NAME);
-        collapsingToolbar.setTitle(mUserName);
+        mUsername = getIntent().getExtras().getString(getString(R.string.user_name));
+        collapsingToolbar.setTitle(mUsername);
 
         mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
         mActionListener = new MainPresenterImpl(this);
-        mActionListener.loadUserInfo(mUserName);
+        mActionListener.loadUserInfo(mUsername);
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -93,19 +94,21 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         List<Fragment> fragments = Arrays.asList(
                 mWallFragment,
                 HomeWallFragment.newInstance(tabLayout)
-                                    );
+        );
 
-        FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments, Arrays.asList("WALL","HOME"));
+        FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments, Arrays.asList("WALL", "HOME"));
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
         final FloatingActionButton fab = ButterKnife.findById(this, R.id.fab);
         final CoordinatorLayout.LayoutParams fabLayoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-        if (fab!=null) {
+        if (fab != null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(MainActivity.this, NewItemActivity.class));
+                    Intent intent = new Intent(MainActivity.this, NewItemActivity.class);
+                    intent.putExtra(getString(R.string.user_name), mUsername);
+                    startActivity(intent);
                 }
             });
         }
@@ -178,47 +181,49 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @OnClick(R.id.avatar)
-    void updateAvatar(){
+    void updateAvatar() {
         startActivityForResult(mPictureLoader.getChooserIntent(), UPDATE_AVATAR);
     }
 
     @OnClick(R.id.load_background)
-    void updateBackground(){
+    void updateBackground() {
         startActivityForResult(mPictureLoader.getChooserIntent(), UPDATE_BACKGROUND);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (data.getData() == null){
+            if (data.getData() == null) {
                 Log.i(TAG, "IMAGE is LOADED (from camera)");
                 sendBroadcast(mPictureLoader.addPictureToGallery());
-                switch (requestCode){
+                switch (requestCode) {
                     case UPDATE_AVATAR:
-                        mActionListener.updateAvatar(mPictureLoader.getPictureFile(), mUserName);
+                        mActionListener.updateAvatar(mPictureLoader.getPictureFile(), mUsername);
                         break;
                     case UPDATE_BACKGROUND:
-                        mActionListener.updateBackground(mPictureLoader.getPictureFile(), mUserName);
+                        mActionListener.updateBackground(mPictureLoader.getPictureFile(), mUsername);
                         break;
 
-                    default: break;
+                    default:
+                        break;
                 }
 
             } else {
                 Log.i(TAG, "IMAGE is LOADED (from gallery)");
-                String[] picturePath = { MediaStore.Images.Media.DATA };
+                String[] picturePath = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(data.getData(), picturePath, null, null, null);
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(picturePath[0]));
-                switch (requestCode){
+                switch (requestCode) {
                     case UPDATE_AVATAR:
-                        mActionListener.updateAvatar(new File(imagePath), mUserName);
+                        mActionListener.updateAvatar(new File(imagePath), mUsername);
                         break;
                     case UPDATE_BACKGROUND:
-                        mActionListener.updateBackground(new File(imagePath), mUserName);
+                        mActionListener.updateBackground(new File(imagePath), mUsername);
                         break;
 
-                    default: break;
+                    default:
+                        break;
                 }
             }
         }
@@ -226,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showUserInfo(User user) {
-        Log.i(TAG, "User info: " + user.toString());
         Picasso.with(this)
                 .load(RecordServiceImpl.BASE_URL + user.getAvatar())
                 .placeholder(R.mipmap.ic_launcher)
@@ -257,7 +261,13 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        Bundle searchData = new Bundle();
+        searchData.putString(getString(R.string.user_name), mUsername);
+        searchView.setAppSearchData(searchData);
+
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -274,5 +284,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSearchRequested(SearchEvent searchEvent) {
+        Log.i("INFO", "SEARCH1");
+        return super.onSearchRequested(searchEvent);
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Log.i("INFO", "SEARCH2");
+        return super.onSearchRequested();
     }
 }

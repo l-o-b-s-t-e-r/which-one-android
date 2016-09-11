@@ -9,7 +9,6 @@ import com.android.project.R;
 import com.android.project.main.MainPresenter;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.model.User;
-import com.android.project.signin.SignInActivity;
 import com.android.project.util.RecordServiceImpl;
 import com.squareup.picasso.Picasso;
 
@@ -18,7 +17,6 @@ import butterknife.ButterKnife;
 
 public class UserPageActivity extends AppCompatActivity implements MainPresenter.View {
 
-    public static final String USER_NAME = "USER_NAME";
     private static final String TAG = UserPageActivity.class.getName();
     @BindView(R.id.background)
     ImageView background;
@@ -37,7 +35,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         collapsingToolbar.setTitle("");
 
         mActionListener = new MainPresenterImpl(this);
-        mActionListener.loadUserInfo(getIntent().getExtras().getString(SignInActivity.USER_NAME));
+        mActionListener.loadUserInfo(getIntent().getExtras().getString(getString(R.string.user_name_opened_page)));
     }
 
     @Override

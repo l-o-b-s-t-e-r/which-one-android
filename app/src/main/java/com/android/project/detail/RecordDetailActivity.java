@@ -12,11 +12,8 @@ import android.widget.RadioGroup;
 import com.android.project.R;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
-import com.android.project.signin.SignInActivity;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.wall.WallFragment;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,11 +21,12 @@ import butterknife.ButterKnife;
 public class RecordDetailActivity extends AppCompatActivity implements DetailPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
-    @Inject
-    public DetailPresenter.ActionListener actionListener;
+    private static final String TAG = RecordDetailActivity.class.getName();
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
 
+    private DetailPresenter.ActionListener mActionListener;
+    private String mUsername;
     private Record mRecord;
     private DetailRecyclerViewAdapter mRecyclerViewAdapter;
 
@@ -37,6 +35,8 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_detail);
         ButterKnife.bind(this);
+
+        mUsername = getIntent().getExtras().getString(getString(R.string.user_name));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,14 +47,14 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 
-        actionListener = new DetailPresenterImpl(this);
-        actionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
+        mActionListener = new DetailPresenterImpl(this);
+        mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                actionListener.sendVote(
-                        SignInActivity.USER_NAME,
+                mActionListener.sendVote(
+                        mUsername,
                         mRecord.getRecordId(),
                         mRecord.getOptions().get(checkedId).getOptionName()
                 );
@@ -66,7 +66,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
                 mRecord.getOptions()
                         .get(checkedId)
                         .getVotes()
-                        .add(SignInActivity.USER_NAME);
+                        .add(mUsername);
 
                 radioGroup.removeAllViews();
                 int allVotesCount = mRecord.getAllVotes().size();
@@ -75,7 +75,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
                             RecordDetailActivity.this,
                             o,
                             allVotesCount,
-                            o.getVotes().contains(SignInActivity.USER_NAME)));
+                            o.getVotes().contains(mUsername)));
                 }
             }
         });
@@ -87,7 +87,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         mRecyclerViewAdapter.updateData(record.getImages());
 
         radioGroup.removeAllViews();
-        if (!mRecord.getAllVotes().contains(SignInActivity.USER_NAME)) {
+        if (!mRecord.getAllVotes().contains(mUsername)) {
             for (int i = 0; i < record.getOptions().size(); i++) {
                 radioGroup.addView(QuizViewBuilder.createBaseOption(this, record.getOptions().get(i), i));
             }
@@ -98,7 +98,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
                         this,
                         o,
                         allVotesCount,
-                        o.getVotes().contains(SignInActivity.USER_NAME)));
+                        o.getVotes().contains(mUsername)));
             }
         }
     }

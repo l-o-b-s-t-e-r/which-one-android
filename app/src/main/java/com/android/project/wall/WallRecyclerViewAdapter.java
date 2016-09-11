@@ -13,7 +13,6 @@ import com.android.project.R;
 import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
-import com.android.project.signin.SignInActivity;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.util.RecordServiceImpl;
 import com.android.project.util.SquareImageView;
@@ -34,11 +33,13 @@ import butterknife.OnClick;
 public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = WallRecyclerViewAdapter.class.getName();
+    private String mUsername;
     private Context mContext;
     private Map<Long, Record> mCardContents;
     private WallPresenter.ActionListener mActionListener;
 
-    public WallRecyclerViewAdapter(Context context, WallPresenter.ActionListener actionListener) {
+    public WallRecyclerViewAdapter(Context context, WallPresenter.ActionListener actionListener, String username) {
+        mUsername = username;
         mContext = context;
         mCardContents = new LinkedHashMap<>();
         mActionListener = actionListener;
@@ -112,7 +113,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     mActionListener.sendVote(
-                            SignInActivity.USER_NAME,
+                            mUsername,
                             mRecord.getRecordId(),
                             mRecord.getOptions().get(checkedId).getOptionName()
                     );
@@ -120,7 +121,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                     mRecord.getOptions()
                             .get(checkedId)
                             .getVotes()
-                            .add(SignInActivity.USER_NAME);
+                            .add(mUsername);
 
 
                     radioGroup.removeAllViews();
@@ -130,7 +131,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                                 mContext,
                                 o,
                                 allVotesCount,
-                                o.getVotes().contains(SignInActivity.USER_NAME)));
+                                o.getVotes().contains(mUsername)));
                     }
                 }
             });
@@ -151,7 +152,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                     .into(avatar);
 
             radioGroup.removeAllViews();
-            if (!mRecord.getAllVotes().contains(SignInActivity.USER_NAME)) {
+            if (!mRecord.getAllVotes().contains(mUsername)) {
                 for (int i = 0; i < record.getOptions().size(); i++) {
                     radioGroup.addView(QuizViewBuilder.createBaseOption(mContext, record.getOptions().get(i), i));
                 }
@@ -162,7 +163,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                             mContext,
                             o,
                             allVotesCount,
-                            o.getVotes().contains(SignInActivity.USER_NAME)));
+                            o.getVotes().contains(mUsername)));
                 }
             }
 

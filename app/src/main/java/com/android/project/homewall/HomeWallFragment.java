@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
 import com.android.project.model.Record;
-import com.android.project.signin.SignInActivity;
 
 import java.util.List;
 
@@ -25,6 +24,9 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
 
     @BindView(R.id.homewall_recycler)
     RecyclerView recyclerView;
+
+    private String mUsername;
+    private String mOpenedUsername;
     private HomeWallPresenter.ActionListener mActionListener;
     private HomeWallRecyclerViewAdapter mRecyclerViewAdapter;
 
@@ -45,11 +47,12 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         View view = inflater.inflate(R.layout.fragment_home_wall, container, false);
         ButterKnife.bind(this, view);
 
-        String userName = getActivity().getIntent().getExtras().getString(SignInActivity.USER_NAME);
+        mOpenedUsername = getActivity().getIntent().getExtras().getString(getString(R.string.user_name_opened_page));
+        mUsername = getActivity().getIntent().getExtras().getString(getString(R.string.user_name));
 
         mActionListener = new HomeWallPresenterImpl(this);
         mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(getContext(), mActionListener);
-        mActionListener.loadLastRecords(userName);
+        mActionListener.loadLastRecords(mOpenedUsername);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.homewall_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -68,6 +71,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     public void openRecordDetail(Long recordId) {
         Intent intent = new Intent(getContext(), RecordDetailActivity.class);
         intent.putExtra(RecordDetailActivity.RECORD_ID, recordId);
+        intent.putExtra(getString(R.string.user_name), mUsername);
         startActivity(intent);
     }
 }

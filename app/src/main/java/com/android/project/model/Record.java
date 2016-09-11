@@ -1,9 +1,5 @@
 package com.android.project.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +76,7 @@ public class Record{
     public String toString() {
         return "Record{" +
                 "title='" + title + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", recordId=" + recordId +
                 ", images=" + images +
                 ", options=" + options +

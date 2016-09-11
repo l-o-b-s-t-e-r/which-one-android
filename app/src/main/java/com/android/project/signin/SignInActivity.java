@@ -31,11 +31,14 @@ import butterknife.OnClick;
 
 public class SignInActivity extends AppCompatActivity implements SignInPresenter.View {
 
+    protected static final String TAG = SignInActivity.class.getSimpleName();
+
+    //public static String USER_NAME = "USER_NAME";
     //public static final String USER_NAME = "tvShowBB";
     //public static final String USER_NAME = "tvShowGT";
-    protected static final String TAG = SignInActivity.class.getSimpleName();
     //public static final String USER_NAME = "person";
-    public static String USER_NAME = "sanfran";
+    //public static String USER_NAME = "sanfran";
+
     @BindView(R.id.editTextName)
     EditText editTextName;
     @BindView(R.id.editTextPassword)
@@ -135,10 +138,8 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     @Override
     public void openUserPage(Integer requestCode) {
         if (requestCode == HttpURLConnection.HTTP_OK) {
-            USER_NAME = editTextName.getText().toString().trim();
-
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(USER_NAME, editTextName.getText().toString().trim());
+            intent.putExtra(getString(R.string.user_name), editTextName.getText().toString().trim());
             startActivity(intent);
         } else {
             Toast.makeText(SignInActivity.this, "Ups :(", Toast.LENGTH_SHORT).show();

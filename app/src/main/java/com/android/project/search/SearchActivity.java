@@ -27,6 +27,8 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    private String mUsername;
     private SearchRecyclerViewAdapter mRecyclerViewAdapter;
     private SearchPresenter.ActionListener mActionListener;
 
@@ -41,6 +43,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String searchQuery = getIntent().getStringExtra(SearchManager.QUERY);
+        mUsername = getIntent().getBundleExtra(SearchManager.APP_DATA).getString(getString(R.string.user_name));
 
         mActionListener = new SearchPresenterImpl(this);
         mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, mActionListener);
@@ -72,7 +75,8 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     @Override
     public void showUserPage(User user) {
         Intent intent = new Intent(this, UserPageActivity.class);
-        intent.putExtra(UserPageActivity.USER_NAME, user.getName());
+        intent.putExtra(getString(R.string.user_name_opened_page), user.getName());
+        intent.putExtra(getString(R.string.user_name), mUsername);
         startActivity(intent);
     }
 }

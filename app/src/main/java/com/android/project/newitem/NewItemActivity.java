@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 
 import com.android.project.R;
 import com.android.project.main.MainActivity;
-import com.android.project.signin.SignInActivity;
 import com.android.project.util.PictureLoader;
 import com.android.project.util.PictureLoaderImpl;
 import com.android.project.util.QuizViewBuilder;
@@ -83,7 +82,9 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
             }
         }
 
-        mActionListener.sendRecord(mRecyclerViewAdapter.getAllImages(), allOptions, SignInActivity.USER_NAME);
+        mActionListener.sendRecord(mRecyclerViewAdapter.getAllImages(),
+                allOptions,
+                getIntent().getExtras().getString(getString(R.string.user_name)));
     }
 
     @Override
