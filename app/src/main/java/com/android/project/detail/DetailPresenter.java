@@ -1,5 +1,6 @@
 package com.android.project.detail;
 
+import com.android.project.model.Option;
 import com.android.project.model.Record;
 
 /**
@@ -17,7 +18,7 @@ public interface DetailPresenter {
 
         void loadRecord(Long recordId);
 
-        void sendVote(String userName, Long recordId, String option);
+        void sendVote(Long recordId, Option option, String userName);
 
     }
 

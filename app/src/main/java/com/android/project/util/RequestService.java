@@ -1,5 +1,6 @@
 package com.android.project.util;
 
+import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.model.User;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by Lobster on 19.06.16.
  */
-public interface RecordService {
+public interface RequestService {
 
     void signUp(String name, String password, String email);
 
@@ -43,7 +44,11 @@ public interface RecordService {
 
     void getUsersFromId(String searchQuery, Long userId, LoadUsers callback);
 
-    void sendVote(String userName, Long recordId, String option);
+    void sendVote(Long recordId, Option option, String userName, NewVote callback);
+
+    interface NewVote {
+        void voteSent(Long recordId, Option option, String userName);
+    }
 
     interface Checking {
         void checkResult(Integer requestCode);

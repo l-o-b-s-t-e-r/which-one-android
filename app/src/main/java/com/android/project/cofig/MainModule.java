@@ -1,7 +1,9 @@
 package com.android.project.cofig;
 
-import com.android.project.util.RecordService;
-import com.android.project.util.RecordServiceImpl;
+import android.app.Application;
+
+import com.android.project.util.RequestService;
+import com.android.project.util.RequestServiceImpl;
 
 import javax.inject.Singleton;
 
@@ -17,7 +19,13 @@ public class MainModule {
 
     @Provides
     @Singleton
-    public RecordService provideRecordService() {
-        return new RecordServiceImpl();
+    public RequestService provideRecordService() {
+        return new RequestServiceImpl();
+    }
+
+    @Provides
+    @Singleton
+    public DatabaseManager provideMainRecordService(Application application) {
+        return new DatabaseManagerImpl(application);
     }
 }

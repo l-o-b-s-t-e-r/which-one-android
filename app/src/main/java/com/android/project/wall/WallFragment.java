@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,8 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.detail.RecordDetailActivity;
-import com.android.project.model.Record;
 import com.android.project.userpage.UserPageActivity;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = WallFragment.class.getName();
+
     private String mUsername;
     private BroadcastReceiver mReceiver;
     private WallPresenter.ActionListener mActionListener;
@@ -56,7 +58,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mActionListener.loadRecord(intent.getLongExtra(RECORD_ID, -1L));
+                mRecyclerViewAdapter.updateRecord(intent.getLongExtra(RECORD_ID, -1L));
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mReceiver, new IntentFilter("com.android.project.wall"));
@@ -70,9 +72,9 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         View view = inflater.inflate(R.layout.wall_fragment, container, false);
         ButterKnife.bind(this, view);
 
-        mUsername = getActivity().getIntent().getExtras().getString(getString(R.string.user_name));
+        mUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
 
-        mActionListener = new WallPresenterImpl(this);
+        mActionListener = new WallPresenterImpl(this, ((WhichOneApp) getActivity().getApplication()).getMainComponent());
         mRecyclerViewAdapter = new WallRecyclerViewAdapter(view.getContext(), mActionListener, mUsername);
         mActionListener.loadLastRecords();
 
@@ -84,20 +86,14 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     @Override
-    public void updateRecord(Record record) {
-        mRecyclerViewAdapter.updateRecord(record);
-    }
-
-    @Override
-    public void showRecords(List<Record> records) {
-        mRecyclerViewAdapter.updateData(records);
+    public void showRecords(List<Long> recordIds) {
+        mRecyclerViewAdapter.updateData(recordIds);
     }
 
     @Override
     public void showRecordDetail(Long recordId) {
         Intent intent = new Intent(getContext(), RecordDetailActivity.class);
         intent.putExtra(RecordDetailActivity.RECORD_ID, recordId);
-        intent.putExtra(getString(R.string.user_name), mUsername);
         startActivity(intent);
     }
 
@@ -105,7 +101,6 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     public void showUserPage(String userName) {
         Intent intent = new Intent(getContext(), UserPageActivity.class);
         intent.putExtra(getString(R.string.user_name_opened_page), userName);
-        intent.putExtra(getString(R.string.user_name), mUsername);
         startActivity(intent);
     }
 

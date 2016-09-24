@@ -18,7 +18,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = MainModule.class)
+@Component(modules = {MainModule.class, AppModule.class})
 public interface MainComponent {
 
     void inject(MainPresenterImpl presenter);

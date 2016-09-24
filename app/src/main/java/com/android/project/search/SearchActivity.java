@@ -3,6 +3,7 @@ package com.android.project.search;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.User;
 import com.android.project.userpage.UserPageActivity;
 import com.android.project.util.SuggestionProvider;
@@ -30,7 +32,6 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
 
     private String mUsername;
     private SearchRecyclerViewAdapter mRecyclerViewAdapter;
-    private SearchPresenter.ActionListener mActionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +44,15 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String searchQuery = getIntent().getStringExtra(SearchManager.QUERY);
-        mUsername = getIntent().getBundleExtra(SearchManager.APP_DATA).getString(getString(R.string.user_name));
+        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_name), "");
 
-        mActionListener = new SearchPresenterImpl(this);
-        mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, mActionListener);
+        SearchPresenter.ActionListener actionListener = new SearchPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, actionListener);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
-        mActionListener.loadUsers(searchQuery);
+        actionListener.loadUsers(searchQuery);
 
         SearchRecentSuggestions suggestions =
                 new SearchRecentSuggestions(this, SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
@@ -76,7 +77,6 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     public void showUserPage(User user) {
         Intent intent = new Intent(this, UserPageActivity.class);
         intent.putExtra(getString(R.string.user_name_opened_page), user.getName());
-        intent.putExtra(getString(R.string.user_name), mUsername);
         startActivity(intent);
     }
 }

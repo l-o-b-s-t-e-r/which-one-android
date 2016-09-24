@@ -5,7 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.android.project.R;
-import com.android.project.model.UserApp;
+import com.android.project.model.ImageEntity;
+import com.android.project.model.OptionEntity;
+import com.android.project.model.RecordEntity;
+import com.android.project.model.VoteEntity;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -19,44 +23,47 @@ import java.sql.SQLException;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    /************************************************
-     * Suggested Copy/Paste code. Everything from here to the done block.
-     ************************************************/
+    private static final String DATABASE_NAME = "which_one.db";
+    private static final int DATABASE_VERSION = 24;
+    private static DatabaseHelper mDatabaseHelper;
 
-    private static final String DATABASE_NAME = "project2.db";
-    private static final int DATABASE_VERSION = 1;
-
-    private Dao<UserApp, Integer> mUserDao;
+    private Dao<ImageEntity, Integer> mImageDao;
+    private Dao<OptionEntity, Integer> mOptionDao;
+    private Dao<RecordEntity, Integer> mRecordDao;
+    private Dao<VoteEntity, Integer> mVoteDao;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
     }
 
-    /************************************************
-     * Suggested Copy/Paste Done
-     ************************************************/
+    public static DatabaseHelper getInstance(Context context) {
+        if (mDatabaseHelper == null) {
+            mDatabaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        }
+
+        return mDatabaseHelper;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource) {
         try {
-
-            // Create tables. This onCreate() method will be invoked only once of the application life time i.e. the first time when the application starts.
-            TableUtils.createTable(connectionSource, UserApp.class);
+            TableUtils.createTable(connectionSource, ImageEntity.class);
+            TableUtils.createTable(connectionSource, OptionEntity.class);
+            TableUtils.createTable(connectionSource, RecordEntity.class);
+            TableUtils.createTable(connectionSource, VoteEntity.class);
 
         } catch (SQLException e) {
-            Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
+            Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
         try {
-
-            // In case of change in database of next version of application, please increase the value of DATABASE_VERSION variable, then this method will be invoked
-            //automatically. Developer needs to handle the upgrade logic here, i.e. create a new table or a new column to an existing table, take the backups of the
-            // existing database etc.
-
-            TableUtils.dropTable(connectionSource, UserApp.class, true);
+            TableUtils.dropTable(connectionSource, ImageEntity.class, true);
+            TableUtils.dropTable(connectionSource, OptionEntity.class, true);
+            TableUtils.dropTable(connectionSource, RecordEntity.class, true);
+            TableUtils.dropTable(connectionSource, VoteEntity.class, true);
             onCreate(sqliteDatabase, connectionSource);
 
         } catch (SQLException e) {
@@ -65,13 +72,38 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    // Create the getDao methods of all database tables to access those from android code.
-    // Insert, delete, read, update everything will be happened through DAOs
-
-    public Dao<UserApp, Integer> getUserDao() throws SQLException {
-        if (mUserDao == null) {
-            mUserDao = getDao(UserApp.class);
+    public Dao<ImageEntity, Integer> getImageDao() throws SQLException {
+        if (mImageDao == null) {
+            mImageDao = getDao(ImageEntity.class);
         }
-        return mUserDao;
+
+        return mImageDao;
     }
+
+    public Dao<OptionEntity, Integer> getOptionDao() throws SQLException {
+        if (mOptionDao == null) {
+            mOptionDao = getDao(OptionEntity.class);
+        }
+
+        return mOptionDao;
+    }
+
+
+    public Dao<RecordEntity, Integer> getRecordDao() throws SQLException {
+        if (mRecordDao == null) {
+            mRecordDao = getDao(RecordEntity.class);
+        }
+
+        return mRecordDao;
+    }
+
+    public Dao<VoteEntity, Integer> getVoteDao() throws SQLException {
+        if (mVoteDao == null) {
+            mVoteDao = getDao(VoteEntity.class);
+        }
+
+        return mVoteDao;
+    }
+
+
 }

@@ -1,7 +1,7 @@
 package com.android.project.signup;
 
-import com.android.project.cofig.DaggerMainComponent;
-import com.android.project.util.RecordService;
+import com.android.project.cofig.MainComponent;
+import com.android.project.util.RequestService;
 
 import javax.inject.Inject;
 
@@ -12,17 +12,18 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     private static final String TAG = SignUpPresenterImpl.class.getName();
     @Inject
-    public RecordService recordService;
+    public RequestService requestService;
+
     private SignUpPresenter.View mSignUpView;
 
-    public SignUpPresenterImpl(SignUpPresenter.View signUpView) {
+    public SignUpPresenterImpl(SignUpPresenter.View signUpView, MainComponent mainComponent) {
         mSignUpView = signUpView;
-        DaggerMainComponent.create().inject(this);
+        mainComponent.inject(this);
     }
 
     @Override
     public void checkName(String name) {
-        recordService.checkName(name, new RecordService.Checking() {
+        requestService.checkName(name, new RequestService.Checking() {
             @Override
             public void checkResult(Integer requestCode) {
                 mSignUpView.showCheckNameResult(requestCode);
@@ -32,7 +33,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     @Override
     public void checkEmail(String email) {
-        recordService.checkEmail(email, new RecordService.Checking() {
+        requestService.checkEmail(email, new RequestService.Checking() {
             @Override
             public void checkResult(Integer requestCode) {
                 mSignUpView.showCheckEmailResult(requestCode);
@@ -42,7 +43,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     @Override
     public void signUp(String name, String password, String email) {
-        recordService.signUp(name, password, email);
+        requestService.signUp(name, password, email);
     }
 
 

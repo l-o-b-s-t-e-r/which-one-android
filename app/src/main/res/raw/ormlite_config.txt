@@ -1,19 +1,106 @@
-dataClass=com.android.project.model.UserApp
-tableName=userApp
+#
+# generated on 2016/09/22 04:50:31
+#
+# --table-start--
+dataClass=com.android.project.model.ImageEntity
+tableName=imageentity
 # --table-fields-start--
 # --field-start--
-fieldName=mUserId
-columnName=user_id
-generatedId=true
+fieldName=mRecord
+columnName=record_id
+foreign=true
+foreignAutoRefresh=true
+maxForeignAutoRefreshLevel=2
 # --field-end--
 # --field-start--
-fieldName=mUserName
-columnName=user_name
-# --field-end--
-# --field-start--
-fieldName=mUserPassword
-columnName=user_password
+fieldName=mImagePath
+columnName=image_name
+id=true
 # --field-end--
 # --table-fields-end--
 # --table-end--
-################################
+#################################
+# --table-start--
+dataClass=com.android.project.model.OptionEntity
+tableName=optionentity
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=mRecord
+columnName=record_id
+foreign=true
+foreignAutoRefresh=true
+maxForeignAutoRefreshLevel=2
+# --field-end--
+# --field-start--
+fieldName=mOptionName
+columnName=option_name
+# --field-end--
+# --field-start--
+fieldName=mVotes
+columnName=votes
+foreignCollection=true
+foreignCollectionEager=true
+foreignCollectionColumnName=votes
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.android.project.model.RecordEntity
+tableName=recordentity
+# --table-fields-start--
+# --field-start--
+fieldName=mRecordId
+columnName=record_id
+id=true
+# --field-end--
+# --field-start--
+fieldName=mUsername
+columnName=user_name
+# --field-end--
+# --field-start--
+fieldName=mAvatarPath
+columnName=avatar_path
+# --field-end--
+# --field-start--
+fieldName=mImages
+columnName=images
+foreignCollection=true
+foreignCollectionEager=true
+foreignCollectionColumnName=images
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.android.project.model.VoteEntity
+tableName=voteentity
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=mRecordId
+columnName=record_id
+# --field-end--
+# --field-start--
+fieldName=mOption
+columnName=option_id
+foreign=true
+foreignAutoRefresh=true
+maxForeignAutoRefreshLevel=2
+# --field-end--
+# --field-start--
+fieldName=mVotedUser
+columnName=voted_user
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

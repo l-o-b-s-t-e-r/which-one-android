@@ -1,8 +1,9 @@
 package com.android.project.main;
 
-import com.android.project.cofig.DaggerMainComponent;
+import com.android.project.cofig.DatabaseManager;
+import com.android.project.cofig.MainComponent;
 import com.android.project.model.User;
-import com.android.project.util.RecordService;
+import com.android.project.util.RequestService;
 
 import java.io.File;
 
@@ -14,19 +15,23 @@ import javax.inject.Inject;
 
 public class MainPresenterImpl implements MainPresenter.ActionListener {
 
+    private static final String TAG = MainPresenterImpl.class.getName();
+
     @Inject
-    public RecordService recordService;
+    public RequestService requestService;
+    @Inject
+    public DatabaseManager databaseManager;
 
     private MainPresenter.View mMainView;
 
-    public MainPresenterImpl(MainPresenter.View mainView) {
+    public MainPresenterImpl(MainPresenter.View mainView, MainComponent mainComponent) {
         mMainView = mainView;
-        DaggerMainComponent.create().inject(this);
+        mainComponent.inject(this);
     }
 
     @Override
     public void loadUserInfo(String name) {
-        recordService.getUserInfo(name, new RecordService.LoadUserInfo() {
+        requestService.getUserInfo(name, new RequestService.LoadUserInfo() {
             @Override
             public void onUserInfoLoaded(User user) {
                 mMainView.showUserInfo(user);
@@ -36,7 +41,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     @Override
     public void updateBackground(File imageFile, String name) {
-        recordService.updateBackground(imageFile, name, new RecordService.LoadUserInfo() {
+        requestService.updateBackground(imageFile, name, new RequestService.LoadUserInfo() {
             @Override
             public void onUserInfoLoaded(User user) {
                 mMainView.showUserInfo(user);
@@ -46,7 +51,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     @Override
     public void updateAvatar(File imageFile, String name) {
-        recordService.updateAvatar(imageFile, name, new RecordService.LoadUserInfo() {
+        requestService.updateAvatar(imageFile, name, new RequestService.LoadUserInfo() {
             @Override
             public void onUserInfoLoaded(User user) {
                 mMainView.showUserInfo(user);

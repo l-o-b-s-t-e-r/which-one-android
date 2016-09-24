@@ -3,6 +3,7 @@ package com.android.project.newitem;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,9 +16,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainActivity;
-import com.android.project.util.PictureLoader;
-import com.android.project.util.PictureLoaderImpl;
+import com.android.project.util.ImageKeeper;
 import com.android.project.util.QuizViewBuilder;
 
 import java.io.File;
@@ -34,12 +35,10 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
     private final int LOAD_IMAGE = 1;
     private final int MAX_IMAGES = 9;
     private final int MAX_OPTIONS = 9;
-    private final String OPTION_TITLE = "Option #";
 
     @BindView(R.id.options_container)
     LinearLayout container;
 
-    private PictureLoader mPictureLoader;
     private NewItemRecyclerViewAdapter mRecyclerViewAdapter;
     private NewItemPresenter.ActionListener mActionListener;
 
@@ -53,8 +52,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
-        mActionListener = new NewItemPresenterImpl(this);
+        mActionListener = new NewItemPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
 
         mRecyclerViewAdapter = new NewItemRecyclerViewAdapter();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.new_item_recycler);
@@ -82,9 +80,10 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
             }
         }
 
-        mActionListener.sendRecord(mRecyclerViewAdapter.getAllImages(),
+        mActionListener.sendRecord(
+                mRecyclerViewAdapter.getAllImages(),
                 allOptions,
-                getIntent().getExtras().getString(getString(R.string.user_name)));
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(getString(R.string.user_name), ""));
     }
 
     @Override
@@ -102,8 +101,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
         if (resultCode == RESULT_OK && requestCode == LOAD_IMAGE) {
             if (data.getData() == null) {
                 Log.i(TAG, "IMAGE is LOADED (from camera)");
-                sendBroadcast(mPictureLoader.addPictureToGallery());
-                setImage(mPictureLoader.getPictureFile());
+                setImage(ImageKeeper.getInstance().getImageFile());
             } else {
                 Log.i(TAG, "IMAGE is LOADED (from gallery)");
                 String[] picturePath = {MediaStore.Images.Media.DATA};
@@ -129,7 +127,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
                 break;
             case R.id.action_add_image:
                 if (mRecyclerViewAdapter.getItemCount() < MAX_IMAGES) {
-                    startActivityForResult(mPictureLoader.getChooserIntent(), LOAD_IMAGE);
+                    startActivityForResult(ImageKeeper.getInstance().getChooserIntent(this), LOAD_IMAGE);
                 }
                 break;
             case R.id.action_add_option:

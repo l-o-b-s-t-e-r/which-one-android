@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -22,7 +23,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SearchEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,13 +30,13 @@ import android.widget.ImageView;
 
 import com.android.project.R;
 import com.android.project.adapter.TabAdapter;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.homewall.HomeWallFragment;
 import com.android.project.model.User;
 import com.android.project.newitem.NewItemActivity;
 import com.android.project.signin.SignInActivity;
-import com.android.project.util.PictureLoader;
-import com.android.project.util.PictureLoaderImpl;
-import com.android.project.util.RecordServiceImpl;
+import com.android.project.util.ImageKeeper;
+import com.android.project.util.RequestServiceImpl;
 import com.android.project.wall.WallFragment;
 import com.squareup.picasso.Picasso;
 
@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     CollapsingToolbarLayout collapsingToolbar;
 
     private String mUsername;
-    private PictureLoader mPictureLoader;
     private MainPresenter.ActionListener mActionListener;
     private WallFragment mWallFragment;
     private Animation mUpdateAnimation;
@@ -76,11 +75,10 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mUsername = getIntent().getExtras().getString(getString(R.string.user_name));
+        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_name), "");
         collapsingToolbar.setTitle(mUsername);
 
-        mPictureLoader = new PictureLoaderImpl(getString(R.string.album_name));
-        mActionListener = new MainPresenterImpl(this);
+        mActionListener = new MainPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
         mActionListener.loadUserInfo(mUsername);
 
 
@@ -106,9 +104,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, NewItemActivity.class);
-                    intent.putExtra(getString(R.string.user_name), mUsername);
-                    startActivity(intent);
+                    startActivity(new Intent(MainActivity.this, NewItemActivity.class));
                 }
             });
         }
@@ -182,12 +178,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @OnClick(R.id.avatar)
     void updateAvatar() {
-        startActivityForResult(mPictureLoader.getChooserIntent(), UPDATE_AVATAR);
+        startActivityForResult(ImageKeeper.getInstance().getChooserIntent(this), UPDATE_AVATAR);
     }
 
-    @OnClick(R.id.load_background)
+    @OnClick(R.id.background)
     void updateBackground() {
-        startActivityForResult(mPictureLoader.getChooserIntent(), UPDATE_BACKGROUND);
+        startActivityForResult(ImageKeeper.getInstance().getChooserIntent(this), UPDATE_BACKGROUND);
     }
 
     @Override
@@ -195,13 +191,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         if (resultCode == RESULT_OK) {
             if (data.getData() == null) {
                 Log.i(TAG, "IMAGE is LOADED (from camera)");
-                sendBroadcast(mPictureLoader.addPictureToGallery());
                 switch (requestCode) {
                     case UPDATE_AVATAR:
-                        mActionListener.updateAvatar(mPictureLoader.getPictureFile(), mUsername);
+                        mActionListener.updateAvatar(ImageKeeper.getInstance().getImageFile(), mUsername);
                         break;
                     case UPDATE_BACKGROUND:
-                        mActionListener.updateBackground(mPictureLoader.getPictureFile(), mUsername);
+                        mActionListener.updateBackground(ImageKeeper.getInstance().getImageFile(), mUsername);
                         break;
 
                     default:
@@ -232,12 +227,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void showUserInfo(User user) {
         Picasso.with(this)
-                .load(RecordServiceImpl.BASE_URL + user.getAvatar())
+                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getAvatar())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(avatar);
 
         Picasso.with(this)
-                .load(RecordServiceImpl.BASE_URL + user.getBackground())
+                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getBackground())
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }
@@ -262,10 +257,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
-        Bundle searchData = new Bundle();
-        searchData.putString(getString(R.string.user_name), mUsername);
-        searchView.setAppSearchData(searchData);
-
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
 
@@ -280,21 +271,15 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                        .remove(getString(R.string.user_name))
+                        .apply();
+
                 startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onSearchRequested(SearchEvent searchEvent) {
-        Log.i("INFO", "SEARCH1");
-        return super.onSearchRequested(searchEvent);
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        Log.i("INFO", "SEARCH2");
-        return super.onSearchRequested();
-    }
 }

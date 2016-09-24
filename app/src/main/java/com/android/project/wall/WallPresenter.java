@@ -1,5 +1,6 @@
 package com.android.project.wall;
 
+import com.android.project.model.Option;
 import com.android.project.model.Record;
 
 import java.util.List;
@@ -12,9 +13,7 @@ public interface WallPresenter {
 
     interface View {
 
-        void updateRecord(Record record);
-
-        void showRecords(List<Record> records);
+        void showRecords(List<Long> recordIds);
 
         void showRecordDetail(Long recordId);
 
@@ -24,7 +23,7 @@ public interface WallPresenter {
 
     interface ActionListener{
 
-        void loadRecord(Long recordId);
+        Record getRecordById(Long recordId);
 
         void loadLastRecords();
 
@@ -34,7 +33,7 @@ public interface WallPresenter {
 
         void openUserPage(String userName);
 
-        void sendVote(String userName, Long recordId, String option);
+        void sendVote(Long recordId, Option option, String userName);
 
     }
 

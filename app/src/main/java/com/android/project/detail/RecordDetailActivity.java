@@ -2,6 +2,7 @@ package com.android.project.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.RadioGroup;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
@@ -36,7 +38,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         setContentView(R.layout.activity_record_detail);
         ButterKnife.bind(this);
 
-        mUsername = getIntent().getExtras().getString(getString(R.string.user_name));
+        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_name), "");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,16 +49,16 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 
-        mActionListener = new DetailPresenterImpl(this);
+        mActionListener = new DetailPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
         mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 mActionListener.sendVote(
-                        mUsername,
                         mRecord.getRecordId(),
-                        mRecord.getOptions().get(checkedId).getOptionName()
+                        mRecord.getOptions().get(checkedId),
+                        mUsername
                 );
 
                 Intent broadcastIntent = new Intent("com.android.project.wall");

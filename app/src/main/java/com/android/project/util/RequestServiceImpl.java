@@ -2,6 +2,7 @@ package com.android.project.util;
 
 import android.util.Log;
 
+import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.model.User;
 
@@ -21,25 +22,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Lobster on 31.05.16.
  */
-public class RecordServiceImpl implements RecordService {
+public class RequestServiceImpl implements RequestService {
 
     public static final String BASE_URL = "http://10.0.3.2:8080/project/";
-    private static final String TAG = RecordServiceImpl.class.getName();
+    public static final String IMAGE_FOLDER = "images/";
+    private static final String TAG = RequestServiceImpl.class.getName();
     //public static final String BASE_URL = "http://52.27.160.199:8080/project/";
-    private RestRequestService mService;
+    private RequestAPI mRequest;
 
-    public RecordServiceImpl() {
+    public RequestServiceImpl() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        mService = retrofit.create(RestRequestService.class);
+        mRequest = retrofit.create(RequestAPI.class);
     }
 
     @Override
     public void signUp(String name, String password, String email) {
-        Call<Void> signUpCall = mService.signUp(name, password, email);
+        Call<Void> signUpCall = mRequest.signUp(name, password, email);
         signUpCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -55,7 +57,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void checkName(String name, final Checking callback) {
-        Call<Void> checkNameCall = mService.checkName(name);
+        Call<Void> checkNameCall = mRequest.checkName(name);
         checkNameCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -71,7 +73,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void signIn(String name, String password, final Checking callback) {
-        Call<Void> signInCall = mService.signIn(name, password);
+        Call<Void> signInCall = mRequest.signIn(name, password);
         signInCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -87,7 +89,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void checkEmail(String email, final Checking callback) {
-        Call<Void> checkEmailCall = mService.checkEmail(email);
+        Call<Void> checkEmailCall = mRequest.checkEmail(email);
         checkEmailCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -103,7 +105,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void remindInfo(String email, final Checking callback) {
-        Call<Void> remindInfoCall = mService.remindInfo(email);
+        Call<Void> remindInfoCall = mRequest.remindInfo(email);
         remindInfoCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -119,7 +121,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getNextRecords(final Long recordId, final LoadNextRecordsCallback callback) {
-        Call<List<Record>> nextRecordsCall = mService.getNextRecords(recordId);
+        Call<List<Record>> nextRecordsCall = mRequest.getNextRecords(recordId);
         nextRecordsCall.enqueue(new Callback<List<Record>>() {
             @Override
             public void onResponse(Call<List<Record>> call, Response<List<Record>> response) {
@@ -137,7 +139,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getLastRecords(final LoadLastRecordsCallback callback) {
-        Call<List<Record>> lastRecordsCall = mService.getLastRecords();
+        Call<List<Record>> lastRecordsCall = mRequest.getLastRecords();
         lastRecordsCall.enqueue(new Callback<List<Record>>() {
             @Override
             public void onResponse(Call<List<Record>> call, Response<List<Record>> response) {
@@ -155,7 +157,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getLastUserRecords(String userName, final LoadLastUserRecordsCallback callback) {
-        Call<List<Record>> lastUserRecordsCall = mService.getLastUserRecords(userName);
+        Call<List<Record>> lastUserRecordsCall = mRequest.getLastUserRecords(userName);
         lastUserRecordsCall.enqueue(new Callback<List<Record>>() {
             @Override
             public void onResponse(Call<List<Record>> call, Response<List<Record>> response) {
@@ -173,7 +175,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getNextUserRecords(String userName, Long recordId, final LoadNextUserRecordsCallback callback) {
-        Call<List<Record>> nextUserRecordsCall = mService.getNextUserRecords(userName, recordId);
+        Call<List<Record>> nextUserRecordsCall = mRequest.getNextUserRecords(userName, recordId);
         nextUserRecordsCall.enqueue(new Callback<List<Record>>() {
             @Override
             public void onResponse(Call<List<Record>> call, Response<List<Record>> response) {
@@ -192,7 +194,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getRecordById(Long recordId, final LoadRecord callback) {
-        Call<Record> recordCall = mService.getRecordById(recordId);
+        Call<Record> recordCall = mRequest.getRecordById(recordId);
         recordCall.enqueue(new Callback<Record>() {
             @Override
             public void onResponse(Call<Record> call, Response<Record> response) {
@@ -208,7 +210,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getUserInfo(String name, final LoadUserInfo callback) {
-        Call<User> userInfoCall = mService.getUserInfo(name);
+        Call<User> userInfoCall = mRequest.getUserInfo(name);
         userInfoCall.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -238,7 +240,7 @@ public class RecordServiceImpl implements RecordService {
             requestOptions.add(RequestBody.create(MediaType.parse("text/plain"), s));
         }
 
-        Call<ResponseBody> call = mService.addRecord(requestFiles, requestOptions, requestName);
+        Call<ResponseBody> call = mRequest.addRecord(requestFiles, requestOptions, requestName);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call,
@@ -263,7 +265,7 @@ public class RecordServiceImpl implements RecordService {
         RequestBody requestName =
                 RequestBody.create(MediaType.parse("text/plain"), name);
 
-        Call<User> call = mService.updateBackground(requestFile, requestName);
+        Call<User> call = mRequest.updateBackground(requestFile, requestName);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -285,7 +287,7 @@ public class RecordServiceImpl implements RecordService {
         RequestBody requestName =
                 RequestBody.create(MediaType.parse("text/plain"), name);
 
-        Call<User> call = mService.updateAvatar(requestFile, requestName);
+        Call<User> call = mRequest.updateAvatar(requestFile, requestName);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -301,7 +303,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getUsers(String searchQuery, final LoadUsers callback) {
-        Call<List<User>> usersCall = mService.getUsers(searchQuery);
+        Call<List<User>> usersCall = mRequest.getUsers(searchQuery);
         usersCall.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
@@ -319,7 +321,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void getUsersFromId(String searchQuery, Long userId, final LoadUsers callback) {
-        Call<List<User>> usersCall = mService.getUsersFromId(searchQuery, userId);
+        Call<List<User>> usersCall = mRequest.getUsersFromId(searchQuery, userId);
         usersCall.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
@@ -336,12 +338,12 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public void sendVote(String userName, Long recordId, String option) {
-        Call<Void> sendVoteCall = mService.sendVote(userName, recordId, option);
+    public void sendVote(final Long recordId, final Option option, final String userName, final NewVote callback) {
+        Call<Void> sendVoteCall = mRequest.sendVote(userName, recordId, option.getOptionName());
         sendVoteCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                
+                callback.voteSent(recordId, option, userName);
             }
 
             @Override

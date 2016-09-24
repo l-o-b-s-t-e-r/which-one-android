@@ -9,14 +9,18 @@ import java.util.List;
 
 public class Record{
 
-    private String title;
+    private String username;
     private String avatar;
     private Long recordId;
     private List<Image> images;
     private List<Option> options;
-    
+
+    public Record() {
+
+    }
+
     public Record(String title, String avatar, Long recordId, List<Image> images, List<Option> options) {
-        this.title = title;
+        this.username = title;
         this.avatar = avatar;
         this.recordId = recordId;
         this.images = images;
@@ -31,12 +35,12 @@ public class Record{
         this.images = images;
     }
 
-    public String getTitle() {
-        return title;
+    public String getUsername() {
+        return username;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getRecordId() {
@@ -66,7 +70,9 @@ public class Record{
     public List<String> getAllVotes(){
         List<String> votes = new ArrayList<>();
         for (Option o: options){
-            votes.addAll(o.getVotes());
+            if (o != null) {
+                votes.addAll(o.getVotes());
+            }
         }
 
         return votes;
@@ -75,7 +81,7 @@ public class Record{
     @Override
     public String toString() {
         return "Record{" +
-                "title='" + title + '\'' +
+                "username='" + username + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", recordId=" + recordId +
                 ", images=" + images +

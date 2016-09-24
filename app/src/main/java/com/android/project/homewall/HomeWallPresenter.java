@@ -11,12 +11,15 @@ import java.util.List;
 public interface HomeWallPresenter {
 
     interface View {
-        void updateRecords(List<Record> records);
+        void updateRecords(List<Long> recordIds);
 
         void openRecordDetail(Long recordId);
     }
 
     interface ActionListener {
+
+        Record getRecordById(Long recordId);
+
         void loadLastRecords(String userName);
 
         void loadNextRecords(String userName, Long lastLoadedRecordId);

@@ -1,8 +1,10 @@
 package com.android.project.signin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.project.R;
-import com.android.project.cofig.DatabaseHelper;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainActivity;
-import com.android.project.model.UserApp;
 import com.android.project.signup.SignUpDialog;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 
 import java.net.HttpURLConnection;
-import java.sql.SQLException;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +28,7 @@ import butterknife.OnClick;
 
 public class SignInActivity extends AppCompatActivity implements SignInPresenter.View {
 
-    protected static final String TAG = SignInActivity.class.getSimpleName();
+    private static final String TAG = SignInActivity.class.getSimpleName();
 
     //public static String USER_NAME = "USER_NAME";
     //public static final String USER_NAME = "tvShowBB";
@@ -46,8 +43,8 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     @BindView(R.id.forgot_password)
     TextView textViewForgot;
 
-    private DatabaseHelper mDatabaseHelper = null;
     private SignInPresenter.ActionListener mActionListener;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +52,14 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         setContentView(R.layout.activity_singin);
         ButterKnife.bind(this);
 
-        mActionListener = new SignInPresenterImpl(this);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (mSharedPreferences.contains(getString(R.string.user_name))) {
+            String str = mSharedPreferences.getString(getString(R.string.user_name), "");
+            Log.i("INFO", str);
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
+        mActionListener = new SignInPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
     }
 
     @OnClick(R.id.forgot_password)
@@ -107,40 +111,14 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         signUpDialogFragment.show(getSupportFragmentManager(), "sign_up_dialog");
     }
 
-    private DatabaseHelper mGetHelper() {
-        if (mDatabaseHelper == null) {
-            mDatabaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-        }
-        return mDatabaseHelper;
-    }
-
-    public void addUser(View view) {
-        Random r = new Random();
-
-        UserApp userApp = new UserApp();
-        userApp.setmUserName("user_name");
-        userApp.setmUserPassword("password_" + r.nextInt(10));
-        Log.d(userApp.getmUserName(), userApp.getmUserPassword());
-
-        try {
-            Dao<UserApp, Integer> userDao = mGetHelper().getUserDao();
-            Log.d("SIZE", String.valueOf(userDao.countOf()));
-            userDao.create(userApp);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
-
-        Toast.makeText(this, view.getClass().getSimpleName(), Toast.LENGTH_SHORT)
-                .show();
-    }
-
     @Override
     public void openUserPage(Integer requestCode) {
         if (requestCode == HttpURLConnection.HTTP_OK) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(getString(R.string.user_name), editTextName.getText().toString().trim());
-            startActivity(intent);
+            mSharedPreferences.edit()
+                    .putString(getString(R.string.user_name), editTextName.getText().toString().trim())
+                    .apply();
+
+            startActivity(new Intent(this, MainActivity.class));
         } else {
             Toast.makeText(SignInActivity.this, "Ups :(", Toast.LENGTH_SHORT).show();
             editTextName.setError(getString(R.string.wrong_password_or_name));

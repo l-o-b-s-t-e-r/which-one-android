@@ -1,7 +1,8 @@
 package com.android.project.newitem;
 
-import com.android.project.cofig.DaggerMainComponent;
-import com.android.project.util.RecordService;
+import com.android.project.cofig.DatabaseManager;
+import com.android.project.cofig.MainComponent;
+import com.android.project.util.RequestService;
 
 import java.io.File;
 import java.util.List;
@@ -16,18 +17,20 @@ public class NewItemPresenterImpl implements NewItemPresenter.ActionListener {
 
     private static final String TAG = NewItemPresenterImpl.class.getName();
     @Inject
-    public RecordService recordService;
+    public RequestService requestService;
+    @Inject
+    public DatabaseManager databaseManager;
+
     private NewItemPresenter.View mNewItemView;
 
-    public NewItemPresenterImpl(NewItemPresenter.View newItemView) {
+    public NewItemPresenterImpl(NewItemPresenter.View newItemView, MainComponent mainComponent) {
         mNewItemView = newItemView;
-        DaggerMainComponent.create().inject(this);
-
+        mainComponent.inject(this);
     }
 
     @Override
     public void sendRecord(List<File> images, List<String> options, String name) {
-        recordService.addRecord(images, options, name, new RecordService.NewRecord() {
+        requestService.addRecord(images, options, name, new RequestService.NewRecord() {
             @Override
             public void newRecordLoaded() {
                 mNewItemView.loadMainActivity();

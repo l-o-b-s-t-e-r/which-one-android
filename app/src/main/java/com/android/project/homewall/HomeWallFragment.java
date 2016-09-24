@@ -3,6 +3,7 @@ package com.android.project.homewall;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.detail.RecordDetailActivity;
-import com.android.project.model.Record;
 
 import java.util.List;
 
@@ -25,7 +26,6 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     @BindView(R.id.homewall_recycler)
     RecyclerView recyclerView;
 
-    private String mUsername;
     private String mOpenedUsername;
     private HomeWallPresenter.ActionListener mActionListener;
     private HomeWallRecyclerViewAdapter mRecyclerViewAdapter;
@@ -47,10 +47,14 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         View view = inflater.inflate(R.layout.fragment_home_wall, container, false);
         ButterKnife.bind(this, view);
 
-        mOpenedUsername = getActivity().getIntent().getExtras().getString(getString(R.string.user_name_opened_page));
-        mUsername = getActivity().getIntent().getExtras().getString(getString(R.string.user_name));
+        Bundle bundle = getActivity().getIntent().getExtras();
+        if (bundle == null) {
+            mOpenedUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
+        } else {
+            mOpenedUsername = bundle.getString(getString(R.string.user_name_opened_page));
+        }
 
-        mActionListener = new HomeWallPresenterImpl(this);
+        mActionListener = new HomeWallPresenterImpl(this, ((WhichOneApp) getActivity().getApplication()).getMainComponent());
         mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(getContext(), mActionListener);
         mActionListener.loadLastRecords(mOpenedUsername);
 
@@ -58,20 +62,18 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
-
         return view;
     }
 
     @Override
-    public void updateRecords(List<Record> records) {
-        mRecyclerViewAdapter.updateData(records);
+    public void updateRecords(List<Long> recordIds) {
+        mRecyclerViewAdapter.updateData(recordIds);
     }
 
     @Override
     public void openRecordDetail(Long recordId) {
         Intent intent = new Intent(getContext(), RecordDetailActivity.class);
         intent.putExtra(RecordDetailActivity.RECORD_ID, recordId);
-        intent.putExtra(getString(R.string.user_name), mUsername);
         startActivity(intent);
     }
 }

@@ -1,6 +1,7 @@
 package com.android.project.adapter;
 
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,8 @@ import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.model.Image;
-import com.android.project.util.RecordServiceImpl;
+import com.android.project.util.ImageLoader;
 import com.android.project.wall.WallPresenter;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -28,13 +27,11 @@ import butterknife.OnClick;
 public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = RecordRecyclerViewAdapter.class.getName();
-    private Context mContext;
     private List<Image> mImages;
     private WallPresenter.ActionListener mActionListener;
 
-    public RecordRecyclerViewAdapter(Context context, List<Image> images, WallPresenter.ActionListener actionListener) {
+    public RecordRecyclerViewAdapter(List<Image> images, WallPresenter.ActionListener actionListener) {
         mImages = images;
-        mContext = context;
         mActionListener = actionListener;
     }
 
@@ -73,21 +70,15 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
             mActionListener.openRecordDetail(mImages.get(0).getRecordId());
         }
 
-        public void setContent(final Image image) {
-            Picasso.with(mContext)
-                    .load(RecordServiceImpl.BASE_URL + image.getImage())
-                    .error(R.drawable.ic_error)
-                    .into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            spinner.setVisibility(View.GONE);
-                        }
+        public void setContent(Image image) {
 
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+            Bitmap bitmapImage = BitmapFactory.decodeFile(image.getImage());
+            if (bitmapImage == null) {
+                ImageLoader.getInstance().pushImage(image.getImage(), imageView, spinner, null);
+            } else {
+                imageView.setImageBitmap(bitmapImage);
+                spinner.setVisibility(View.GONE);
+            }
         }
     }
 }

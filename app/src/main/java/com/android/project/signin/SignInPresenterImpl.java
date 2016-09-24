@@ -1,7 +1,8 @@
 package com.android.project.signin;
 
-import com.android.project.cofig.DaggerMainComponent;
-import com.android.project.util.RecordService;
+import com.android.project.cofig.DatabaseManager;
+import com.android.project.cofig.MainComponent;
+import com.android.project.util.RequestService;
 
 import javax.inject.Inject;
 
@@ -10,19 +11,22 @@ import javax.inject.Inject;
  */
 public class SignInPresenterImpl implements SignInPresenter.ActionListener {
 
-    private static final String TAG = SignInPresenter.class.getName();
+    private static final String TAG = SignInPresenterImpl.class.getName();
     @Inject
-    public RecordService recordService;
+    public RequestService requestService;
+    @Inject
+    public DatabaseManager databaseManager;
+
     private SignInPresenter.View mSignInView;
 
-    public SignInPresenterImpl(SignInPresenter.View signInView) {
+    public SignInPresenterImpl(SignInPresenter.View signInView, MainComponent mainComponent) {
         mSignInView = signInView;
-        DaggerMainComponent.create().inject(this);
+        mainComponent.inject(this);
     }
 
     @Override
     public void signIn(String name, String password) {
-        recordService.signIn(name, password, new RecordService.Checking() {
+        requestService.signIn(name, password, new RequestService.Checking() {
             @Override
             public void checkResult(Integer requestCode) {
                 mSignInView.openUserPage(requestCode);
@@ -32,7 +36,7 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
 
     @Override
     public void remindInfo(String email) {
-        recordService.remindInfo(email, new RecordService.Checking() {
+        requestService.remindInfo(email, new RequestService.Checking() {
             @Override
             public void checkResult(Integer requestCode) {
                 mSignInView.remindInfoResult(requestCode);

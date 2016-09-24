@@ -1,9 +1,12 @@
 package com.android.project.wall;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
@@ -13,14 +16,12 @@ import com.android.project.R;
 import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
+import com.android.project.util.ImageLoader;
 import com.android.project.util.QuizViewBuilder;
-import com.android.project.util.RecordServiceImpl;
 import com.android.project.util.SquareImageView;
-import com.squareup.picasso.Picasso;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,15 +34,16 @@ import butterknife.OnClick;
 public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = WallRecyclerViewAdapter.class.getName();
+    private boolean allRecordsLoaded;
     private String mUsername;
     private Context mContext;
-    private Map<Long, Record> mCardContents;
+    private List<Long> mRecordIds;
     private WallPresenter.ActionListener mActionListener;
 
     public WallRecyclerViewAdapter(Context context, WallPresenter.ActionListener actionListener, String username) {
         mUsername = username;
         mContext = context;
-        mCardContents = new LinkedHashMap<>();
+        mRecordIds = new ArrayList<>();
         mActionListener = actionListener;
     }
 
@@ -55,34 +57,34 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setContent((Record) mCardContents.values().toArray()[position]);
-        if (position == mCardContents.size()-1){
-            mActionListener.loadNextRecords(((Record) mCardContents.values().toArray()[position]).getRecordId());
+        holder.setContent(mActionListener.getRecordById(mRecordIds.get(position)));
+        if (!allRecordsLoaded && position == mRecordIds.size() - 1) {
+            mActionListener.loadNextRecords(mRecordIds.get(position));
         }
     }
 
-    public void updateData(List<Record> records) {
-        if (!records.isEmpty()) {
-            for (Record r : records) {
-                mCardContents.put(r.getRecordId(), r);
-            }
+    public void updateData(List<Long> recordIds) {
+        if (!recordIds.isEmpty()) {
+            mRecordIds.addAll(recordIds);
             notifyDataSetChanged();
+        } else {
+            allRecordsLoaded = true;
         }
     }
 
-    public void updateRecord(Record record) {
-        mCardContents.put(record.getRecordId(), record);
-        notifyDataSetChanged(); //change to notifyItemChanged();
+    public void updateRecord(Long recordId) {
+        Log.i("INFO", String.valueOf(mRecordIds.indexOf(recordId)));
+        notifyItemChanged(mRecordIds.indexOf(recordId));
     }
 
     public void cleanData() {
-        mCardContents.clear();
+        mRecordIds.clear();
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mCardContents.size();
+        return mRecordIds.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -113,16 +115,15 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     mActionListener.sendVote(
-                            mUsername,
                             mRecord.getRecordId(),
-                            mRecord.getOptions().get(checkedId).getOptionName()
+                            mRecord.getOptions().get(checkedId),
+                            mUsername
                     );
 
                     mRecord.getOptions()
                             .get(checkedId)
                             .getVotes()
                             .add(mUsername);
-
 
                     radioGroup.removeAllViews();
                     int allVotesCount = mRecord.getAllVotes().size();
@@ -139,17 +140,20 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
         @OnClick({R.id.avatar, R.id.title})
         void onUserClick(){
-            mActionListener.openUserPage(mRecord.getTitle());
+            mActionListener.openUserPage(mRecord.getUsername());
         }
 
         public void setContent(Record record) {
             mRecord = record;
-            text.setText(record.getTitle());
+            text.setText(record.getUsername());
 
-            Picasso.with(mContext)
-                    .load(RecordServiceImpl.BASE_URL + record.getAvatar())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .into(avatar);
+            Bitmap bitmapImage = BitmapFactory.decodeFile(record.getAvatar());
+            if (bitmapImage == null) {
+                avatar.setImageResource(R.mipmap.ic_launcher);
+                ImageLoader.getInstance().pushImage(record.getAvatar(), avatar, null, null);
+            } else {
+                avatar.setImageBitmap(bitmapImage);
+            }
 
             radioGroup.removeAllViews();
             if (!mRecord.getAllVotes().contains(mUsername)) {
@@ -167,7 +171,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                 }
             }
 
-            RecordRecyclerViewAdapter recordRecyclerViewAdapter = new RecordRecyclerViewAdapter(mContext, record.getImages(), mActionListener);
+            RecordRecyclerViewAdapter recordRecyclerViewAdapter = new RecordRecyclerViewAdapter(record.getImages(), mActionListener);
             recyclerView.setAdapter(recordRecyclerViewAdapter);
         }
     }

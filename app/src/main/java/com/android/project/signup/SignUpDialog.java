@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 
 import java.net.HttpURLConnection;
 
@@ -42,7 +43,7 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActionListener = new SignUpPresenterImpl(this);
+        mActionListener = new SignUpPresenterImpl(this, ((WhichOneApp) getActivity().getApplication()).getMainComponent());
     }
 
     @Override

@@ -1,8 +1,9 @@
 package com.android.project.homewall;
 
-import com.android.project.cofig.DaggerMainComponent;
+import com.android.project.cofig.DatabaseManager;
+import com.android.project.cofig.MainComponent;
 import com.android.project.model.Record;
-import com.android.project.util.RecordService;
+import com.android.project.util.RequestService;
 
 import java.util.List;
 
@@ -16,31 +17,40 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     private static final String TAG = HomeWallPresenterImpl.class.getName();
     @Inject
-    public RecordService recordService;
+    public RequestService requestService;
+    @Inject
+    public DatabaseManager databaseManager;
+
     private HomeWallPresenter.View mHomeWallView;
 
-    public HomeWallPresenterImpl(HomeWallPresenter.View homeWallView) {
+    public HomeWallPresenterImpl(HomeWallPresenter.View homeWallView, MainComponent mainComponent) {
         mHomeWallView = homeWallView;
-        DaggerMainComponent.create().inject(this);
+        mainComponent.inject(this);
+    }
 
+    @Override
+    public Record getRecordById(Long recordId) {
+        return databaseManager.getById(recordId);
     }
 
     @Override
     public void loadLastRecords(String userName) {
-        recordService.getLastUserRecords(userName, new RecordService.LoadLastUserRecordsCallback() {
+        requestService.getLastUserRecords(userName, new RequestService.LoadLastUserRecordsCallback() {
             @Override
             public void onLastUserRecordsLoaded(List<Record> records) {
-                mHomeWallView.updateRecords(records);
+                List<Long> recordIds = databaseManager.saveAll(records);
+                mHomeWallView.updateRecords(recordIds);
             }
         });
     }
 
     @Override
     public void loadNextRecords(String userName, Long lastLoadedRecordId) {
-        recordService.getNextUserRecords(userName, lastLoadedRecordId, new RecordService.LoadNextUserRecordsCallback() {
+        requestService.getNextUserRecords(userName, lastLoadedRecordId, new RequestService.LoadNextUserRecordsCallback() {
             @Override
             public void onNextUserRecordsLoaded(List<Record> records) {
-                mHomeWallView.updateRecords(records);
+                List<Long> recordIds = databaseManager.saveAll(records);
+                mHomeWallView.updateRecords(recordIds);
             }
         });
     }

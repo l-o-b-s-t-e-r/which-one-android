@@ -1,9 +1,5 @@
 package com.android.project.model;
 
-import android.graphics.Path;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.List;
 
 /**
@@ -11,22 +7,23 @@ import java.util.List;
  */
 public class Option{
 
-    private Long recordId;
+    private Long optionId;
     private String optionName;
+
     private List<String> votes;
 
-    public Option(Long recordId, String optionName, List<String> votes) {
-        this.recordId = recordId;
+    public Option(Long optionId, String optionName, List<String> votes) {
+        this.optionId = optionId;
         this.optionName = optionName;
         this.votes = votes;
     }
 
-    public Long getRecordId() {
-        return recordId;
+    public Long getOptionId() {
+        return optionId;
     }
 
-    public void setRecordId(Long recordId) {
-        this.recordId = recordId;
+    public void setOptionId(Long optionId) {
+        this.optionId = optionId;
     }
 
     public String getOptionName() {
@@ -48,7 +45,7 @@ public class Option{
     @Override
     public String toString() {
         return "Option{" +
-                "recordId=" + recordId +
+                "optionId=" + optionId +
                 ", optionName='" + optionName + '\'' +
                 ", votes=" + votes +
                 '}';

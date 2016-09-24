@@ -33,17 +33,6 @@
                 android:src="@drawable/background_top"
                 app:layout_collapseMode="parallax" />
 
-            <ImageButton
-                android:id="@+id/load_background"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginBottom="6dp"
-                android:layout_marginRight="6dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_camera"
-                app:layout_collapseMode="pin" />
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"

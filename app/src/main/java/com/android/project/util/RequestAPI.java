@@ -18,7 +18,7 @@ import retrofit2.http.Query;
  * Created by Lobster on 19.06.16.
  */
 
-public interface RestRequestService {
+public interface RequestAPI {
 
     @GET("sign_up")
     Call<Void> signUp(@Query("name") String name, @Query("password") String password, @Query("email") String email);

@@ -1,8 +1,10 @@
 package com.android.project.wall;
 
-import com.android.project.cofig.DaggerMainComponent;
+import com.android.project.cofig.DatabaseManager;
+import com.android.project.cofig.MainComponent;
+import com.android.project.model.Option;
 import com.android.project.model.Record;
-import com.android.project.util.RecordService;
+import com.android.project.util.RequestService;
 
 import java.util.List;
 
@@ -16,40 +18,40 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
 
     private static final String TAG = WallPresenterImpl.class.getName();
     @Inject
-    public RecordService recordService;
+    public RequestService requestService;
+    @Inject
+    public DatabaseManager databaseManager;
+
     private WallPresenter.View mWallView;
 
-    public WallPresenterImpl(WallPresenter.View wallView) {
+    public WallPresenterImpl(WallPresenter.View wallView, MainComponent mainComponent) {
         mWallView = wallView;
-        DaggerMainComponent.create().inject(this);
+        mainComponent.inject(this);
     }
 
     @Override
-    public void loadRecord(Long recordId) {
-        recordService.getRecordById(recordId, new RecordService.LoadRecord() {
-            @Override
-            public void recordLoaded(Record record) {
-                mWallView.updateRecord(record);
-            }
-        });
+    public Record getRecordById(Long recordId) {
+        return databaseManager.getById(recordId);
     }
 
     @Override
     public void loadLastRecords() {
-        recordService.getLastRecords(new RecordService.LoadLastRecordsCallback() {
+        requestService.getLastRecords(new RequestService.LoadLastRecordsCallback() {
             @Override
             public void onLastRecordsLoaded(List<Record> records) {
-                mWallView.showRecords(records);
+                List<Long> recordIds = databaseManager.saveAll(records);
+                mWallView.showRecords(recordIds);
             }
         });
     }
 
     @Override
     public void loadNextRecords(Long lastLoadedRecordId) {
-        recordService.getNextRecords(lastLoadedRecordId, new RecordService.LoadNextRecordsCallback() {
+        requestService.getNextRecords(lastLoadedRecordId, new RequestService.LoadNextRecordsCallback() {
             @Override
             public void onNextRecordsLoaded(List<Record> records) {
-                mWallView.showRecords(records);
+                List<Long> recordIds = databaseManager.saveAll(records);
+                mWallView.showRecords(recordIds);
             }
         });
     }
@@ -65,7 +67,12 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
     }
 
     @Override
-    public void sendVote(String userName, Long recordId, String option) {
-        recordService.sendVote(userName, recordId, option);
+    public void sendVote(Long recordId, Option option, String userName) {
+        requestService.sendVote(recordId, option, userName, new RequestService.NewVote() {
+            @Override
+            public void voteSent(Long recordId, Option option, String userName) {
+                databaseManager.addVote(recordId, option, userName);
+            }
+        });
     }
 }

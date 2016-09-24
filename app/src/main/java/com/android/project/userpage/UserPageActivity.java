@@ -6,10 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.android.project.R;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainPresenter;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.model.User;
-import com.android.project.util.RecordServiceImpl;
+import com.android.project.util.RequestServiceImpl;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -34,7 +35,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         ButterKnife.bind(this);
         collapsingToolbar.setTitle("");
 
-        mActionListener = new MainPresenterImpl(this);
+        mActionListener = new MainPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
         mActionListener.loadUserInfo(getIntent().getExtras().getString(getString(R.string.user_name_opened_page)));
     }
 
@@ -43,12 +44,12 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         collapsingToolbar.setTitle(user.getName());
 
         Picasso.with(this)
-                .load(RecordServiceImpl.BASE_URL + user.getAvatar())
+                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getAvatar())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(avatar);
 
         Picasso.with(this)
-                .load(RecordServiceImpl.BASE_URL + user.getBackground())
+                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getBackground())
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }

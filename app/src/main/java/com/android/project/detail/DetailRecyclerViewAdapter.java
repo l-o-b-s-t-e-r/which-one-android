@@ -1,6 +1,7 @@
 package com.android.project.detail;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,6 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.model.Image;
-import com.android.project.util.RecordServiceImpl;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,20 +70,7 @@ public class DetailRecyclerViewAdapter extends RecyclerView.Adapter<DetailRecycl
         }
 
         public void setContent(final Image image) {
-            Picasso.with(mContext)
-                    .load(RecordServiceImpl.BASE_URL + image.getImage())
-                    .error(R.drawable.ic_error)
-                    .into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            spinner.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+            imageView.setImageBitmap(BitmapFactory.decodeFile(image.getImage()));
         }
     }
 }

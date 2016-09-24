@@ -1,6 +1,8 @@
 package com.android.project.homewall;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +10,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.model.Record;
-import com.android.project.util.RecordServiceImpl;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.android.project.util.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +32,16 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     private Long MIN_ANIMATION_DURATION = 3000L;
     private int DELTA = 1000;
+    private boolean allRecordsLoaded;
 
     private Context mContext;
-    private List<Record> mRecords;
+    private List<Long> mRecordIds;
     private Random mAnimationRandom;
     private HomeWallPresenter.ActionListener mActionListener;
 
     public HomeWallRecyclerViewAdapter(Context context, HomeWallPresenter.ActionListener actionListener) {
         mContext = context;
-        mRecords = new ArrayList<>();
+        mRecordIds = new ArrayList<>();
         mAnimationRandom = new Random();
         mActionListener = actionListener;
     }
@@ -54,21 +56,24 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setContent(mRecords.get(position));
-        if (position == mRecords.size() - 1) {
-            mActionListener.loadNextRecords(mRecords.get(position).getTitle(), mRecords.get(position).getRecordId());
+        Record record = mActionListener.getRecordById(mRecordIds.get(position));
+        holder.setContent(record);
+        if (!allRecordsLoaded && position == mRecordIds.size() - 1) {
+            mActionListener.loadNextRecords(record.getUsername(), mRecordIds.get(position));
         }
     }
 
     @Override
     public int getItemCount() {
-        return mRecords.size();
+        return mRecordIds.size();
     }
 
-    public void updateData(List<Record> records) {
-        if (!records.isEmpty()) {
-            mRecords.addAll(records);
+    public void updateData(List<Long> recordIds) {
+        if (!recordIds.isEmpty()) {
+            mRecordIds.addAll(recordIds);
             notifyDataSetChanged();
+        } else {
+            allRecordsLoaded = true;
         }
     }
 
@@ -80,6 +85,8 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
         @BindView(R.id.image)
         ImageView image;
+        @BindView(R.id.progressBar)
+        ProgressBar spinner;
 
         private Record mRecord;
         private Animation mAnimation;
@@ -111,9 +118,13 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                             currentAnimatedImage = 0;
                         }
 
-                        Picasso.with(mContext)
-                                .load(RecordServiceImpl.BASE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
-                                .into(image);
+                        String imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
+                        Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
+                        if (bitmapImage == null) {
+                            ImageLoader.getInstance().pushImage(imagePath, image, spinner, mAnimation);
+                        } else {
+                            image.setImageBitmap(bitmapImage);
+                        }
                     }
 
                     changeImage = !changeImage;
@@ -130,19 +141,16 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             mRecord = record;
             mAnimation.setDuration(animationDuration(record.getImages().size()));
 
-            Picasso.with(mContext)
-                    .load(RecordServiceImpl.BASE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
-                    .into(image, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            image.startAnimation(mAnimation);
-                        }
+            String imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
+            Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
 
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+            if (bitmapImage == null) {
+                ImageLoader.getInstance().pushImage(imagePath, image, spinner, mAnimation);
+            } else {
+                image.setImageBitmap(bitmapImage);
+                image.startAnimation(mAnimation);
+                spinner.setVisibility(View.GONE);
+            }
         }
     }
 }

@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/percent"
         android:layout_alignTop="@id/percent"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/percent"
         android:layout_toStartOf="@id/percent" />
 
