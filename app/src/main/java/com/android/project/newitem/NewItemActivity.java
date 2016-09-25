@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -57,8 +57,8 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
         mActionListener = new NewItemPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
 
         mRecyclerViewAdapter = new NewItemRecyclerViewAdapter();
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.new_item_recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        RecyclerView recyclerView = ButterKnife.findById(this, R.id.new_item_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
     }
