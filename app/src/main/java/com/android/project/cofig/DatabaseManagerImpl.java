@@ -109,6 +109,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
         entity.setRecordId(record.getRecordId());
         entity.setUsername(record.getUsername());
+        entity.setTitle(record.getTitle());
 
         RecordEntity existingRecordEntity;
         if ((existingRecordEntity = mDaoRecord.queryBuilder().where()
@@ -153,6 +154,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
         record.setRecordId(entity.getRecordId());
         record.setUsername(entity.getUsername());
         record.setAvatar(entity.getAvatarPath());
+        record.setTitle(entity.getTitle());
 
         List<Image> images = new ArrayList<>();
         for (ImageEntity imageEntity : entity.getImages()) {

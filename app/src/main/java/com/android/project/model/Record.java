@@ -12,6 +12,7 @@ public class Record{
     private String username;
     private String avatar;
     private Long recordId;
+    private String title;
     private List<Image> images;
     private List<Option> options;
 
@@ -19,10 +20,11 @@ public class Record{
 
     }
 
-    public Record(String title, String avatar, Long recordId, List<Image> images, List<Option> options) {
-        this.username = title;
+    public Record(String username, String avatar, Long recordId, String title, List<Image> images, List<Option> options) {
+        this.username = username;
         this.avatar = avatar;
         this.recordId = recordId;
+        this.title = title;
         this.images = images;
         this.options = options;
     }
@@ -65,6 +67,14 @@ public class Record{
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<String> getAllVotes(){

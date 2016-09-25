@@ -225,12 +225,15 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void addRecord(List<File> files, List<String> options, String name, final NewRecord callback){
+    public void addRecord(List<File> files, List<String> options, String name, String title, final NewRecord callback) {
         List<RequestBody> requestFiles = new ArrayList<>();
         List<RequestBody> requestOptions = new ArrayList<>();
 
         RequestBody requestName =
                 RequestBody.create(MediaType.parse("text/plain"), name);
+
+        RequestBody requestTitle =
+                RequestBody.create(MediaType.parse("text/plain"), title);
 
         for (File f: files){
             requestFiles.add(RequestBody.create(MediaType.parse("image/png"), f));
@@ -240,7 +243,7 @@ public class RequestServiceImpl implements RequestService {
             requestOptions.add(RequestBody.create(MediaType.parse("text/plain"), s));
         }
 
-        Call<ResponseBody> call = mRequest.addRecord(requestFiles, requestOptions, requestName);
+        Call<ResponseBody> call = mRequest.addRecord(requestFiles, requestOptions, requestName, requestTitle);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call,

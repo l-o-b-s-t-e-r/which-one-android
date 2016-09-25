@@ -38,7 +38,7 @@ public interface RequestService {
 
     void updateAvatar(File background, String name, LoadUserInfo callback);
 
-    void addRecord(List<File> files, List<String> options, String name, NewRecord callback);
+    void addRecord(List<File> files, List<String> options, String name, String title, NewRecord callback);
 
     void getUsers(String searchQuery, LoadUsers callback);
 

@@ -14,7 +14,7 @@ public interface NewItemPresenter {
     }
 
     interface ActionListener {
-        void sendRecord(List<File> images, List<String> options, String name);
+        void sendRecord(List<File> images, List<String> options, String name, String title);
     }
 
 }

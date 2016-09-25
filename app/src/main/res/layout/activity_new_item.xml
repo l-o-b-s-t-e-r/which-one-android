@@ -22,11 +22,20 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_item_recycler"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="Title" />
+
     <LinearLayout
         android:id="@+id/options_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/new_item_recycler"
+        android:layout_below="@id/title"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp" />

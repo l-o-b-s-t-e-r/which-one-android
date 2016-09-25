@@ -1,5 +1,5 @@
 #
-# generated on 2016/09/22 04:50:31
+# generated on 2016/09/25 02:31:30
 #
 # --table-start--
 dataClass=com.android.project.model.ImageEntity
@@ -66,6 +66,10 @@ columnName=user_name
 # --field-start--
 fieldName=mAvatarPath
 columnName=avatar_path
+# --field-end--
+# --field-start--
+fieldName=mTitle
+columnName=title
 # --field-end--
 # --field-start--
 fieldName=mImages

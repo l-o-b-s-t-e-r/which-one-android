@@ -72,6 +72,9 @@ public interface RequestAPI {
 
     @Multipart
     @POST("add_record")
-    Call<ResponseBody> addRecord(@Part("files\"; filename=\"*.png") List<RequestBody> files, @Part("options") List<RequestBody> options, @Part("name") RequestBody name);
+    Call<ResponseBody> addRecord(@Part("files\"; filename=\"*.png") List<RequestBody> files,
+                                 @Part("options") List<RequestBody> options,
+                                 @Part("name") RequestBody name,
+                                 @Part("title") RequestBody title);
 
 }

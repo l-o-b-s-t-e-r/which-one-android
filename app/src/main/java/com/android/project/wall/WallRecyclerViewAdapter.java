@@ -89,8 +89,11 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.username)
+        TextView username;
+
         @BindView(R.id.title)
-        TextView text;
+        TextView title;
 
         @BindView(R.id.record_recycler)
         RecyclerView recyclerView;
@@ -145,7 +148,8 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
         public void setContent(Record record) {
             mRecord = record;
-            text.setText(record.getUsername());
+            username.setText(record.getUsername());
+            title.setText(record.getTitle());
 
             Bitmap bitmapImage = BitmapFactory.decodeFile(record.getAvatar());
             if (bitmapImage == null) {

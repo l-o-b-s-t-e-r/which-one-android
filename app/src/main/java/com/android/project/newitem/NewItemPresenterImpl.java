@@ -29,8 +29,8 @@ public class NewItemPresenterImpl implements NewItemPresenter.ActionListener {
     }
 
     @Override
-    public void sendRecord(List<File> images, List<String> options, String name) {
-        requestService.addRecord(images, options, name, new RequestService.NewRecord() {
+    public void sendRecord(List<File> images, List<String> options, String name, String title) {
+        requestService.addRecord(images, options, name, title, new RequestService.NewRecord() {
             @Override
             public void newRecordLoaded() {
                 mNewItemView.loadMainActivity();

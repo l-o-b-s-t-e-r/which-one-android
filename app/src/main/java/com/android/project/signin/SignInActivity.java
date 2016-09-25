@@ -30,12 +30,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
     private static final String TAG = SignInActivity.class.getSimpleName();
 
-    //public static String USER_NAME = "USER_NAME";
-    //public static final String USER_NAME = "tvShowBB";
-    //public static final String USER_NAME = "tvShowGT";
-    //public static final String USER_NAME = "person";
-    //public static String USER_NAME = "sanfran";
-
     @BindView(R.id.editTextName)
     EditText editTextName;
     @BindView(R.id.editTextPassword)
@@ -54,8 +48,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mSharedPreferences.contains(getString(R.string.user_name))) {
-            String str = mSharedPreferences.getString(getString(R.string.user_name), "");
-            Log.i("INFO", str);
             startActivity(new Intent(this, MainActivity.class));
         }
 

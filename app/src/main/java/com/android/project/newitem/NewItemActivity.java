@@ -38,6 +38,8 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
 
     @BindView(R.id.options_container)
     LinearLayout container;
+    @BindView(R.id.title)
+    EditText editTextTitle;
 
     private NewItemRecyclerViewAdapter mRecyclerViewAdapter;
     private NewItemPresenter.ActionListener mActionListener;
@@ -67,14 +69,19 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
             return; //show message
         }
 
-        String optionTitle;
+        String recordTitle = editTextTitle.getText().toString().trim();
+        if (recordTitle.isEmpty()) {
+            return; //show message
+        }
+
+        String optionName;
         List<String> allOptions = new ArrayList<>();
 
         for (int i = 0; i < container.getChildCount(); i++) {
             EditText option = (EditText) container.getChildAt(i).findViewById(R.id.option_title);
-            optionTitle = option.getText().toString().trim();
-            if (!optionTitle.isEmpty() && !allOptions.contains(optionTitle)) {
-                allOptions.add(optionTitle);
+            optionName = option.getText().toString().trim();
+            if (!optionName.isEmpty() && !allOptions.contains(optionName)) {
+                allOptions.add(optionName);
             } else {
                 return; //show message
             }
@@ -83,7 +90,8 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
         mActionListener.sendRecord(
                 mRecyclerViewAdapter.getAllImages(),
                 allOptions,
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(getString(R.string.user_name), ""));
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(getString(R.string.user_name), ""),
+                recordTitle);
     }
 
     @Override

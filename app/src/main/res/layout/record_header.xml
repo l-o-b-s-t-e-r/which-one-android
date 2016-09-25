@@ -13,7 +13,7 @@
         sq_image:cornerRadius="20.0" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/avatar"
