@@ -17,7 +17,6 @@ import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.ImageLoader;
-import com.android.project.util.ImageReferenceBuilder;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.util.SquareImageView;
 
@@ -27,6 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * Created by Lobster on 12.05.16.
@@ -155,10 +155,24 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             Bitmap bitmapImage = BitmapFactory.decodeFile(record.getAvatar());
             if (bitmapImage == null) {
                 avatar.setImageResource(R.mipmap.ic_launcher);
-                ImageLoader.getInstance().addImageReference(
-                        record.getAvatar(),
-                        ImageReferenceBuilder.builder(avatar).build()
-                );
+                Subscriber<Bitmap> subscriber = new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        avatar.setImageBitmap(bitmap);
+                    }
+                };
+
+                ImageLoader.getInstance().addImageSubscriber(record.getAvatar(), subscriber);
             } else {
                 avatar.setImageBitmap(bitmapImage);
             }

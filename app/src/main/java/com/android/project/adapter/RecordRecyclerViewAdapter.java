@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.model.Image;
 import com.android.project.util.ImageLoader;
-import com.android.project.util.ImageReferenceBuilder;
 import com.android.project.wall.WallPresenter;
 
 import java.util.List;
@@ -20,6 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * Created by Lobster on 21.05.16.
@@ -75,12 +75,25 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
 
             Bitmap bitmapImage = BitmapFactory.decodeFile(image.getImage());
             if (bitmapImage == null) {
-                ImageLoader.getInstance().addImageReference(
-                        image.getImage(),
-                        ImageReferenceBuilder.builder(imageView)
-                                .spinner(spinner)
-                                .build()
-                );
+                Subscriber<Bitmap> subscriber = new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        imageView.setImageBitmap(bitmap);
+                        spinner.setVisibility(View.GONE);
+                    }
+                };
+
+                ImageLoader.getInstance().addImageSubscriber(image.getImage(), subscriber);
             } else {
                 imageView.setImageBitmap(bitmapImage);
                 spinner.setVisibility(View.GONE);

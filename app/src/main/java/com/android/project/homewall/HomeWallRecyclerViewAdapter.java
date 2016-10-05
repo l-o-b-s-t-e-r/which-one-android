@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.model.Record;
 import com.android.project.util.ImageLoader;
-import com.android.project.util.ImageReferenceBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * Created by Lobster on 29.07.16.
@@ -121,15 +121,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
                         String imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
                         Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
-                        if (bitmapImage == null) {
-                            ImageLoader.getInstance().addImageReference(
-                                    imagePath,
-                                    ImageReferenceBuilder.builder(image)
-                                            .spinner(spinner)
-                                            .animation(mAnimation)
-                                            .build()
-                            );
-                        } else {
+                        if (bitmapImage != null) {
                             image.setImageBitmap(bitmapImage);
                         }
                     }
@@ -152,13 +144,26 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
 
             if (bitmapImage == null) {
-                ImageLoader.getInstance().addImageReference(
-                        imagePath,
-                        ImageReferenceBuilder.builder(image)
-                                .spinner(spinner)
-                                .animation(mAnimation)
-                                .build()
-                );
+                Subscriber<Bitmap> subscriber = new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        image.setImageBitmap(bitmap);
+                        image.startAnimation(mAnimation);
+                        spinner.setVisibility(View.GONE);
+                    }
+                };
+
+                ImageLoader.getInstance().addImageSubscriber(imagePath, subscriber);
             } else {
                 image.setImageBitmap(bitmapImage);
                 image.startAnimation(mAnimation);

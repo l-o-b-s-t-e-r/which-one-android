@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -26,10 +27,10 @@ public class ImageLoader {
     private static ImageLoader mImageLoader;
 
     private final String IMAGE_URL = RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER;
-    private Map<String, List<ImageReference>> mImageReferences;
+    private Map<String, List<Subscriber<Bitmap>>> mImageSubscribers;
 
     private ImageLoader() {
-        mImageReferences = new HashMap<>();
+        mImageSubscribers = new HashMap<>();
     }
 
     public static ImageLoader getInstance() {
@@ -40,13 +41,13 @@ public class ImageLoader {
         return mImageLoader;
     }
 
-    public void addImageReference(String imagePath, ImageReference imageReference) {
-        List<ImageReference> imageReferences;
+    public void addImageSubscriber(String imagePath, Subscriber<Bitmap> subscriber) {
+        List<Subscriber<Bitmap>> imageSubscribers;
 
-        if ((imageReferences = mImageReferences.get(imagePath)) == null) {
-            mImageReferences.put(imagePath, new ArrayList<>(Collections.singletonList(imageReference)));
+        if ((imageSubscribers = mImageSubscribers.get(imagePath)) == null) {
+            mImageSubscribers.put(imagePath, new ArrayList<>(Collections.singletonList(subscriber)));
         } else {
-            imageReferences.add(imageReference);
+            imageSubscribers.add(subscriber);
         }
     }
 
@@ -72,7 +73,7 @@ public class ImageLoader {
         return new Action1<Bitmap>() {
             @Override
             public void call(Bitmap bitmap) {
-                List<ImageReference> imageReferences;
+                List<Subscriber<Bitmap>> imageSubscribers;
                 FileOutputStream outputStream = null;
 
                 try {
@@ -83,18 +84,19 @@ public class ImageLoader {
 
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
-                if ((imageReferences = mImageReferences.get(imageFile.getAbsolutePath())) != null) {
-                    completeImageReference(imageFile.getAbsolutePath(), bitmap, imageReferences);
+                if ((imageSubscribers = mImageSubscribers.get(imageFile.getAbsolutePath())) != null) {
+                    notifyAllSubscribers(imageFile.getAbsolutePath(), Observable.just(bitmap), imageSubscribers);
                 }
             }
         };
     }
 
-    private void completeImageReference(String imagePath, Bitmap bitmap, List<ImageReference> imageReferences) {
-        for (ImageReference imageReference : imageReferences) {
-            imageReference.setBitmap(bitmap);
+
+    private void notifyAllSubscribers(String imagePath, Observable<Bitmap> observable, List<Subscriber<Bitmap>> subscribers) {
+        for (Subscriber<Bitmap> subscriber : subscribers) {
+            observable.subscribe(subscriber);
         }
 
-        mImageReferences.remove(imagePath);
+        mImageSubscribers.remove(imagePath);
     }
 }
