@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.model.Image;
 import com.android.project.util.ImageLoader;
+import com.android.project.util.ImageReferenceBuilder;
 import com.android.project.wall.WallPresenter;
 
 import java.util.List;
@@ -74,7 +75,12 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
 
             Bitmap bitmapImage = BitmapFactory.decodeFile(image.getImage());
             if (bitmapImage == null) {
-                ImageLoader.getInstance().pushImage(image.getImage(), imageView, spinner, null);
+                ImageLoader.getInstance().addImageReference(
+                        image.getImage(),
+                        ImageReferenceBuilder.builder(imageView)
+                                .spinner(spinner)
+                                .build()
+                );
             } else {
                 imageView.setImageBitmap(bitmapImage);
                 spinner.setVisibility(View.GONE);

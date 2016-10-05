@@ -17,6 +17,7 @@ import com.android.project.adapter.RecordRecyclerViewAdapter;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.ImageLoader;
+import com.android.project.util.ImageReferenceBuilder;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.util.SquareImageView;
 
@@ -154,7 +155,10 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             Bitmap bitmapImage = BitmapFactory.decodeFile(record.getAvatar());
             if (bitmapImage == null) {
                 avatar.setImageResource(R.mipmap.ic_launcher);
-                ImageLoader.getInstance().pushImage(record.getAvatar(), avatar, null, null);
+                ImageLoader.getInstance().addImageReference(
+                        record.getAvatar(),
+                        ImageReferenceBuilder.builder(avatar).build()
+                );
             } else {
                 avatar.setImageBitmap(bitmapImage);
             }

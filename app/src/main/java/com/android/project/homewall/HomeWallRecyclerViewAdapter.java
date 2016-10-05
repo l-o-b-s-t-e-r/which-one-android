@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.model.Record;
 import com.android.project.util.ImageLoader;
+import com.android.project.util.ImageReferenceBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +122,13 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                         String imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
                         Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
                         if (bitmapImage == null) {
-                            ImageLoader.getInstance().pushImage(imagePath, image, spinner, mAnimation);
+                            ImageLoader.getInstance().addImageReference(
+                                    imagePath,
+                                    ImageReferenceBuilder.builder(image)
+                                            .spinner(spinner)
+                                            .animation(mAnimation)
+                                            .build()
+                            );
                         } else {
                             image.setImageBitmap(bitmapImage);
                         }
@@ -145,7 +152,13 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
 
             if (bitmapImage == null) {
-                ImageLoader.getInstance().pushImage(imagePath, image, spinner, mAnimation);
+                ImageLoader.getInstance().addImageReference(
+                        imagePath,
+                        ImageReferenceBuilder.builder(image)
+                                .spinner(spinner)
+                                .animation(mAnimation)
+                                .build()
+                );
             } else {
                 image.setImageBitmap(bitmapImage);
                 image.startAnimation(mAnimation);
