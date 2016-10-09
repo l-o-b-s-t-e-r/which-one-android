@@ -1,88 +1,47 @@
 package com.android.project.util;
 
-import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.model.User;
 
 import java.io.File;
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by Lobster on 19.06.16.
  */
 public interface RequestService {
 
-    void signUp(String name, String password, String email);
+    Observable<Void> signUp(String name, String password, String email);
 
-    void checkName(String name, Checking callback);
+    Observable<Void> checkName(String name);
 
-    void checkEmail(String email, Checking callback);
+    Observable<Void> checkEmail(String email);
 
-    void remindInfo(String email, Checking callback);
+    Observable<Void> remindInfo(String email);
 
-    void signIn(String name, String password, Checking callback);
+    Observable<Void> signIn(String name, String password);
 
-    void getNextRecords(Long recordId, LoadNextRecordsCallback callback);
+    Observable<List<Record>> getNextRecords(Long recordId);
 
-    void getLastRecords(LoadLastRecordsCallback callback);
+    Observable<List<Record>> getLastRecords();
 
-    void getLastUserRecords(String userName, LoadLastUserRecordsCallback callback);
+    Observable<List<Record>> getLastUserRecords(String userName);
 
-    void getNextUserRecords(String userName, Long recordId, LoadNextUserRecordsCallback callback);
+    Observable<List<Record>> getNextUserRecords(String userName, Long recordId);
 
-    void getRecordById(Long recordId, LoadRecord callback);
+    Observable<User> getUserInfo(String name);
 
-    void getUserInfo(String name, LoadUserInfo callback);
+    Observable<User> updateBackground(File background, String name);
 
-    void updateBackground(File background, String name, LoadUserInfo callback);
+    Observable<User> updateAvatar(File background, String name);
 
-    void updateAvatar(File background, String name, LoadUserInfo callback);
+    Observable<Void> addRecord(List<File> files, List<String> options, String name, String title);
 
-    void addRecord(List<File> files, List<String> options, String name, String title, NewRecord callback);
+    Observable<List<User>> getUsers(String searchQuery);
 
-    void getUsers(String searchQuery, LoadUsers callback);
+    Observable<List<User>> getUsersFromId(String searchQuery, Long userId);
 
-    void getUsersFromId(String searchQuery, Long userId, LoadUsers callback);
-
-    void sendVote(Long recordId, Option option, String userName, NewVote callback);
-
-    interface NewVote {
-        void voteSent(Long recordId, Option option, String userName);
-    }
-
-    interface Checking {
-        void checkResult(Integer requestCode);
-    }
-
-    interface LoadNextRecordsCallback {
-        void onNextRecordsLoaded(List<Record> records);
-    }
-
-    interface LoadLastRecordsCallback {
-        void onLastRecordsLoaded(List<Record> records);
-    }
-
-    interface LoadLastUserRecordsCallback {
-        void onLastUserRecordsLoaded(List<Record> records);
-    }
-
-    interface LoadNextUserRecordsCallback {
-        void onNextUserRecordsLoaded(List<Record> records);
-    }
-
-    interface LoadRecord {
-        void recordLoaded(Record record);
-    }
-
-    interface LoadUserInfo {
-        void onUserInfoLoaded(User user);
-    }
-
-    interface NewRecord {
-        void newRecordLoaded();
-    }
-
-    interface LoadUsers {
-        void usersLoaded(List<User> user);
-    }
+    Observable<Void> sendVote(Long recordId, String optionName, String userName);
 }

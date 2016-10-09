@@ -9,8 +9,11 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import rx.Observer;
+import rx.Subscriber;
+
 /**
- * Created by macos on 26.07.16.
+ * Created by Lobster on 26.07.16.
  */
 
 public class MainPresenterImpl implements MainPresenter.ActionListener {
@@ -31,31 +34,67 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     @Override
     public void loadUserInfo(String name) {
-        requestService.getUserInfo(name, new RequestService.LoadUserInfo() {
-            @Override
-            public void onUserInfoLoaded(User user) {
-                mMainView.showUserInfo(user);
-            }
-        });
+        requestService
+                .getUserInfo(name)
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        mMainView.showUserInfo(user);
+                    }
+                });
     }
 
     @Override
     public void updateBackground(File imageFile, String name) {
-        requestService.updateBackground(imageFile, name, new RequestService.LoadUserInfo() {
-            @Override
-            public void onUserInfoLoaded(User user) {
-                mMainView.showUserInfo(user);
-            }
-        });
+        requestService
+                .updateBackground(imageFile, name)
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        mMainView.showUserInfo(user);
+                    }
+                });
     }
 
     @Override
     public void updateAvatar(File imageFile, String name) {
-        requestService.updateAvatar(imageFile, name, new RequestService.LoadUserInfo() {
-            @Override
-            public void onUserInfoLoaded(User user) {
-                mMainView.showUserInfo(user);
-            }
-        });
+        requestService
+                .updateAvatar(imageFile, name)
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        mMainView.showUserInfo(user);
+                    }
+                });
     }
 }

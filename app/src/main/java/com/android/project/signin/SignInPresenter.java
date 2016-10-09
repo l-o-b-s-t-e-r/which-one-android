@@ -5,9 +5,9 @@ package com.android.project.signin;
  */
 public interface SignInPresenter {
     interface View {
-        void openUserPage(Integer requestCode);
+        void openUserPage(Boolean correctInfo);
 
-        void remindInfoResult(Integer requestCode);
+        void remindInfoResult(Boolean correctInfo);
     }
 
     interface ActionListener {

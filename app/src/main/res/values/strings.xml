@@ -23,4 +23,8 @@
     <string name="forgot_name_password">Forgot name or password?</string>
     <string name="user_name">user_name</string>
     <string name="user_name_opened_page">user_name_opened_page</string>
+    <string name="remind_info_success">Info has been sent successfully</string>
+    <string name="remind_info_error">Info has not been sent. Please check email and try again.</string>
+    <string name="sign_up_success">We have sent a verification to your email.</string>
+    <string name="general_error">We are sorry, but something went wrong.</string>
 </resources>

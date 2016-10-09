@@ -5,9 +5,11 @@ package com.android.project.signup;
  */
 public interface SignUpPresenter {
     interface View {
-        void showCheckNameResult(Integer requestCode);
+        void showCheckNameResult(Boolean validName);
 
-        void showCheckEmailResult(Integer requestCode);
+        void showCheckEmailResult(Boolean validEmail);
+
+        void signUpResult(Boolean successResult);
     }
 
     interface ActionListener {

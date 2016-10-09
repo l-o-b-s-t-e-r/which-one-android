@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * Created by Lobster on 01.08.16.
  */
@@ -30,22 +32,46 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     @Override
     public void loadUsers(String searchQuery) {
-        requestService.getUsers(searchQuery, new RequestService.LoadUsers() {
-            @Override
-            public void usersLoaded(List<User> user) {
-                mSearchView.showUsers(user);
-            }
-        });
+        requestService
+                .getUsers(searchQuery)
+                .subscribe(new Subscriber<List<User>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<User> users) {
+                        mSearchView.showUsers(users);
+                    }
+                });
     }
 
     @Override
     public void loadNextUsers(String searchQuery, Long lastLoadedUserId) {
-        requestService.getUsersFromId(searchQuery, lastLoadedUserId, new RequestService.LoadUsers() {
-            @Override
-            public void usersLoaded(List<User> user) {
-                mSearchView.showUsers(user);
-            }
-        });
+        requestService
+                .getUsersFromId(searchQuery, lastLoadedUserId)
+                .subscribe(new Subscriber<List<User>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<User> users) {
+                        mSearchView.showUsers(users);
+                    }
+                });
     }
 
     @Override

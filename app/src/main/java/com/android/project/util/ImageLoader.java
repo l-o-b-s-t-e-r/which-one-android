@@ -16,6 +16,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -63,10 +64,13 @@ public class ImageLoader {
         return imageFile.getAbsolutePath();
     }
 
-    private Observable<Bitmap> createBitmapObservable(String imagePath) {
-        return Observable.just(
-                com.nostra13.universalimageloader.core.ImageLoader.getInstance().loadImageSync(imagePath)
-        );
+    private Observable<Bitmap> createBitmapObservable(final String imagePath) {
+        return Observable.defer(new Func0<Observable<Bitmap>>() {
+            @Override
+            public Observable<Bitmap> call() {
+                return Observable.just(com.nostra13.universalimageloader.core.ImageLoader.getInstance().loadImageSync(imagePath));
+            }
+        });
     }
 
     private Action1<Bitmap> createBitmapAction(final File imageFile, final Context context) {

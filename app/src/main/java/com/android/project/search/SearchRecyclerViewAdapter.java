@@ -66,20 +66,20 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.title)
-        TextView mText;
+        @BindView(R.id.username)
+        TextView username;
 
         @BindView(R.id.avatar)
         SquareImageView avatar;
 
         private User mUser;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
 
-        @OnClick({R.id.avatar, R.id.title})
+        @OnClick({R.id.avatar, R.id.username})
         void onUserClick() {
             mActionListener.loadUserPage(mUser);
         }
@@ -87,7 +87,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         public void setContent(User user) {
             mUser = user;
 
-            mText.setText(mUser.getName());
+            username.setText(mUser.getName());
             Picasso.with(mContext)
                     .load(mContext.getString(R.string.base_uri) + mUser.getAvatar())
                     .placeholder(R.mipmap.ic_launcher)

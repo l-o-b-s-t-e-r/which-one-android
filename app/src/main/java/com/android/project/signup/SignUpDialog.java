@@ -13,8 +13,6 @@ import android.widget.Toast;
 import com.android.project.R;
 import com.android.project.cofig.WhichOneApp;
 
-import java.net.HttpURLConnection;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -128,21 +126,29 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
         }
 
         mActionListener.signUp(mName, mPassword, mEmail);
-        Toast.makeText(getContext(), "We have sent a verification to your email.", Toast.LENGTH_SHORT).show();
-        dismiss();
     }
 
     @Override
-    public void showCheckNameResult(Integer requestCode) {
-        if (requestCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+    public void showCheckNameResult(Boolean validName) {
+        if (!validName) {
             editTextName.setError(getString(R.string.existing_name));
         }
     }
 
     @Override
-    public void showCheckEmailResult(Integer requestCode) {
-        if (requestCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+    public void showCheckEmailResult(Boolean validEmail) {
+        if (!validEmail) {
             editTextEmail.setError(getString(R.string.existing_email));
+        }
+    }
+
+    @Override
+    public void signUpResult(Boolean successResult) {
+        if (successResult) {
+            Toast.makeText(getContext(), getString(R.string.sign_up_success), Toast.LENGTH_SHORT).show();
+            dismiss();
+        } else {
+            Toast.makeText(getContext(), getString(R.string.general_error), Toast.LENGTH_SHORT).show();
         }
     }
 }

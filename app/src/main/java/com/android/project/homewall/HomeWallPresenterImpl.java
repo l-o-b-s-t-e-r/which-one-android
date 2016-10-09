@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * Created by Lobster on 29.07.16.
  */
@@ -35,24 +37,48 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public void loadLastRecords(String userName) {
-        requestService.getLastUserRecords(userName, new RequestService.LoadLastUserRecordsCallback() {
-            @Override
-            public void onLastUserRecordsLoaded(List<Record> records) {
-                List<Long> recordIds = databaseManager.saveAll(records);
-                mHomeWallView.updateRecords(recordIds);
-            }
-        });
+        requestService
+                .getLastUserRecords(userName)
+                .subscribe(new Subscriber<List<Record>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Record> records) {
+                        List<Long> recordIds = databaseManager.saveAll(records); //use Rx
+                        mHomeWallView.updateRecords(recordIds);
+                    }
+                });
     }
 
     @Override
     public void loadNextRecords(String userName, Long lastLoadedRecordId) {
-        requestService.getNextUserRecords(userName, lastLoadedRecordId, new RequestService.LoadNextUserRecordsCallback() {
-            @Override
-            public void onNextUserRecordsLoaded(List<Record> records) {
-                List<Long> recordIds = databaseManager.saveAll(records);
-                mHomeWallView.updateRecords(recordIds);
-            }
-        });
+        requestService
+                .getNextUserRecords(userName, lastLoadedRecordId)
+                .subscribe(new Subscriber<List<Record>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Record> records) {
+                        List<Long> recordIds = databaseManager.saveAll(records); //use Rx
+                        mHomeWallView.updateRecords(recordIds);
+                    }
+                });
     }
 
     @Override

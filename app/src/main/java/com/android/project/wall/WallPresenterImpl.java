@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * Created by Lobster on 18.06.16.
  */
@@ -36,24 +38,48 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
 
     @Override
     public void loadLastRecords() {
-        requestService.getLastRecords(new RequestService.LoadLastRecordsCallback() {
-            @Override
-            public void onLastRecordsLoaded(List<Record> records) {
-                List<Long> recordIds = databaseManager.saveAll(records);
-                mWallView.showRecords(recordIds);
-            }
-        });
+        requestService
+                .getLastRecords()
+                .subscribe(new Subscriber<List<Record>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Record> records) {
+                        List<Long> recordIds = databaseManager.saveAll(records); //use Rx
+                        mWallView.showRecords(recordIds);
+                    }
+                });
     }
 
     @Override
     public void loadNextRecords(Long lastLoadedRecordId) {
-        requestService.getNextRecords(lastLoadedRecordId, new RequestService.LoadNextRecordsCallback() {
-            @Override
-            public void onNextRecordsLoaded(List<Record> records) {
-                List<Long> recordIds = databaseManager.saveAll(records);
-                mWallView.showRecords(recordIds);
-            }
-        });
+        requestService
+                .getNextRecords(lastLoadedRecordId)
+                .subscribe(new Subscriber<List<Record>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<Record> records) {
+                        List<Long> recordIds = databaseManager.saveAll(records); //use Rx
+                        mWallView.showRecords(recordIds);
+                    }
+                });
     }
 
     @Override
@@ -67,12 +93,24 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
     }
 
     @Override
-    public void sendVote(Long recordId, Option option, String userName) {
-        requestService.sendVote(recordId, option, userName, new RequestService.NewVote() {
-            @Override
-            public void voteSent(Long recordId, Option option, String userName) {
-                databaseManager.addVote(recordId, option, userName);
-            }
-        });
+    public void sendVote(final Long recordId, final Option option, final String userName) {
+        requestService
+                .sendVote(recordId, option.getOptionName(), userName)
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        databaseManager.addVote(recordId, option, userName);
+                    }
+                });
     }
 }

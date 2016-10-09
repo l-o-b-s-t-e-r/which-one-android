@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -19,8 +18,6 @@ import com.android.project.R;
 import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainActivity;
 import com.android.project.signup.SignUpDialog;
-
-import java.net.HttpURLConnection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,27 +101,26 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     }
 
     @Override
-    public void openUserPage(Integer requestCode) {
-        if (requestCode == HttpURLConnection.HTTP_OK) {
-            mSharedPreferences.edit()
+    public void openUserPage(Boolean correctInfo) {
+        if (correctInfo) {
+            mSharedPreferences
+                    .edit()
                     .putString(getString(R.string.user_name), editTextName.getText().toString().trim())
                     .apply();
 
             startActivity(new Intent(this, MainActivity.class));
         } else {
-            Toast.makeText(SignInActivity.this, "Ups :(", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignInActivity.this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
             editTextName.setError(getString(R.string.wrong_password_or_name));
         }
     }
 
     @Override
-    public void remindInfoResult(Integer requestCode) {
-        if (requestCode == HttpURLConnection.HTTP_OK) {
-            Log.i(TAG, "Info has sent successfully");
-            Toast.makeText(this, "Info has sent successfully", Toast.LENGTH_LONG).show();
+    public void remindInfoResult(Boolean correctInfo) {
+        if (correctInfo) {
+            Toast.makeText(this, getString(R.string.remind_info_success), Toast.LENGTH_LONG).show();
         } else {
-            Log.i(TAG, "Info has not sent. Please check email and try again.");
-            Toast.makeText(this, "Info has not sent. Please check email and try again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.remind_info_error), Toast.LENGTH_LONG).show();
         }
     }
 }

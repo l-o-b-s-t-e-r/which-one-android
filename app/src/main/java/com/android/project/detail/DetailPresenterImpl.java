@@ -7,6 +7,8 @@ import com.android.project.util.RequestService;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * Created by Lobster on 22.06.16.
  */
@@ -33,12 +35,24 @@ public class DetailPresenterImpl implements DetailPresenter.ActionListener {
     }
 
     @Override
-    public void sendVote(Long recordId, Option option, String userName) {
-        requestService.sendVote(recordId, option, userName, new RequestService.NewVote() {
-            @Override
-            public void voteSent(Long recordId, Option option, String userName) {
-                databaseManager.addVote(recordId, option, userName);
-            }
-        });
+    public void sendVote(final Long recordId, final Option option, final String userName) {
+        requestService
+                .sendVote(recordId, option.getOptionName(), userName)
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        databaseManager.addVote(recordId, option, userName);
+                    }
+                });
     }
 }

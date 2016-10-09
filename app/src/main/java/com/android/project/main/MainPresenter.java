@@ -6,7 +6,7 @@ import com.android.project.model.User;
 import java.io.File;
 
 /**
- * Created by macos on 26.07.16.
+ * Created by Lobster on 26.07.16.
  */
 public interface MainPresenter {
 

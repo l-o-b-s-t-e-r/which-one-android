@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by macos on 15.09.16.
+ * Created by Lobster on 15.09.16.
  */
 public class DatabaseManagerImpl implements DatabaseManager {
 

@@ -3,7 +3,6 @@ package com.android.project.search;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +29,6 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private String mUsername;
     private SearchRecyclerViewAdapter mRecyclerViewAdapter;
 
     @Override
@@ -44,7 +42,6 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String searchQuery = getIntent().getStringExtra(SearchManager.QUERY);
-        mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_name), "");
 
         SearchPresenter.ActionListener actionListener = new SearchPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
         mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, actionListener);

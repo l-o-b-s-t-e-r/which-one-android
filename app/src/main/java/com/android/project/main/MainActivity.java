@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         setContentView(R.layout.activity_wall);
         ButterKnife.bind(this);
 
-        Log.i("INFO", "START");
-
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
 
