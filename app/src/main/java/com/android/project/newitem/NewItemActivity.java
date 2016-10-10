@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainActivity;
 import com.android.project.util.ImageKeeper;
 import com.android.project.util.QuizViewBuilder;
@@ -54,7 +53,7 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mActionListener = new NewItemPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        mActionListener = new NewItemPresenterImpl(this);
 
         mRecyclerViewAdapter = new NewItemRecyclerViewAdapter();
         RecyclerView recyclerView = ButterKnife.findById(this, R.id.new_item_recycler);

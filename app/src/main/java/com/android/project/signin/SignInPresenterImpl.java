@@ -1,7 +1,7 @@
 package com.android.project.signin;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.util.RequestService;
 
 import javax.inject.Inject;
@@ -21,9 +21,9 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
 
     private SignInPresenter.View mSignInView;
 
-    public SignInPresenterImpl(SignInPresenter.View signInView, MainComponent mainComponent) {
+    public SignInPresenterImpl(SignInPresenter.View signInView) {
         mSignInView = signInView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

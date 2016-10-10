@@ -1,6 +1,6 @@
 package com.android.project.signup;
 
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.util.RequestService;
 
 import javax.inject.Inject;
@@ -18,9 +18,9 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     private SignUpPresenter.View mSignUpView;
 
-    public SignUpPresenterImpl(SignUpPresenter.View signUpView, MainComponent mainComponent) {
+    public SignUpPresenterImpl(SignUpPresenter.View signUpView) {
         mSignUpView = signUpView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

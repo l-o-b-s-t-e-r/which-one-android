@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.detail.RecordDetailActivity;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
             mOpenedUsername = bundle.getString(getString(R.string.user_name_opened_page));
         }
 
-        mActionListener = new HomeWallPresenterImpl(this, ((WhichOneApp) getActivity().getApplication()).getMainComponent());
+        mActionListener = new HomeWallPresenterImpl(this);
         mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(getContext(), mActionListener);
         mActionListener.loadLastRecords(mOpenedUsername);
 

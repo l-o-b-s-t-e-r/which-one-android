@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainActivity;
 import com.android.project.signup.SignUpDialog;
 
@@ -48,7 +47,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
             startActivity(new Intent(this, MainActivity.class));
         }
 
-        mActionListener = new SignInPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        mActionListener = new SignInPresenterImpl(this);
     }
 
     @OnClick(R.id.forgot_password)

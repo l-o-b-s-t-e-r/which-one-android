@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.detail.RecordDetailActivity;
 import com.android.project.userpage.UserPageActivity;
 
@@ -74,7 +73,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
         mUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
 
-        mActionListener = new WallPresenterImpl(this, ((WhichOneApp) getActivity().getApplication()).getMainComponent());
+        mActionListener = new WallPresenterImpl(this);
         mRecyclerViewAdapter = new WallRecyclerViewAdapter(view.getContext(), mActionListener, mUsername);
         mActionListener.loadLastRecords();
 

@@ -1,7 +1,7 @@
 package com.android.project.wall;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.RequestService;
@@ -26,9 +26,9 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
 
     private WallPresenter.View mWallView;
 
-    public WallPresenterImpl(WallPresenter.View wallView, MainComponent mainComponent) {
+    public WallPresenterImpl(WallPresenter.View wallView) {
         mWallView = wallView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

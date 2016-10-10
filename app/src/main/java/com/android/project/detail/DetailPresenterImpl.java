@@ -1,7 +1,7 @@
 package com.android.project.detail;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.Option;
 import com.android.project.util.RequestService;
 
@@ -23,10 +23,9 @@ public class DetailPresenterImpl implements DetailPresenter.ActionListener {
 
     private DetailPresenter.View mDetailView;
 
-    public DetailPresenterImpl(DetailPresenter.View detailView, MainComponent mainComponent) {
+    public DetailPresenterImpl(DetailPresenter.View detailView) {
         mDetailView = detailView;
-        mainComponent.inject(this);
-
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

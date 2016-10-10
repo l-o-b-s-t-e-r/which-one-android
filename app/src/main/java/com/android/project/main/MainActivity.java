@@ -30,7 +30,6 @@ import android.widget.ImageView;
 
 import com.android.project.R;
 import com.android.project.adapter.TabAdapter;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.homewall.HomeWallFragment;
 import com.android.project.model.User;
 import com.android.project.newitem.NewItemActivity;
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_name), "");
         collapsingToolbar.setTitle(mUsername);
 
-        mActionListener = new MainPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        mActionListener = new MainPresenterImpl(this);
         mActionListener.loadUserInfo(mUsername);
 
 

@@ -1,7 +1,7 @@
 package com.android.project.search;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.User;
 import com.android.project.util.RequestService;
 
@@ -25,9 +25,9 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     private SearchPresenter.View mSearchView;
 
-    public SearchPresenterImpl(SearchPresenter.View searchView, MainComponent mainComponent) {
+    public SearchPresenterImpl(SearchPresenter.View searchView) {
         mSearchView = searchView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

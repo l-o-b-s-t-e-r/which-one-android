@@ -1,7 +1,7 @@
 package com.android.project.newitem;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.util.RequestService;
 
 import java.io.File;
@@ -25,9 +25,9 @@ public class NewItemPresenterImpl implements NewItemPresenter.ActionListener {
 
     private NewItemPresenter.View mNewItemView;
 
-    public NewItemPresenterImpl(NewItemPresenter.View newItemView, MainComponent mainComponent) {
+    public NewItemPresenterImpl(NewItemPresenter.View newItemView) {
         mNewItemView = newItemView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

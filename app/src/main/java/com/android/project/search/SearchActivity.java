@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.User;
 import com.android.project.userpage.UserPageActivity;
 import com.android.project.util.SuggestionProvider;
@@ -43,7 +42,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
 
         String searchQuery = getIntent().getStringExtra(SearchManager.QUERY);
 
-        SearchPresenter.ActionListener actionListener = new SearchPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        SearchPresenter.ActionListener actionListener = new SearchPresenterImpl(this);
         mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, actionListener);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

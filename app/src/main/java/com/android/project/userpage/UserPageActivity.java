@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.main.MainPresenter;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.model.User;
@@ -35,7 +34,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         ButterKnife.bind(this);
         collapsingToolbar.setTitle("");
 
-        mActionListener = new MainPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        mActionListener = new MainPresenterImpl(this);
         mActionListener.loadUserInfo(getIntent().getExtras().getString(getString(R.string.user_name_opened_page)));
     }
 

@@ -1,7 +1,7 @@
 package com.android.project.main;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.User;
 import com.android.project.util.RequestService;
 
@@ -27,9 +27,9 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     private MainPresenter.View mMainView;
 
-    public MainPresenterImpl(MainPresenter.View mainView, MainComponent mainComponent) {
+    public MainPresenterImpl(MainPresenter.View mainView) {
         mMainView = mainView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

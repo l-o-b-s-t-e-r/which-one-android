@@ -1,7 +1,7 @@
 package com.android.project.homewall;
 
 import com.android.project.cofig.DatabaseManager;
-import com.android.project.cofig.MainComponent;
+import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.Record;
 import com.android.project.util.RequestService;
 
@@ -25,9 +25,9 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     private HomeWallPresenter.View mHomeWallView;
 
-    public HomeWallPresenterImpl(HomeWallPresenter.View homeWallView, MainComponent mainComponent) {
+    public HomeWallPresenterImpl(HomeWallPresenter.View homeWallView) {
         mHomeWallView = homeWallView;
-        mainComponent.inject(this);
+        WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override

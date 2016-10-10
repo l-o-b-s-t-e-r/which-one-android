@@ -11,7 +11,11 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class WhichOneApp extends Application {
 
-    private MainComponent mMainComponent;
+    private static MainComponent mMainComponent;
+
+    public static MainComponent getMainComponent() {
+        return mMainComponent;
+    }
 
     @Override
     public void onCreate() {
@@ -22,10 +26,6 @@ public class WhichOneApp extends Application {
                 .build();
 
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-    }
-
-    public MainComponent getMainComponent() {
-        return mMainComponent;
     }
 
 }
