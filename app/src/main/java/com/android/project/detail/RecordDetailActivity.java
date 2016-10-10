@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.widget.RadioGroup;
 
 import com.android.project.R;
-import com.android.project.cofig.WhichOneApp;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
@@ -49,7 +48,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 
-        mActionListener = new DetailPresenterImpl(this, ((WhichOneApp) getApplication()).getMainComponent());
+        mActionListener = new DetailPresenterImpl(this);
         mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -70,7 +69,7 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
                         .getVotes()
                         .add(mUsername);
 
-                radioGroup.removeAllViews();
+                radioGroup.removeAllViews(); //don't show until vote is sent
                 int allVotesCount = mRecord.getAllVotes().size();
                 for (Option o : mRecord.getOptions()) {
                     radioGroup.addView(QuizViewBuilder.createFinalOption(
