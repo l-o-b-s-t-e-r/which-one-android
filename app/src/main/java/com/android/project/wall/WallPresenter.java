@@ -2,6 +2,7 @@ package com.android.project.wall;
 
 import com.android.project.model.Option;
 import com.android.project.model.Record;
+import com.android.project.util.CommonPresenter;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface WallPresenter {
 
-    interface View {
+    interface View extends CommonPresenter.View {
 
         void showRecords(List<Long> recordIds);
 
@@ -21,7 +22,7 @@ public interface WallPresenter {
 
     }
 
-    interface ActionListener{
+    interface ActionListener extends CommonPresenter.ActionListener {
 
         Record getRecordById(Long recordId);
 

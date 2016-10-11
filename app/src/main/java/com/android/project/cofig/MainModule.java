@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Lobster on 09.08.16.
@@ -27,5 +28,10 @@ public class MainModule {
     @Singleton
     public DatabaseManager provideMainRecordService(Application application) {
         return new DatabaseManagerImpl(application);
+    }
+
+    @Provides
+    public CompositeSubscription provideCompositeSubscription() {
+        return new CompositeSubscription();
     }
 }

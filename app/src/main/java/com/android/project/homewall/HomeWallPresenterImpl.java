@@ -10,6 +10,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Lobster on 29.07.16.
@@ -22,6 +24,8 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     public RequestService requestService;
     @Inject
     public DatabaseManager databaseManager;
+    @Inject
+    public CompositeSubscription compositeSubscription;
 
     private HomeWallPresenter.View mHomeWallView;
 
@@ -37,7 +41,8 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public void loadLastRecords(String userName) {
-        requestService
+        Subscription subscription =
+                requestService
                 .getLastUserRecords(userName)
                 .subscribe(new Subscriber<List<Record>>() {
                     @Override
@@ -56,11 +61,14 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
                         mHomeWallView.updateRecords(recordIds);
                     }
                 });
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
     public void loadNextRecords(String userName, Long lastLoadedRecordId) {
-        requestService
+        Subscription subscription =
+                requestService
                 .getNextUserRecords(userName, lastLoadedRecordId)
                 .subscribe(new Subscriber<List<Record>>() {
                     @Override
@@ -79,10 +87,17 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
                         mHomeWallView.updateRecords(recordIds);
                     }
                 });
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
     public void loadRecordDetail(Long recordId) {
         mHomeWallView.openRecordDetail(recordId);
+    }
+
+    @Override
+    public void onStop() {
+        compositeSubscription.clear();
     }
 }

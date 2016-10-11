@@ -75,4 +75,20 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         intent.putExtra(RecordDetailActivity.RECORD_ID, recordId);
         startActivity(intent);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
 }

@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
@@ -74,7 +73,6 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
     }
 
     public void updateRecord(Long recordId) {
-        Log.i("INFO", String.valueOf(mRecordIds.indexOf(recordId)));
         notifyItemChanged(mRecordIds.indexOf(recordId));
     }
 

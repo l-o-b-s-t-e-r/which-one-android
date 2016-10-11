@@ -2,6 +2,7 @@ package com.android.project.main;
 
 
 import com.android.project.model.User;
+import com.android.project.util.CommonPresenter;
 
 import java.io.File;
 
@@ -10,11 +11,11 @@ import java.io.File;
  */
 public interface MainPresenter {
 
-    interface View {
+    interface View extends CommonPresenter.View {
         void showUserInfo(User user);
     }
 
-    interface ActionListener {
+    interface ActionListener extends CommonPresenter.ActionListener {
         void loadUserInfo(String name);
 
         void updateBackground(File imageFile, String name);

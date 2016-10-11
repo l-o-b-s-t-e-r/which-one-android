@@ -29,6 +29,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     Toolbar toolbar;
 
     private SearchRecyclerViewAdapter mRecyclerViewAdapter;
+    private SearchPresenter.ActionListener mActionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +43,13 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
 
         String searchQuery = getIntent().getStringExtra(SearchManager.QUERY);
 
-        SearchPresenter.ActionListener actionListener = new SearchPresenterImpl(this);
-        mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, actionListener);
+        mActionListener = new SearchPresenterImpl(this);
+        mRecyclerViewAdapter = new SearchRecyclerViewAdapter(this, searchQuery, mActionListener);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
-        actionListener.loadUsers(searchQuery);
+        mActionListener.loadUsers(searchQuery);
 
         SearchRecentSuggestions suggestions =
                 new SearchRecentSuggestions(this, SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
@@ -74,5 +75,21 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
         Intent intent = new Intent(this, UserPageActivity.class);
         intent.putExtra(getString(R.string.user_name_opened_page), user.getName());
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
     }
 }

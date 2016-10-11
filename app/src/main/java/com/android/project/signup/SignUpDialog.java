@@ -150,4 +150,20 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
             Toast.makeText(getContext(), getString(R.string.general_error), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
 }

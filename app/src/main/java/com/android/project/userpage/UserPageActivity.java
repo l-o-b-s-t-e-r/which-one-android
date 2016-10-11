@@ -52,4 +52,20 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
 }

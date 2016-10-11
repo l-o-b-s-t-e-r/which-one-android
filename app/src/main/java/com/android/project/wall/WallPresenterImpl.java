@@ -11,18 +11,22 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Lobster on 18.06.16.
  */
 
-public class WallPresenterImpl implements WallPresenter.ActionListener{
+public class WallPresenterImpl implements WallPresenter.ActionListener {
 
     private static final String TAG = WallPresenterImpl.class.getName();
     @Inject
     public RequestService requestService;
     @Inject
     public DatabaseManager databaseManager;
+    @Inject
+    public CompositeSubscription compositeSubscription;
 
     private WallPresenter.View mWallView;
 
@@ -38,48 +42,54 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
 
     @Override
     public void loadLastRecords() {
-        requestService
-                .getLastRecords()
-                .subscribe(new Subscriber<List<Record>>() {
-                    @Override
-                    public void onCompleted() {
+        Subscription subscription =
+                requestService
+                        .getLastRecords()
+                        .subscribe(new Subscriber<List<Record>>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
 
-                    @Override
-                    public void onNext(List<Record> records) {
-                        List<Long> recordIds = databaseManager.saveAll(records); //use Rx
-                        mWallView.showRecords(recordIds);
-                    }
-                });
+                            @Override
+                            public void onNext(List<Record> records) {
+                                List<Long> recordIds = databaseManager.saveAll(records); //use Rx
+                                mWallView.showRecords(recordIds);
+                            }
+                        });
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
     public void loadNextRecords(Long lastLoadedRecordId) {
-        requestService
-                .getNextRecords(lastLoadedRecordId)
-                .subscribe(new Subscriber<List<Record>>() {
-                    @Override
-                    public void onCompleted() {
+        Subscription subscription =
+                requestService
+                        .getNextRecords(lastLoadedRecordId)
+                        .subscribe(new Subscriber<List<Record>>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
 
-                    @Override
-                    public void onNext(List<Record> records) {
-                        List<Long> recordIds = databaseManager.saveAll(records); //use Rx
-                        mWallView.showRecords(recordIds);
-                    }
-                });
+                            @Override
+                            public void onNext(List<Record> records) {
+                                List<Long> recordIds = databaseManager.saveAll(records); //use Rx
+                                mWallView.showRecords(recordIds);
+                            }
+                        });
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -94,23 +104,31 @@ public class WallPresenterImpl implements WallPresenter.ActionListener{
 
     @Override
     public void sendVote(final Long recordId, final Option option, final String userName) {
-        requestService
-                .sendVote(recordId, option.getOptionName(), userName)
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
+        Subscription subscription =
+                requestService
+                        .sendVote(recordId, option.getOptionName(), userName)
+                        .subscribe(new Subscriber<Void>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
 
-                    @Override
-                    public void onNext(Void aVoid) {
-                        databaseManager.addVote(recordId, option, userName);
-                    }
-                });
+                            @Override
+                            public void onNext(Void aVoid) {
+                                databaseManager.addVote(recordId, option, userName);
+                            }
+                        });
+
+        compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void onStop() {
+        compositeSubscription.clear();
     }
 }

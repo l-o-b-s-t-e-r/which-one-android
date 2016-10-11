@@ -109,8 +109,24 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
     public void onDestroy() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
         super.onDestroy();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
     }
 }

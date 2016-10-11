@@ -1,6 +1,7 @@
 package com.android.project.homewall;
 
 import com.android.project.model.Record;
+import com.android.project.util.CommonPresenter;
 
 import java.util.List;
 
@@ -10,13 +11,13 @@ import java.util.List;
 
 public interface HomeWallPresenter {
 
-    interface View {
+    interface View extends CommonPresenter.View {
         void updateRecords(List<Long> recordIds);
 
         void openRecordDetail(Long recordId);
     }
 
-    interface ActionListener {
+    interface ActionListener extends CommonPresenter.ActionListener {
 
         Record getRecordById(Long recordId);
 

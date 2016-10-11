@@ -23,13 +23,13 @@ import butterknife.ButterKnife;
  * Created by Lobster on 25.06.16.
  */
 
-public class DetailRecyclerViewAdapter extends RecyclerView.Adapter<DetailRecyclerViewAdapter.ViewHolder> {
+public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<RecordDetailRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = RecordRecyclerViewAdapter.class.getName();
     private Context mContext;
     private List<Image> mImages;
 
-    public DetailRecyclerViewAdapter(Context context) {
+    public RecordDetailRecyclerViewAdapter(Context context) {
         mContext = context;
         mImages = new ArrayList<>();
     }

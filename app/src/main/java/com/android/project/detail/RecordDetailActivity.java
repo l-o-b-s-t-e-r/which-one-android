@@ -19,17 +19,17 @@ import com.android.project.wall.WallFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecordDetailActivity extends AppCompatActivity implements DetailPresenter.View {
+public class RecordDetailActivity extends AppCompatActivity implements RecordDetailPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = RecordDetailActivity.class.getName();
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
 
-    private DetailPresenter.ActionListener mActionListener;
+    private RecordDetailPresenter.ActionListener mActionListener;
     private String mUsername;
     private Record mRecord;
-    private DetailRecyclerViewAdapter mRecyclerViewAdapter;
+    private RecordDetailRecyclerViewAdapter mRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +42,13 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mRecyclerViewAdapter = new DetailRecyclerViewAdapter(this);
+        mRecyclerViewAdapter = new RecordDetailRecyclerViewAdapter(this);
 
         RecyclerView recyclerView = ButterKnife.findById(this, R.id.record_recycler);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 
-        mActionListener = new DetailPresenterImpl(this);
+        mActionListener = new RecordDetailPresenterImpl(this);
         mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -104,4 +104,19 @@ public class RecordDetailActivity extends AppCompatActivity implements DetailPre
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
 }

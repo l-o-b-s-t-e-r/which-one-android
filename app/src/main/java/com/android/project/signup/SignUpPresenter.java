@@ -1,10 +1,12 @@
 package com.android.project.signup;
 
+import com.android.project.util.CommonPresenter;
+
 /**
  * Created by Lobster on 05.09.16.
  */
 public interface SignUpPresenter {
-    interface View {
+    interface View extends CommonPresenter.View {
         void showCheckNameResult(Boolean validName);
 
         void showCheckEmailResult(Boolean validEmail);
@@ -12,7 +14,7 @@ public interface SignUpPresenter {
         void signUpResult(Boolean successResult);
     }
 
-    interface ActionListener {
+    interface ActionListener extends CommonPresenter.ActionListener {
         void checkName(String name);
 
         void checkEmail(String email);

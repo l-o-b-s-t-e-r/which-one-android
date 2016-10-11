@@ -1,11 +1,9 @@
-package com.android.project.newitem;
+package com.android.project.detail;
 
 import com.android.project.cofig.DatabaseManager;
 import com.android.project.cofig.WhichOneApp;
+import com.android.project.model.Option;
 import com.android.project.util.RequestService;
-
-import java.io.File;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,12 +12,12 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by Lobster on 23.07.16.
+ * Created by Lobster on 22.06.16.
  */
 
-public class NewItemPresenterImpl implements NewItemPresenter.ActionListener {
+public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionListener {
 
-    private static final String TAG = NewItemPresenterImpl.class.getName();
+    private static final String TAG = RecordDetailPresenterImpl.class.getName();
     @Inject
     public RequestService requestService;
     @Inject
@@ -27,18 +25,23 @@ public class NewItemPresenterImpl implements NewItemPresenter.ActionListener {
     @Inject
     public CompositeSubscription compositeSubscription;
 
-    private NewItemPresenter.View mNewItemView;
+    private RecordDetailPresenter.View mDetailView;
 
-    public NewItemPresenterImpl(NewItemPresenter.View newItemView) {
-        mNewItemView = newItemView;
+    public RecordDetailPresenterImpl(RecordDetailPresenter.View detailView) {
+        mDetailView = detailView;
         WhichOneApp.getMainComponent().inject(this);
     }
 
     @Override
-    public void sendRecord(List<File> images, List<String> options, String name, String title) {
+    public void loadRecord(Long recordId) {
+        mDetailView.showRecord(databaseManager.getById(recordId));
+    }
+
+    @Override
+    public void sendVote(final Long recordId, final Option option, final String userName) {
         Subscription subscription =
                 requestService
-                        .addRecord(images, options, name, title)
+                        .sendVote(recordId, option.getOptionName(), userName)
                         .subscribe(new Subscriber<Void>() {
                             @Override
                             public void onCompleted() {
@@ -52,7 +55,7 @@ public class NewItemPresenterImpl implements NewItemPresenter.ActionListener {
 
                             @Override
                             public void onNext(Void aVoid) {
-                                mNewItemView.loadMainActivity();
+                                databaseManager.addVote(recordId, option, userName);
                             }
                         });
 

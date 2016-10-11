@@ -1,6 +1,6 @@
 package com.android.project.cofig;
 
-import com.android.project.detail.DetailPresenterImpl;
+import com.android.project.detail.RecordDetailPresenterImpl;
 import com.android.project.homewall.HomeWallPresenterImpl;
 import com.android.project.main.MainPresenterImpl;
 import com.android.project.newitem.NewItemPresenterImpl;
@@ -23,7 +23,7 @@ public interface MainComponent {
 
     void inject(MainPresenterImpl presenter);
 
-    void inject(DetailPresenterImpl presenter);
+    void inject(RecordDetailPresenterImpl presenter);
 
     void inject(WallPresenterImpl presenter);
 

@@ -1,6 +1,7 @@
 package com.android.project.search;
 
 import com.android.project.model.User;
+import com.android.project.util.CommonPresenter;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface SearchPresenter {
 
-    interface View {
+    interface View extends CommonPresenter.View {
 
         void showUsers(List<User> users);
 
@@ -17,7 +18,7 @@ public interface SearchPresenter {
 
     }
 
-    interface ActionListener {
+    interface ActionListener extends CommonPresenter.ActionListener {
 
         void loadUsers(String searchQuery);
 

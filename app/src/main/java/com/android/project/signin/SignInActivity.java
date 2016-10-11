@@ -122,4 +122,20 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
             Toast.makeText(this, getString(R.string.remind_info_error), Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mActionListener.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
 }

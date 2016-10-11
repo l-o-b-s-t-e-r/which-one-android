@@ -1,5 +1,7 @@
 package com.android.project.newitem;
 
+import com.android.project.util.CommonPresenter;
+
 import java.io.File;
 import java.util.List;
 
@@ -9,11 +11,11 @@ import java.util.List;
 
 public interface NewItemPresenter {
 
-    interface View {
+    interface View extends CommonPresenter.View {
         void loadMainActivity();
     }
 
-    interface ActionListener {
+    interface ActionListener extends CommonPresenter.ActionListener {
         void sendRecord(List<File> images, List<String> options, String name, String title);
     }
 
