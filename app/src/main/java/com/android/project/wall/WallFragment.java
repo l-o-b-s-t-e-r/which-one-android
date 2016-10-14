@@ -10,11 +10,13 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.detail.RecordDetailActivity;
@@ -22,6 +24,7 @@ import com.android.project.userpage.UserPageActivity;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -33,6 +36,12 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = WallFragment.class.getName();
+
+
+    @BindView(R.id.swipe_layout)
+    SwipeRefreshLayout swipeLayout;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     private String mUsername;
     private BroadcastReceiver mReceiver;
@@ -71,15 +80,25 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         View view = inflater.inflate(R.layout.wall_fragment, container, false);
         ButterKnife.bind(this, view);
 
+
         mUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
 
         mActionListener = new WallPresenterImpl(this);
         mRecyclerViewAdapter = new WallRecyclerViewAdapter(view.getContext(), mActionListener, mUsername);
+
+        showSwipeLayoutProgress();
         mActionListener.loadLastRecords();
 
         RecyclerView recyclerView = ButterKnife.findById(view, R.id.main_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(mRecyclerViewAdapter);
+
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateWall();
+            }
+        });
 
         return view;
     }
@@ -103,8 +122,12 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         startActivity(intent);
     }
 
-    public void updateWall() {
+    @Override
+    public void clearWall() {
         mRecyclerViewAdapter.cleanData();
+    }
+
+    public void updateWall() {
         mActionListener.loadLastRecords();
     }
 
@@ -122,11 +145,16 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
+        swipeLayout.setRefreshing(false);
+        progressBar.setVisibility(View.GONE);
+    }
 
+    public void showSwipeLayoutProgress() {
+        swipeLayout.setRefreshing(true);
     }
 }

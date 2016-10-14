@@ -12,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.main.MainActivity;
@@ -39,6 +41,8 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
     LinearLayout container;
     @BindView(R.id.title)
     EditText editTextTitle;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     private NewItemRecyclerViewAdapter mRecyclerViewAdapter;
     private NewItemPresenter.ActionListener mActionListener;
@@ -155,11 +159,11 @@ public class NewItemActivity extends AppCompatActivity implements NewItemPresent
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

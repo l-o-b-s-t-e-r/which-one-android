@@ -32,17 +32,19 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
 
     @Override
     public void signIn(String name, String password) {
+        mSignInView.showProgress();
         Subscription subscription =
                 requestService
                         .signIn(name, password)
                         .subscribe(new Subscriber<Void>() {
                             @Override
                             public void onCompleted() {
-
+                                mSignInView.hideProgress();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mSignInView.hideProgress();
                                 mSignInView.openUserPage(false);
                                 e.printStackTrace();
                             }

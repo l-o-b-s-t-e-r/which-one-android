@@ -30,13 +30,26 @@
         android:hint="@string/user_password_hint"
         android:inputType="textPassword" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/editTextPassword"
+        android:layout_alignLeft="@id/editTextPassword"
+        android:layout_alignRight="@id/editTextPassword"
+        android:layout_alignStart="@id/editTextPassword"
+        android:layout_below="@id/editTextPassword"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/editTextName"
         android:layout_alignRight="@id/editTextName"
-        android:layout_below="@id/editTextPassword"
+        android:layout_below="@id/progressBar"
         android:gravity="right"
         android:text="@string/forgot_name_password"
         android:textColor="@android:color/holo_blue_dark" />

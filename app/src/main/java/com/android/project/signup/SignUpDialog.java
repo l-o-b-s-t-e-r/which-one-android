@@ -7,7 +7,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.project.R;
@@ -30,6 +32,10 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
     EditText editTextPassword;
     @BindView(R.id.editTextPasswordRepeat)
     EditText editTextPasswordRepeat;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.btn_sign_up)
+    Button buttonSignUp;
 
     private String mName;
     private String mEmail;
@@ -50,6 +56,7 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
         Dialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppThemeDialogSignUp)
                 .setView(view)
                 .create();
+        dialog.setCanceledOnTouchOutside(false);
 
         ButterKnife.bind(this, view);
 
@@ -124,6 +131,7 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
             return;
         }
 
+        buttonSignUp.setEnabled(false);
         mActionListener.signUp(mName, mPassword, mEmail);
     }
 
@@ -147,6 +155,7 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
             Toast.makeText(getContext(), getString(R.string.sign_up_success), Toast.LENGTH_SHORT).show();
             dismiss();
         } else {
+            buttonSignUp.setEnabled(true);
             Toast.makeText(getContext(), getString(R.string.general_error), Toast.LENGTH_SHORT).show();
         }
     }
@@ -159,11 +168,11 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.GONE);
     }
 }

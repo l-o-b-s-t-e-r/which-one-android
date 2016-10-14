@@ -9,7 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.model.User;
@@ -27,6 +29,8 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     private SearchRecyclerViewAdapter mRecyclerViewAdapter;
     private SearchPresenter.ActionListener mActionListener;
@@ -85,11 +89,11 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.GONE);
     }
 }

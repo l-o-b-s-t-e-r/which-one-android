@@ -36,17 +36,19 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     @Override
     public void loadUsers(String searchQuery) {
+        mSearchView.showProgress();
         Subscription subscription =
                 requestService
                         .getUsers(searchQuery)
                         .subscribe(new Subscriber<List<User>>() {
                             @Override
                             public void onCompleted() {
-
+                                mSearchView.hideProgress();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mSearchView.hideProgress();
                                 e.printStackTrace();
                             }
 
@@ -61,17 +63,19 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     @Override
     public void loadNextUsers(String searchQuery, Long lastLoadedUserId) {
+        mSearchView.showProgress();
         Subscription subscription =
                 requestService
                         .getUsersFromId(searchQuery, lastLoadedUserId)
                         .subscribe(new Subscriber<List<User>>() {
                             @Override
                             public void onCompleted() {
-
+                                mSearchView.hideProgress();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mSearchView.hideProgress();
                                 e.printStackTrace();
                             }
 

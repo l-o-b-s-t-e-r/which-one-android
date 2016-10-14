@@ -20,6 +20,7 @@ public interface WallPresenter {
 
         void showUserPage(String userName);
 
+        void clearWall();
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {

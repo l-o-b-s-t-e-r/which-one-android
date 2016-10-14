@@ -41,22 +41,26 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public void loadLastRecords(String userName) {
+        mHomeWallView.showProgress();
         Subscription subscription =
                 requestService
                 .getLastUserRecords(userName)
                 .subscribe(new Subscriber<List<Record>>() {
                     @Override
                     public void onCompleted() {
-
+                        mHomeWallView.hideProgress();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        mHomeWallView.hideProgress();
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(List<Record> records) {
+                        mHomeWallView.clearHomeWall();
+
                         List<Long> recordIds = databaseManager.saveAll(records); //use Rx
                         mHomeWallView.updateRecords(recordIds);
                     }
@@ -67,17 +71,19 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public void loadNextRecords(String userName, Long lastLoadedRecordId) {
+        mHomeWallView.showProgress();
         Subscription subscription =
                 requestService
                 .getNextUserRecords(userName, lastLoadedRecordId)
                 .subscribe(new Subscriber<List<Record>>() {
                     @Override
                     public void onCompleted() {
-
+                        mHomeWallView.hideProgress();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        mHomeWallView.hideProgress();
                         e.printStackTrace();
                     }
 

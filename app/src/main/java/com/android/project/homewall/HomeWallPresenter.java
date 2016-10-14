@@ -15,6 +15,8 @@ public interface HomeWallPresenter {
         void updateRecords(List<Long> recordIds);
 
         void openRecordDetail(Long recordId);
+
+        void clearHomeWall();
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {

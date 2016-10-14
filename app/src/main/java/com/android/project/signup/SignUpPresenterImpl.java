@@ -79,17 +79,19 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
 
     @Override
     public void signUp(String name, String password, String email) {
+        mSignUpView.showProgress();
         Subscription subscription =
                 requestService
                         .signUp(name, password, email)
                         .subscribe(new Subscriber<Void>() {
                             @Override
                             public void onCompleted() {
-
+                                mSignUpView.hideProgress();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mSignUpView.hideProgress();
                                 mSignUpView.signUpResult(false);
                                 e.printStackTrace();
                             }

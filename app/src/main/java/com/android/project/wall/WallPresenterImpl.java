@@ -42,22 +42,26 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
 
     @Override
     public void loadLastRecords() {
+        mWallView.showProgress();
         Subscription subscription =
                 requestService
                         .getLastRecords()
                         .subscribe(new Subscriber<List<Record>>() {
                             @Override
                             public void onCompleted() {
-
+                                mWallView.hideProgress();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mWallView.hideProgress();
                                 e.printStackTrace();
                             }
 
                             @Override
                             public void onNext(List<Record> records) {
+                                mWallView.clearWall();
+
                                 List<Long> recordIds = databaseManager.saveAll(records); //use Rx
                                 mWallView.showRecords(recordIds);
                             }
@@ -68,17 +72,19 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
 
     @Override
     public void loadNextRecords(Long lastLoadedRecordId) {
+        mWallView.showProgress();
         Subscription subscription =
                 requestService
                         .getNextRecords(lastLoadedRecordId)
                         .subscribe(new Subscriber<List<Record>>() {
                             @Override
                             public void onCompleted() {
-
+                                mWallView.hideProgress();
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                mWallView.hideProgress();
                                 e.printStackTrace();
                             }
 

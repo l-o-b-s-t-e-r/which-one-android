@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,11 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
         }
     }
 
+    public void cleanData() {
+        mRecordIds.clear();
+        notifyDataSetChanged();
+    }
+
     private Long animationDuration(int imageCount) {
         return MIN_ANIMATION_DURATION + MIN_ANIMATION_DURATION / imageCount + mAnimationRandom.nextInt(DELTA);
     }
@@ -137,10 +143,16 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
         }
 
         public void setContent(Record record) {
+            currentAnimatedImage = 0;
             mRecord = record;
             mAnimation.setDuration(animationDuration(record.getImages().size()));
-
-            String imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
+            String imagePath = null;
+            try {
+                imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
+            } catch (IndexOutOfBoundsException e) {
+                Log.i("INFO", record.toString());
+                Log.i("INFO", String.valueOf(record.getRecordId()) + " " + String.valueOf(currentAnimatedImage));
+            }
             Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
 
             if (bitmapImage == null) {

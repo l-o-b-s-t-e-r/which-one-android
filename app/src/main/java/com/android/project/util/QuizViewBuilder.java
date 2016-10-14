@@ -1,8 +1,6 @@
 package com.android.project.util;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,7 @@ public class QuizViewBuilder {
         TextView voteCount = ButterKnife.findById(view, R.id.vote_count);
         TextView percent = ButterKnife.findById(view, R.id.percent);
 
-        progressBar.setMax(allVotesCount);
+        /*progressBar.setMax(allVotesCount);
         progressBar.setProgress(currentVotesCount);
         if (userVote) {
             progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
@@ -45,7 +43,7 @@ public class QuizViewBuilder {
 
         title.setText(option.getOptionName());
         voteCount.setText(String.valueOf(currentVotesCount));
-        percent.setText(mFormat.format((float) currentVotesCount / allVotesCount));
+        percent.setText(mFormat.format((float) currentVotesCount / allVotesCount));*/
 
         return view;
     }

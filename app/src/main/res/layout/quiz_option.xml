@@ -38,6 +38,7 @@
         android:layout_alignTop="@id/percent"
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/percent"
-        android:layout_toStartOf="@id/percent" />
+        android:layout_toStartOf="@id/percent"
+        android:indeterminate="true" />
 
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,10 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     EditText editTextPassword;
     @BindView(R.id.forgot_password)
     TextView textViewForgot;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
+    private AlertDialog remindDialog;
     private SignInPresenter.ActionListener mActionListener;
     private SharedPreferences mSharedPreferences;
 
@@ -54,26 +58,31 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     void onForgotTextViewClick() {
         final View view = View.inflate(this, R.layout.remind_dialog, null);
 
-        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppThemeDialogSignUp)
+        remindDialog = new AlertDialog.Builder(this, R.style.AppThemeDialogSignUp)
                 .setView(view)
                 .setTitle("REMIND INFO")
                 .create();
 
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "SEND", new Message());
+        remindDialog.setCanceledOnTouchOutside(false);
+        remindDialog.setButton(AlertDialog.BUTTON_POSITIVE, "SEND", new Message());
 
-        dialog.show();
+        remindDialog.show();
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+        remindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText editTextEmail = ButterKnife.findById(view, R.id.email);
+                ProgressBar progressBar = ButterKnife.findById(view, R.id.progressBar);
+                progressBar.setIndeterminate(true);
+
                 String email = editTextEmail.getText().toString().trim();
                 if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     mActionListener.remindInfo(email);
-                    dialog.dismiss();
                 } else {
                     editTextEmail.setError(getString(R.string.incorrect_email));
                 }
+
+                remindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
             }
         });
     }
@@ -107,7 +116,12 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
                     .putString(getString(R.string.user_name), editTextName.getText().toString().trim())
                     .apply();
 
-            startActivity(new Intent(this, MainActivity.class));
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            startActivity(intent);
         } else {
             Toast.makeText(SignInActivity.this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
             editTextName.setError(getString(R.string.wrong_password_or_name));
@@ -121,6 +135,8 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         } else {
             Toast.makeText(this, getString(R.string.remind_info_error), Toast.LENGTH_LONG).show();
         }
+
+        remindDialog.dismiss();
     }
 
     @Override
@@ -131,11 +147,11 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.GONE);
     }
 }

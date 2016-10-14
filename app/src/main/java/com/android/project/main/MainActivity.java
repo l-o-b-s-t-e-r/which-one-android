@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             @Override
             public void onClick(View v) {
                 v.startAnimation(mUpdateAnimation);
+                mWallFragment.showSwipeLayoutProgress();
                 mWallFragment.updateWall();
             }
         });
