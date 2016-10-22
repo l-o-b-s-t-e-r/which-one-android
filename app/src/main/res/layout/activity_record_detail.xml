@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".detail.RecordDetailActivity"
+    tools:context=".activities.detail.RecordDetailActivity"
     tools:showIn="@layout/activity_record_detail">
 
     <android.support.v7.widget.Toolbar
@@ -16,7 +16,7 @@
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/record_recycler"
+        android:id="@+id/detail_recycler"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
 

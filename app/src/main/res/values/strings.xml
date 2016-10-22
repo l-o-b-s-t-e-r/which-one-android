@@ -27,4 +27,9 @@
     <string name="remind_info_error">Info has not been sent. Please check email and try again.</string>
     <string name="sign_up_success">We have sent a verification to your email.</string>
     <string name="general_error">We are sorry, but something went wrong.</string>
+    <string name="new_record_empty_record">You should add at least 1 image and 1 option</string>
+    <string name="new_record_empty_title">You should write title</string>
+    <string name="new_record_empty_or_duplicate_option">Empty or duplicate option</string>
+    <string name="new_record_max_images">Max count of images</string>
+    <string name="new_record_max_options">Max count of options</string>
 </resources>

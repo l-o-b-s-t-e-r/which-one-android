@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context=".userpage.UserPageActivity">
+    tools:context=".activities.userpage.UserPageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -33,14 +33,6 @@
                 android:src="@drawable/background_top"
                 app:layout_collapseMode="parallax" />
 
-            <com.android.project.util.SquareImageView
-                android:id="@+id/avatar"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:src="@drawable/user"
-                sq_image:cornerRadius="20.0" />
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -52,9 +44,19 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.android.project.util.SquareImageView
+        android:id="@+id/avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="top"
+        android:layout_marginTop="75dp"
+        android:src="@drawable/user"
+        app:layout_behavior="com.android.project.util.ImageBehavior"
+        sq_image:cornerRadius="20.0" />
+
     <fragment
         android:id="@+id/fragment"
-        android:name="com.android.project.homewall.HomeWallFragment"
+        android:name="com.android.project.activities.homewall.HomeWallFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

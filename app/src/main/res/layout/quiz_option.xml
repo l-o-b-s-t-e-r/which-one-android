@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="5" />
+        android:text="" />
 
     <TextView
         android:id="@+id/percent"
@@ -27,7 +27,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/title"
         android:gravity="center"
-        android:text="80%" />
+        android:text="%" />
 
     <ProgressBar
         android:id="@+id/progressBar"

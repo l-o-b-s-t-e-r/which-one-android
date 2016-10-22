@@ -1,32 +1,29 @@
 package com.android.project.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.android.project.R;
 
-import java.util.jar.Attributes;
 
-public class ImageBehavior extends CoordinatorLayout.Behavior<SquareImageView> {
-
-    public ImageBehavior(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+public class ImageBehavior extends CoordinatorLayout.Behavior<ImageView> {
 
     private Toolbar toolbar;
     private float appBarHeight, toolBarHeight;
     private float deltaAppBar, deltaAppBarPercent;
     private float childStartY, childStartX;
 
+    public ImageBehavior(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, SquareImageView child, View dependency) {
+    public boolean layoutDependsOn(CoordinatorLayout parent, ImageView child, View dependency) {
         if (toolbar==null && dependency instanceof AppBarLayout){
             toolbar = (Toolbar) dependency.findViewById(R.id.toolbar);
         }
@@ -40,7 +37,7 @@ public class ImageBehavior extends CoordinatorLayout.Behavior<SquareImageView> {
     }
 
     @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, SquareImageView child, View dependency) {
+    public boolean onDependentViewChanged(CoordinatorLayout parent, ImageView child, View dependency) {
 
         deltaAppBar = appBarHeight-dependency.getY();
         deltaAppBarPercent = deltaAppBar/(dependency.getHeight()-toolBarHeight-child.getHeight());

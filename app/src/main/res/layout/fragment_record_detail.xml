@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".detail.RecordDetailActivityFragment"
+    tools:context=".activities.detail.RecordDetailActivityFragment"
     tools:showIn="@layout/activity_record_detail">
 
     <android.support.v7.widget.RecyclerView
