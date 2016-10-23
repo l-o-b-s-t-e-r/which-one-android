@@ -9,8 +9,9 @@ import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
-import com.android.project.api.RequestServiceImpl;
 import com.android.project.model.User;
+import com.android.project.util.ImageManager;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +72,12 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         ImageView avatar;
 
         private User mUser;
+        private Target mAvatarTarget;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
         }
 
         @OnClick({R.id.avatar, R.id.username})
@@ -87,11 +90,8 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
             username.setText(mUser.getName());
             WhichOneApp.getPicasso()
-                    .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + mUser.getAvatar())
-                    .placeholder(R.drawable.user)
-                    .into(avatar);
+                    .load(ImageManager.IMAGE_URL + mUser.getAvatar())
+                    .into(mAvatarTarget);
         }
-
-
     }
 }

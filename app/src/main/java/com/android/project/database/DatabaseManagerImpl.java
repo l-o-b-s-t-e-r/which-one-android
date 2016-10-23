@@ -2,7 +2,6 @@ package com.android.project.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Looper;
 import android.util.Log;
 
 import com.android.project.model.Image;
@@ -23,6 +22,8 @@ import java.util.List;
  * Created by Lobster on 15.09.16.
  */
 public class DatabaseManagerImpl implements DatabaseManager {
+
+    private static final String TAG = DatabaseManagerImpl.class.getSimpleName();
 
     private Context mContext;
     private DatabaseHelper mDatabaseHelper;
@@ -62,10 +63,6 @@ public class DatabaseManagerImpl implements DatabaseManager {
         }
     }
 
-    private boolean isMain() {
-        return Looper.myLooper() == Looper.getMainLooper();
-    }
-
     @Override
     public Long save(Record record) {
         try {
@@ -80,23 +77,22 @@ public class DatabaseManagerImpl implements DatabaseManager {
     }
 
     @Override
-    synchronized public List<Long> saveAll(List<Record> records) {
-        Log.i("DATABASE", "UI Thread: " + String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
-        List<Long> recordIds = new ArrayList<>();
+    synchronized public List<Record> saveAll(List<Record> records) {
         try {
             RecordEntity recordEntity;
             for (Record record : records) {
-                recordIds.add(record.getRecordId());
                 if (!mDaoRecord.idExists(record.getRecordId().intValue())) {
                     recordEntity = convertRecordToEntity(record);
                     mDaoRecord.createOrUpdate(recordEntity);
+
+                    Log.i(TAG, "Record is saved - " + record.toString());
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return recordIds;
+        return records;
     }
 
     @Override
@@ -122,25 +118,13 @@ public class DatabaseManagerImpl implements DatabaseManager {
         entity.setUsername(record.getUsername());
         entity.setTitle(record.getTitle());
 
-        RecordEntity existingRecordEntity;
-        if ((existingRecordEntity = mDaoRecord.queryBuilder().where()
-                .eq(RecordEntity.AVATAR_PATH_FIELD_NAME, mContext.getFilesDir() + "/" + record.getAvatar())
-                .queryForFirst()) == null) {
-
-            entity.setAvatarPath(ImageManager.getInstance()
-                    .savePictureToInternalStorage(record.getAvatar(), mContext));
-        } else {
-            entity.setAvatarPath(existingRecordEntity.getAvatarPath());
-        }
+        entity.setAvatarPath(ImageManager.getInstance().startLoadImage(record.getAvatar()));
 
         mDaoRecord.assignEmptyForeignCollection(entity, RecordEntity.IMAGES_FIELD_NAME);
-
-        String imageFilePath;
         for (Image image : record.getImages()) {
-            imageFilePath = ImageManager.getInstance()
-                    .savePictureToInternalStorage(image.getImage(), mContext);
-
-            entity.getImages().add(new ImageEntity(entity, imageFilePath));
+            entity.getImages().add(
+                    new ImageEntity(entity, ImageManager.getInstance().startLoadImage(image.getImage()))
+            );
         }
 
         OptionEntity optionEntity;

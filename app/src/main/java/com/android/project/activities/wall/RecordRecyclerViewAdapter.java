@@ -1,7 +1,5 @@
 package com.android.project.activities.wall;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,16 +8,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.android.project.R;
+import com.android.project.WhichOneApp;
 import com.android.project.model.Image;
 import com.android.project.util.ImageManager;
+import com.squareup.picasso.Callback;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscriber;
 
 /**
  * Created by Lobster on 21.05.16.
@@ -71,34 +69,22 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
             mActionListener.openRecordDetail(mImages.get(0).getRecordId());
         }
 
-        public void setContent(Image image) {
+        public void setContent(final Image image) {
             imageView.setImageResource(R.drawable.user);
-            spinner.setVisibility(View.GONE);
 
-            if (new File(image.getImage()).exists()) {
-                imageView.setImageBitmap(BitmapFactory.decodeFile(image.getImage()));
-                spinner.setVisibility(View.GONE);
-            } else {
-                Subscriber<Bitmap> subscriber = new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
+            WhichOneApp.getPicasso()
+                    .load(ImageManager.IMAGE_URL + image.getImage())
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            spinner.setVisibility(View.GONE);
+                        }
 
-                    }
+                        @Override
+                        public void onError() {
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        imageView.setImageBitmap(bitmap);
-                        spinner.setVisibility(View.GONE);
-                    }
-                };
-
-                ImageManager.getInstance().addImageSubscriber(image.getImage(), subscriber);
-            }
+                        }
+                    });
         }
     }
 }

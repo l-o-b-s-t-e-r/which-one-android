@@ -1,9 +1,5 @@
 package com.android.project.activities.wall;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +11,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.project.R;
+import com.android.project.WhichOneApp;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.ImageManager;
 import com.android.project.util.QuizViewBuilder;
+import com.squareup.picasso.Target;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,14 +35,12 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
     private static final String TAG = WallRecyclerViewAdapter.class.getSimpleName();
     private boolean allRecordsLoaded;
     private String mUsername;
-    private Context mContext;
-    private List<Long> mRecordIds;
+    private List<Record> mRecords;
     private WallPresenter.ActionListener mActionListener;
 
-    public WallRecyclerViewAdapter(Context context, WallPresenter.ActionListener actionListener, String username) {
+    public WallRecyclerViewAdapter(WallPresenter.ActionListener actionListener, String username) {
         mUsername = username;
-        mContext = context;
-        mRecordIds = new ArrayList<>();
+        mRecords = new ArrayList<>();
         mActionListener = actionListener;
     }
 
@@ -59,17 +54,17 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.setContent(mActionListener.loadRecordById(mRecordIds.get(position)));
+        holder.setContent(mRecords.get(position));
 
-        if (!allRecordsLoaded && position == mRecordIds.size() - 1) {
-            mActionListener.loadNextRecords(mRecordIds.get(position));
+        if (!allRecordsLoaded && position == mRecords.size() - 1) {
+            mActionListener.loadNextRecords(mRecords.get(position).getRecordId());
         }
     }
 
-    public void updateData(List<Long> recordIds) {
-        if (!recordIds.isEmpty()) {
-            mRecordIds.addAll(recordIds);
-            notifyItemChanged(mRecordIds.indexOf(recordIds.get(0)));
+    public void updateData(List<Record> records) {
+        if (!records.isEmpty()) {
+            mRecords.addAll(records);
+            notifyItemChanged(mRecords.size() - records.size());
         } else {
             allRecordsLoaded = true;
         }
@@ -78,22 +73,23 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
     public void updateRecord(Long recordId) {
         Log.i(TAG, "updateRecord: record ID - " + recordId.toString());
 
-        if (mRecordIds.contains(recordId)) {
-            notifyItemChanged(mRecordIds.indexOf(recordId));
+        Record record = mActionListener.getRecordById(recordId);
+        if (mRecords.contains(record)) {
+            notifyItemChanged(mRecords.indexOf(record));
         } else {
-            mRecordIds.add(recordId);
-            notifyItemChanged(mRecordIds.size() - 1);
+            mRecords.add(record);
+            notifyItemChanged(mRecords.size() - 1);
         }
     }
 
     public void cleanData() {
-        mRecordIds.clear();
+        mRecords.clear();
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mRecordIds.size();
+        return mRecords.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -114,13 +110,13 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         ImageView avatar;
 
         private Record mRecord;
+        private Target mAvatarTarget;
 
         public ViewHolder(CardView cardView) {
             super(cardView);
             ButterKnife.bind(this, cardView);
 
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setLayoutManager(new LinearLayoutManager(WhichOneApp.getContext(), LinearLayoutManager.HORIZONTAL, false));
             recyclerView.setNestedScrollingEnabled(false);
 
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -138,7 +134,6 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                         Subscriber<Void> subscriber =
                                 QuizViewBuilder.createFinalOption(
                                         radioGroup,
-                                        mContext,
                                         option,
                                         allVotesCount,
                                         option.getVotes().contains(mUsername));
@@ -165,38 +160,13 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             Log.i(TAG, "setContent: record - " + record.toString());
 
             mRecord = record;
+            mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
             username.setText(record.getUsername());
             title.setText(record.getTitle());
 
-            if (new File(record.getAvatar()).exists()) {  //CHANGE
-                RoundedBitmapDrawable imageBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), record.getAvatar());
-                imageBitmapDrawable.setCornerRadius(50.0f);
-
-                avatar.setImageDrawable(imageBitmapDrawable);
-            } else {
-                Subscriber<Bitmap> subscriber = new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        RoundedBitmapDrawable imageBitmapDrawable = RoundedBitmapDrawableFactory.create(mContext.getResources(), bitmap);
-                        imageBitmapDrawable.setCornerRadius(50.0f);
-
-                        avatar.setImageDrawable(imageBitmapDrawable);
-                    }
-                };
-
-                ImageManager.getInstance().addImageSubscriber(record.getAvatar(), subscriber);
-            }
-
+            WhichOneApp.getPicasso()
+                    .load(ImageManager.IMAGE_URL + record.getAvatar())
+                    .into(mAvatarTarget);
 
             buildOptions(mRecord.getAllVotes().contains(mUsername));
 
@@ -209,13 +179,13 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             if (votedQuiz) {
                 for (Option option : mRecord.getOptions()) {
                     radioGroup.addView(
-                            QuizViewBuilder.createFinalOption(mContext, option, mRecord.getAllVotes().size(), option.getVotes().contains(mUsername))
+                            QuizViewBuilder.createFinalOption(option, mRecord.getAllVotes().size(), option.getVotes().contains(mUsername))
                     );
                 }
             } else {
                 for (Option option : mRecord.getOptions()) {
                     radioGroup.addView(
-                            QuizViewBuilder.createBaseOption(mContext, option, radioGroup.getChildCount())
+                            QuizViewBuilder.createBaseOption(option, radioGroup.getChildCount())
                     );
                 }
             }

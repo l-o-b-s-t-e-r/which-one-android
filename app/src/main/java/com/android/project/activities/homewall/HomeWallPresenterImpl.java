@@ -52,15 +52,15 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getLastUserRecords(username)
-                        .flatMap(new Func1<List<Record>, Observable<List<Long>>>() {
+                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
-                            public Observable<List<Long>> call(List<Record> records) {
+                            public Observable<List<Record>> call(List<Record> records) {
                                 Log.i(TAG, "loadLastRecords: records have been loaded");
                                 return Observable.just(databaseManager.saveAll(records));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Long>>() {
+                        .subscribe(new Subscriber<List<Record>>() {
                             @Override
                             public void onCompleted() {
                                 mHomeWallView.hideProgress();
@@ -74,9 +74,9 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
                             }
 
                             @Override
-                            public void onNext(List<Long> recordIds) {
-                                Log.i(TAG, "loadLastRecords: records have been mapped, IDs - " + recordIds.toString());
-                                mHomeWallView.updateRecords(recordIds);
+                            public void onNext(List<Record> records) {
+                                Log.i(TAG, "loadLastRecords: records have been mapped");
+                                mHomeWallView.updateRecords(records);
                             }
                         });
 
@@ -91,15 +91,15 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getNextUserRecords(username, lastLoadedRecordId)
-                        .flatMap(new Func1<List<Record>, Observable<List<Long>>>() {
+                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
-                            public Observable<List<Long>> call(List<Record> records) {
+                            public Observable<List<Record>> call(List<Record> records) {
                                 Log.i(TAG, "loadNextRecords: records have been loaded");
                                 return Observable.just(databaseManager.saveAll(records));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Long>>() {
+                        .subscribe(new Subscriber<List<Record>>() {
                             @Override
                             public void onCompleted() {
                                 mHomeWallView.hideProgress();
@@ -113,9 +113,9 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
                             }
 
                             @Override
-                            public void onNext(List<Long> recordIds) {
-                                Log.i(TAG, "loadNextRecords: records have been mapped, IDs - " + recordIds.toString());
-                                mHomeWallView.updateRecords(recordIds);
+                            public void onNext(List<Record> records) {
+                                Log.i(TAG, "loadNextRecords: records have been mapped");
+                                mHomeWallView.updateRecords(records);
                             }
                         });
 

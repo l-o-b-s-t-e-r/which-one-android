@@ -41,7 +41,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     }
 
     @Override
-    public Record loadRecordById(Long recordId) {
+    public Record getRecordById(Long recordId) {
         return databaseManager.getById(recordId);
     }
 
@@ -53,15 +53,15 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getLastRecords()
-                        .flatMap(new Func1<List<Record>, Observable<List<Long>>>() {
+                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
-                            public Observable<List<Long>> call(List<Record> records) {
+                            public Observable<List<Record>> call(List<Record> records) {
                                 Log.i(TAG, "loadLastRecords: records have been loaded");
                                 return Observable.just(databaseManager.saveAll(records));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Long>>() {
+                        .subscribe(new Subscriber<List<Record>>() {
                             @Override
                             public void onCompleted() {
                                 mWallView.hideProgress();
@@ -75,9 +75,9 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                             }
 
                             @Override
-                            public void onNext(List<Long> recordIds) {
-                                Log.i(TAG, "loadLastRecords: records have been mapped, IDs - " + recordIds.toString());
-                                mWallView.showRecords(recordIds);
+                            public void onNext(List<Record> records) {
+                                Log.i(TAG, "loadLastRecords: records have been mapped");
+                                mWallView.showRecords(records);
                             }
                         });
 
@@ -92,15 +92,15 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getNextRecords(lastLoadedRecordId)
-                        .flatMap(new Func1<List<Record>, Observable<List<Long>>>() {
+                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
-                            public Observable<List<Long>> call(List<Record> records) {
+                            public Observable<List<Record>> call(List<Record> records) {
                                 Log.i(TAG, "loadNextRecords: records have been loaded");
                                 return Observable.just(databaseManager.saveAll(records));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Long>>() {
+                        .subscribe(new Subscriber<List<Record>>() {
                             @Override
                             public void onCompleted() {
                                 mWallView.hideProgress();
@@ -114,9 +114,9 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                             }
 
                             @Override
-                            public void onNext(List<Long> recordIds) {
-                                Log.i(TAG, "loadNextRecords: records have been mapped, IDs - " + recordIds.toString());
-                                mWallView.showRecords(recordIds);
+                            public void onNext(List<Record> records) {
+                                Log.i(TAG, "loadNextRecords: records have been mapped");
+                                mWallView.showRecords(records);
                             }
                         });
 

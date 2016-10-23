@@ -7,8 +7,7 @@
         android:id="@+id/avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/user" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/username"

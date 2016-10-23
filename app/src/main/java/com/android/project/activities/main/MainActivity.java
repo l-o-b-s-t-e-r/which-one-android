@@ -4,8 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -16,8 +14,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -39,10 +35,9 @@ import com.android.project.activities.homewall.HomeWallFragment;
 import com.android.project.activities.newrecord.NewRecordActivity;
 import com.android.project.activities.signin.SignInActivity;
 import com.android.project.activities.wall.WallFragment;
-import com.android.project.api.RequestServiceImpl;
 import com.android.project.model.User;
 import com.android.project.util.ImageKeeper;
-import com.squareup.picasso.Picasso;
+import com.android.project.util.ImageManager;
 import com.squareup.picasso.Target;
 
 import java.io.File;
@@ -233,13 +228,15 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showUserInfo(User user) {
-        WhichOneApp.getPicasso()
-                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getAvatar())
-                .placeholder(R.drawable.user)
-                .into(getAvatarTarget());
+        mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
 
         WhichOneApp.getPicasso()
-                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getBackground())
+                .load(ImageManager.IMAGE_URL + user.getAvatar())
+                .placeholder(R.drawable.logo)
+                .into(mAvatarTarget);
+
+        WhichOneApp.getPicasso()
+                .load(ImageManager.IMAGE_URL + user.getBackground())
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }
@@ -303,29 +300,5 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void hideProgress() {
 
-    }
-
-    private Target getAvatarTarget() {
-        mAvatarTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                RoundedBitmapDrawable imageBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                imageBitmapDrawable.setCornerRadius(50.0f);
-
-                avatar.setImageDrawable(imageBitmapDrawable);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        return mAvatarTarget;
     }
 }

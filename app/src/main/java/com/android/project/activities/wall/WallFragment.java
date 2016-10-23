@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import com.android.project.R;
 import com.android.project.activities.detail.RecordDetailActivity;
 import com.android.project.activities.userpage.UserPageActivity;
+import com.android.project.model.Record;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mActionListener = new WallPresenterImpl(this);
-        mRecyclerViewAdapter = new WallRecyclerViewAdapter(getContext(), mActionListener, getUsername());
+        mRecyclerViewAdapter = new WallRecyclerViewAdapter(mActionListener, getUsername());
 
         mReceiver = new BroadcastReceiver() {
             @Override
@@ -90,8 +91,8 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     @Override
-    public void showRecords(List<Long> recordIds) {
-        mRecyclerViewAdapter.updateData(recordIds);
+    public void showRecords(List<Record> records) {
+        mRecyclerViewAdapter.updateData(records);
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface DatabaseManager {
 
     void addVote(Long recordId, Option option, String votedUser);
 
-    List<Long> saveAll(List<Record> records);
+    List<Record> saveAll(List<Record> records);
 
     Record getById(Long id);
 

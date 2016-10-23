@@ -6,11 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.android.project.R;
+import com.android.project.WhichOneApp;
 import com.android.project.activities.main.MainPresenter;
 import com.android.project.activities.main.MainPresenterImpl;
-import com.android.project.api.RequestServiceImpl;
 import com.android.project.model.User;
-import com.squareup.picasso.Picasso;
+import com.android.project.util.ImageManager;
+import com.squareup.picasso.Target;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +28,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     CollapsingToolbarLayout collapsingToolbar;
 
     private MainPresenter.ActionListener mActionListener;
+    private Target mAvatarTarget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +45,15 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     public void showUserInfo(User user) {
         collapsingToolbar.setTitle(user.getName());
 
-        Picasso.with(this)
-                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getAvatar())
-                .placeholder(R.mipmap.ic_launcher)
-                .into(avatar);
+        mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
 
-        Picasso.with(this)
-                .load(RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER + user.getBackground())
+        WhichOneApp.getPicasso()
+                .load(ImageManager.IMAGE_URL + user.getAvatar())
+                .placeholder(R.drawable.logo)
+                .into(mAvatarTarget);
+
+        WhichOneApp.getPicasso()
+                .load(ImageManager.IMAGE_URL + user.getBackground())
                 .placeholder(R.drawable.background_top)
                 .into(background);
     }

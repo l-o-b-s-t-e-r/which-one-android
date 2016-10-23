@@ -118,7 +118,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     private void setImage(File picturePath) {
         mRecyclerViewAdapter.addItem(picturePath);
         mLinearLayoutManager.scrollToPosition(mRecyclerViewAdapter.getItemCount() - 1);
-        container.addView(QuizViewBuilder.createNewOption(this, container));
+        container.addView(QuizViewBuilder.createNewOption(container));
     }
 
     @Override
@@ -160,7 +160,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
                 break;
             case R.id.action_add_option:
                 if (container.getChildCount() < MAX_OPTIONS) {
-                    container.addView(QuizViewBuilder.createNewOption(this, container));
+                    container.addView(QuizViewBuilder.createNewOption(container));
                 } else {
                     Toast.makeText(this, getString(R.string.new_record_max_options), Toast.LENGTH_SHORT).show();
                 }

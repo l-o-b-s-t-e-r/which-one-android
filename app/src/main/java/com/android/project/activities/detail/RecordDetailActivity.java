@@ -53,7 +53,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         mUsername = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_name), "");
 
         recyclerView.setAdapter(mRecyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         mActionListener = new RecordDetailPresenterImpl(this);
         mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
@@ -67,16 +67,15 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         radioGroup.removeAllViews();
         if (!mRecord.getAllVotes().contains(mUsername)) {
             for (int i = 0; i < record.getOptions().size(); i++) {
-                radioGroup.addView(QuizViewBuilder.createBaseOption(this, record.getOptions().get(i), i));
+                radioGroup.addView(QuizViewBuilder.createBaseOption(record.getOptions().get(i), i));
             }
         } else {
             int allVotesCount = mRecord.getAllVotes().size();
-            for (Option o : mRecord.getOptions()) {
+            for (Option option : mRecord.getOptions()) {
                 radioGroup.addView(QuizViewBuilder.createFinalOption(
-                        this,
-                        o,
+                        option,
                         allVotesCount,
-                        o.getVotes().contains(mUsername)));
+                        option.getVotes().contains(mUsername)));
             }
         }
     }
@@ -117,7 +116,6 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
                     Subscriber<Void> subscriber =
                             QuizViewBuilder.createFinalOption(
                                     radioGroup,
-                                    getApplicationContext(),
                                     option,
                                     allVotesCount,
                                     option.getVotes().contains(mUsername));

@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.activities.detail.RecordDetailActivity;
+import com.android.project.model.Record;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         mActionListener = new HomeWallPresenterImpl(this);
-        mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(getContext(), mActionListener);
+        mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(mActionListener);
 
         super.onCreate(savedInstanceState);
     }
@@ -81,8 +82,8 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     }
 
     @Override
-    public void updateRecords(List<Long> recordIds) {
-        mRecyclerViewAdapter.updateData(recordIds);
+    public void updateRecords(List<Record> records) {
+        mRecyclerViewAdapter.updateData(records);
     }
 
     @Override

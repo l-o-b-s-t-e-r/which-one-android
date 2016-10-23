@@ -145,7 +145,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         return Observable.defer(new Func0<Observable<File>>() {
             @Override
             public Observable<File> call() {
-                return Observable.just(ImageManager.cropImageAsSquare(imageFile));
+                return Observable.just(ImageManager.getInstance().cropImageAsSquare(imageFile));
             }
         });
     }

@@ -12,7 +12,7 @@ import java.util.List;
 public interface HomeWallPresenter {
 
     interface View extends CommonPresenter.View {
-        void updateRecords(List<Long> recordIds);
+        void updateRecords(List<Record> records);
 
         void openRecordDetail(Long recordId);
 

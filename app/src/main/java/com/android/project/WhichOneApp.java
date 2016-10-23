@@ -1,6 +1,7 @@
 package com.android.project;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.android.project.di.AppModule;
 import com.android.project.di.DaggerMainComponent;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 public class WhichOneApp extends Application {
 
+    private static Context mContext;
     private static Picasso mPicasso;
     private static MainComponent mMainComponent;
 
@@ -27,16 +29,24 @@ public class WhichOneApp extends Application {
         return mMainComponent;
     }
 
+    public static Context getContext() {
+        return mContext;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         LeakCanary.install(this);
+
+        mContext = getApplicationContext();
 
         mMainComponent = DaggerMainComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
 
         mPicasso = Picasso.with(this);
+        mPicasso.setIndicatorsEnabled(true);
+
 
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
     }

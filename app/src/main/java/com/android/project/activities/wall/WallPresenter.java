@@ -16,7 +16,7 @@ public interface WallPresenter {
 
     interface View extends CommonPresenter.View {
 
-        void showRecords(List<Long> recordIds);
+        void showRecords(List<Record> records);
 
         void showRecordDetail(Long recordId);
 
@@ -26,8 +26,6 @@ public interface WallPresenter {
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {
-
-        Record loadRecordById(Long recordId);
 
         void loadLastRecords();
 
@@ -39,6 +37,7 @@ public interface WallPresenter {
 
         void sendVote(Long recordId, Option option, String userName, List<Subscriber<Void>> subscribers);
 
+        Record getRecordById(Long recordId);
     }
 
 }

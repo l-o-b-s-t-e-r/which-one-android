@@ -1,16 +1,16 @@
 package com.android.project.activities.detail;
 
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.android.project.R;
+import com.android.project.WhichOneApp;
 import com.android.project.activities.wall.RecordRecyclerViewAdapter;
 import com.android.project.model.Image;
+import com.android.project.util.ImageManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,16 +58,16 @@ public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<Record
 
         @BindView(R.id.record_image)
         ImageView imageView;
-        @BindView(R.id.progressBar)
-        ProgressBar spinner;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
 
-        public void setContent(final Image image) {
-            imageView.setImageBitmap(BitmapFactory.decodeFile(image.getImage()));
+        public void setContent(Image image) {
+            WhichOneApp.getPicasso()
+                    .load(ImageManager.IMAGE_URL + image.getImage())
+                    .into(imageView);
         }
     }
 }

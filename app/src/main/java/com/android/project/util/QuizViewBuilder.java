@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.project.R;
+import com.android.project.WhichOneApp;
 import com.android.project.model.Option;
 
 import java.text.DecimalFormat;
@@ -24,14 +25,15 @@ import rx.Subscriber;
 /**
  * Created by Lobster on 01.08.16.
  */
+
 public class QuizViewBuilder {
 
     private static final String PERCENT_TEMPLATE = "0.00%";
     private static DecimalFormat mFormat = new DecimalFormat(PERCENT_TEMPLATE);
 
-    public static Subscriber<Void> createFinalOption(RadioGroup radioGroup, Context context, Option option, final int allVotesCount, boolean userVote) {
+    public static Subscriber<Void> createFinalOption(RadioGroup radioGroup, Option option, final int allVotesCount, boolean userVote) {
         final int currentVotesCount = option.getVotes().size();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.quiz_option, null);
 
         final ProgressBar progressBar = ButterKnife.findById(view, R.id.progressBar);
@@ -69,9 +71,9 @@ public class QuizViewBuilder {
         };
     }
 
-    public static View createFinalOption(Context context, Option option, final int allVotesCount, boolean votedByUser) {
+    public static View createFinalOption(Option option, final int allVotesCount, boolean votedByUser) {
         final int currentVotesCount = option.getVotes().size();
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.quiz_option, null);
 
         final ProgressBar progressBar = ButterKnife.findById(view, R.id.progressBar);
@@ -94,16 +96,16 @@ public class QuizViewBuilder {
         return view;
     }
 
-    public static View createBaseOption(Context context, Option option, int id) {
-        RadioButton radioButton = new RadioButton(context);
+    public static View createBaseOption(Option option, int id) {
+        RadioButton radioButton = new RadioButton(WhichOneApp.getContext());
         radioButton.setText(option.getOptionName());
         radioButton.setId(id);
 
         return radioButton;
     }
 
-    public static View createNewOption(Context context, final ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public static View createNewOption(final ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.quiz_new_option, null);
 
         EditText title = ButterKnife.findById(view, R.id.option_title);

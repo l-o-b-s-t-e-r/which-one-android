@@ -1,8 +1,5 @@
 package com.android.project.activities.homewall;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,11 +11,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.android.project.R;
+import com.android.project.WhichOneApp;
 import com.android.project.activities.wall.WallRecyclerViewAdapter;
 import com.android.project.model.Record;
 import com.android.project.util.ImageManager;
+import com.squareup.picasso.Callback;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +24,6 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscriber;
 
 /**
  * Created by Lobster on 29.07.16.
@@ -39,14 +36,12 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
     private final int DELTA = 1000;
     private boolean allRecordsLoaded;
 
-    private Context mContext;
-    private List<Long> mRecordIds;
+    private List<Record> mRecords;
     private Random mAnimationRandom;
     private HomeWallPresenter.ActionListener mActionListener;
 
-    public HomeWallRecyclerViewAdapter(Context context, HomeWallPresenter.ActionListener actionListener) {
-        mContext = context;
-        mRecordIds = new ArrayList<>();
+    public HomeWallRecyclerViewAdapter(HomeWallPresenter.ActionListener actionListener) {
+        mRecords = new ArrayList<>();
         mAnimationRandom = new Random();
         mActionListener = actionListener;
     }
@@ -61,17 +56,17 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Record record = mActionListener.getRecordById(mRecordIds.get(position));
+        Record record = mRecords.get(position);
         holder.setContent(record);
 
-        if (!allRecordsLoaded && position == mRecordIds.size() - 1) {
-            mActionListener.loadNextRecords(record.getUsername(), mRecordIds.get(position));
+        if (!allRecordsLoaded && position == mRecords.size() - 1) {
+            mActionListener.loadNextRecords(record.getUsername(), record.getRecordId());
         }
     }
 
-    public void updateData(List<Long> recordIds) {
-        if (!recordIds.isEmpty()) {
-            mRecordIds.addAll(recordIds);
+    public void updateData(List<Record> records) {
+        if (!records.isEmpty()) {
+            mRecords.addAll(records);
             notifyDataSetChanged();
         } else {
             allRecordsLoaded = true;
@@ -79,7 +74,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
     }
 
     public void cleanData() {
-        mRecordIds.clear();
+        mRecords.clear();
         notifyDataSetChanged();
     }
 
@@ -89,7 +84,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     @Override
     public int getItemCount() {
-        return mRecordIds.size();
+        return mRecords.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -108,7 +103,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             super(view);
             ButterKnife.bind(this, view);
 
-            mAnimation = AnimationUtils.loadAnimation(mContext, R.anim.items_appearance);
+            mAnimation = AnimationUtils.loadAnimation(WhichOneApp.getContext(), R.anim.items_appearance);
             mAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -129,11 +124,10 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                             currentAnimatedImage = 0;
                         }
 
-                        String imagePath = mRecord.getImages().get(currentAnimatedImage).getImage();
-                        Bitmap bitmapImage = BitmapFactory.decodeFile(imagePath);
-                        if (bitmapImage != null) {
-                            image.setImageBitmap(bitmapImage);
-                        }
+                        WhichOneApp.getPicasso()
+                                .load(ImageManager.IMAGE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
+                                .into(image);
+
                     }
 
                     changeImage = !changeImage;
@@ -152,33 +146,22 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             mRecord = record;
             currentAnimatedImage = 0;
 
-            mAnimation.setDuration(animationDuration(record.getImages().size()));
+            mAnimation.setDuration(animationDuration(mRecord.getImages().size()));
 
-            String imagePath = record.getImages().get(currentAnimatedImage).getImage();
-            if (new File(imagePath).exists()) {
-                image.setImageBitmap(BitmapFactory.decodeFile(imagePath));
-                //image.startAnimation(mAnimation);
-            } else {
-                Subscriber<Bitmap> subscriber = new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
+            WhichOneApp.getPicasso()
+                    .load(ImageManager.IMAGE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
+                    .into(image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            spinner.setVisibility(View.GONE);
+                            image.startAnimation(mAnimation);
+                        }
 
-                    }
+                        @Override
+                        public void onError() {
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        image.setImageBitmap(bitmap);
-                        //image.startAnimation(mAnimation);
-                    }
-                };
-
-                ImageManager.getInstance().addImageSubscriber(imagePath, subscriber);
-            }
+                        }
+                    });
         }
     }
 }
