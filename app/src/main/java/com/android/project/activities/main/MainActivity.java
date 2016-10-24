@@ -50,7 +50,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int UPDATE_AVATAR = 1;
     private static final int UPDATE_BACKGROUND = 2;
 
@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall);
         ButterKnife.bind(this);
+
+        Log.i(TAG, "onCreate");
 
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);

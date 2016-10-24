@@ -1,15 +1,12 @@
 package com.android.project.activities.wall;
 
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +20,7 @@ import com.android.project.activities.detail.RecordDetailActivity;
 import com.android.project.activities.userpage.UserPageActivity;
 import com.android.project.model.Record;
 
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,9 +41,9 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-    private BroadcastReceiver mReceiver;
     private WallPresenter.ActionListener mActionListener;
     private WallRecyclerViewAdapter mRecyclerViewAdapter;
+    private SharedPreferences mSharedPreferences;
 
     public static Fragment newInstance(TabLayout tabLayout) {
         WallFragment fragment = new WallFragment();
@@ -56,16 +54,10 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mActionListener = new WallPresenterImpl(this);
         mRecyclerViewAdapter = new WallRecyclerViewAdapter(mActionListener, getUsername());
 
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                mRecyclerViewAdapter.updateRecord(intent.getLongExtra(RECORD_ID, -1L));
-            }
-        };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mReceiver, new IntentFilter("com.android.project.activities.wall"));
 
         super.onCreate(savedInstanceState);
     }
@@ -84,6 +76,12 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         mActionListener.loadLastRecords();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshVotedRecords();
     }
 
     public void updateWall() {
@@ -116,14 +114,8 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     @Override
     public void onStop() {
-        mActionListener.onStop();
         super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
-        super.onDestroy();
+        mActionListener.onStop();
     }
 
     @Override
@@ -142,7 +134,14 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     private String getUsername() {
-        return PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
+        return mSharedPreferences.getString(getString(R.string.user_name), "");
+    }
+
+    private void refreshVotedRecords() {
+        mRecyclerViewAdapter.refreshRecords(mSharedPreferences.getStringSet(RECORD_ID, new HashSet<String>()));
+        mSharedPreferences.edit()
+                .remove(RECORD_ID)
+                .apply();
     }
 
     private SwipeRefreshLayout.OnRefreshListener getRefreshListener() {

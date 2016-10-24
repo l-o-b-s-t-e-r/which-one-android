@@ -20,6 +20,7 @@ import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,15 +71,18 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         }
     }
 
-    public void updateRecord(Long recordId) {
-        Log.i(TAG, "updateRecord: record ID - " + recordId.toString());
+    public void refreshRecords(Set<String> recordIds) {
+        Log.i(TAG, "updateRecords: record IDs - " + recordIds.toString());
 
-        Record record = mActionListener.getRecordById(recordId);
-        if (mRecords.contains(record)) {
-            notifyItemChanged(mRecords.indexOf(record));
-        } else {
-            mRecords.add(record);
-            notifyItemChanged(mRecords.size() - 1);
+        Record record = new Record();
+        Integer index;
+        for (String recordId : recordIds) {
+            record.setRecordId(Long.valueOf(recordId));
+            if (mRecords.contains(record)) {
+                index = mRecords.indexOf(record);
+                mRecords.set(index, mActionListener.getRecordById(record.getRecordId()));
+                notifyItemChanged(index);
+            }
         }
     }
 

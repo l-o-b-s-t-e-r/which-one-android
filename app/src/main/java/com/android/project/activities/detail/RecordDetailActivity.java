@@ -1,13 +1,14 @@
 package com.android.project.activities.detail;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.RadioGroup;
 
 import com.android.project.R;
@@ -17,7 +18,9 @@ import com.android.project.model.Record;
 import com.android.project.util.QuizViewBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +50,11 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         radioGroup.setOnCheckedChangeListener(getOnCheckedChangeListener());
 
         mRecyclerViewAdapter = new RecordDetailRecyclerViewAdapter();
@@ -81,6 +89,19 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    ;
+
+    @Override
     protected void onStop() {
         super.onStop();
         mActionListener.onStop();
@@ -100,9 +121,12 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         return new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Intent broadcastIntent = new Intent("com.android.project.activities.wall");
-                broadcastIntent.putExtra(WallFragment.RECORD_ID, mRecord.getRecordId());
-                LocalBroadcastManager.getInstance(RecordDetailActivity.this).sendBroadcast(broadcastIntent);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RecordDetailActivity.this);
+                Set<String> IDs = sharedPreferences.getStringSet(WallFragment.RECORD_ID, new HashSet<String>());
+                IDs.add(mRecord.getRecordId().toString());
+                sharedPreferences.edit()
+                        .putStringSet(WallFragment.RECORD_ID, IDs)
+                        .apply();
 
                 mRecord.getOptions()
                         .get(checkedId)

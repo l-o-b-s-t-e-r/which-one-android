@@ -47,6 +47,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         setContentView(R.layout.activity_singin);
         ButterKnife.bind(this);
 
+        Log.i(TAG, "onCreate");
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mSharedPreferences.contains(getString(R.string.user_name))) {
             Log.i(TAG, "Application remembers this user. Start MainActivity");
@@ -54,6 +55,18 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         }
 
         mActionListener = new SignInPresenterImpl(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i(TAG, "onNewIntent");
     }
 
     @OnClick(R.id.forgot_password)

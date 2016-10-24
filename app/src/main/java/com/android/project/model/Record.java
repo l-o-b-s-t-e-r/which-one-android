@@ -89,6 +89,22 @@ public class Record{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Record record = (Record) o;
+
+        return recordId != null ? recordId.equals(record.recordId) : record.recordId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return recordId != null ? recordId.hashCode() : 0;
+    }
+
+    @Override
     public String toString() {
         return "Record{" +
                 "username='" + username + '\'' +

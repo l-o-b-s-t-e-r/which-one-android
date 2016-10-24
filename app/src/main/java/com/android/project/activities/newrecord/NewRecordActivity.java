@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -145,26 +146,27 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-                break;
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
             case R.id.action_add_image:
                 if (mRecyclerViewAdapter.getItemCount() < MAX_IMAGES) {
                     startActivityForResult(ImageKeeper.getInstance().getChooserIntent(this), LOAD_IMAGE);
                 } else {
                     Toast.makeText(this, getString(R.string.new_record_max_images), Toast.LENGTH_SHORT).show();
                 }
-                break;
+                return true;
             case R.id.action_add_option:
                 if (container.getChildCount() < MAX_OPTIONS) {
                     container.addView(QuizViewBuilder.createNewOption(container));
                 } else {
                     Toast.makeText(this, getString(R.string.new_record_max_options), Toast.LENGTH_SHORT).show();
                 }
-                break;
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
