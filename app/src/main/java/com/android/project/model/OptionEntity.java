@@ -68,9 +68,10 @@ public class OptionEntity {
     @Override
     public String toString() {
         return "OptionEntity{" +
-                "mRecord=" + mRecord +
+                "id=" + id +
+                ", mRecord=" + mRecord +
                 ", mOptionName='" + mOptionName + '\'' +
-                ", mVotes=" + mVotes.toString() +
+                ", mVotes=" + mVotes +
                 '}';
     }
 }

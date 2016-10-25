@@ -12,10 +12,10 @@ public interface DatabaseManager {
 
     Long save(Record record);
 
-    void addVote(Long recordId, Option option, String votedUser);
+    Option addVote(Long recordId, Option option, String votedUser);
 
     List<Record> saveAll(List<Record> records);
 
-    Record getById(Long id);
+    Record getRecordById(Long id);
 
 }

@@ -94,7 +94,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         List<String> allOptions = new ArrayList<>();
 
         for (int i = 0; i < container.getChildCount(); i++) {
-            EditText option = (EditText) container.getChildAt(i).findViewById(R.id.option_title);
+            EditText option = (EditText) container.getChildAt(i).findViewById(R.id.option_name);
             optionName = option.getText().toString().trim();
             if (optionName.isEmpty() || allOptions.contains(optionName)) {
                 Toast.makeText(this, getString(R.string.new_record_empty_or_duplicate_option), Toast.LENGTH_SHORT).show();
@@ -119,7 +119,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     private void setImage(File picturePath) {
         mRecyclerViewAdapter.addItem(picturePath);
         mLinearLayoutManager.scrollToPosition(mRecyclerViewAdapter.getItemCount() - 1);
-        container.addView(QuizViewBuilder.createNewOption(container));
+        container.addView(QuizViewBuilder.getInstance().createNewOption(container));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
                 return true;
             case R.id.action_add_option:
                 if (container.getChildCount() < MAX_OPTIONS) {
-                    container.addView(QuizViewBuilder.createNewOption(container));
+                    container.addView(QuizViewBuilder.getInstance().createNewOption(container));
                 } else {
                     Toast.makeText(this, getString(R.string.new_record_max_options), Toast.LENGTH_SHORT).show();
                 }

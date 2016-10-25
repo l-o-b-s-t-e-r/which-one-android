@@ -41,7 +41,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public Record getRecordById(Long recordId) {
-        return databaseManager.getById(recordId);
+        return databaseManager.getRecordById(recordId);
     }
 
     @Override

@@ -6,13 +6,15 @@ import com.android.project.WhichOneApp;
 import com.android.project.api.RequestService;
 import com.android.project.database.DatabaseManager;
 import com.android.project.model.Option;
-
-import java.util.List;
+import com.android.project.model.Record;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -39,17 +41,23 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
     @Override
     public void loadRecord(Long recordId) {
         Log.i(TAG, "loadRecord: recordId - " + recordId);
-        mDetailView.showRecord(databaseManager.getById(recordId));
+        mDetailView.showRecord(databaseManager.getRecordById(recordId));
     }
 
     @Override
-    public void sendVote(final Long recordId, final Option option, final String userName, final List<Subscriber<Void>> subscribers) {
-        Log.i(TAG, String.format("sendVote: recordId - %d, option - %s, username - %s", recordId, option.getOptionName(), userName));
+    public void sendVote(final Record record, final Option option, final String username) {
+        Log.i(TAG, String.format("sendVote: recordId - %d, option - %s, username - %s", record.getRecordId(), option.getOptionName(), username));
 
         Subscription subscription =
-                requestService
-                        .sendVote(recordId, option.getOptionName(), userName)
-                        .subscribe(new Subscriber<Void>() {
+                requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
+                        .flatMap(new Func1<Void, Observable<Option>>() {
+                            @Override
+                            public Observable<Option> call(Void aVoid) {
+                                return Observable.just(databaseManager.addVote(record.getRecordId(), option, username));
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Option>() {
                             @Override
                             public void onCompleted() {
 
@@ -62,17 +70,19 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
                             }
 
                             @Override
-                            public void onNext(Void aVoid) {
+                            public void onNext(Option option) {
                                 Log.i(TAG, "sendVote: SUCCESS");
-                                databaseManager.addVote(recordId, option, userName);
 
-                                for (Subscriber<Void> subscriber : subscribers) {
-                                    subscriber.onNext(null);
-                                }
+                                addUserVote(option, username);
+                                mDetailView.updateQuiz();
                             }
                         });
 
         compositeSubscription.add(subscription);
+    }
+
+    private void addUserVote(Option option, String username) {
+        option.getVotes().add(username);
     }
 
     @Override

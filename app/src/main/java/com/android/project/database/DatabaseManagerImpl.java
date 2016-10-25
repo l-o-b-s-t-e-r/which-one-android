@@ -53,14 +53,30 @@ public class DatabaseManagerImpl implements DatabaseManager {
         }
     }
 
-    public void addVote(Long recordId, Option option, String votedUser) {
+    public Option addVote(Long recordId, Option option, String votedUser) {
         try {
             OptionEntity optionEntity = mDaoOption.queryForId(option.getOptionId().intValue());
-            optionEntity.getVotes().add(new VoteEntity(recordId, optionEntity, votedUser));
-            mDaoOption.update(optionEntity);
+
+            VoteEntity voteEntity = mDaoVote.queryBuilder()
+                    .where()
+                    .eq(VoteEntity.RECORD_ID_FIELD_NAME, recordId)
+                    .and()
+                    .eq(VoteEntity.VOTED_USER_FIELD_NAME, votedUser)
+                    .queryForFirst();
+
+            if (voteEntity == null) {
+                optionEntity.getVotes().add(new VoteEntity(recordId, optionEntity, votedUser));
+                mDaoOption.update(optionEntity);
+            } else {
+                voteEntity.setOption(optionEntity);
+                mDaoVote.update(voteEntity);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return option;
     }
 
     @Override
@@ -78,6 +94,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
     @Override
     synchronized public List<Record> saveAll(List<Record> records) {
+        List<Record> savedRecords = new ArrayList<>();
         try {
             RecordEntity recordEntity;
             for (Record record : records) {
@@ -86,17 +103,21 @@ public class DatabaseManagerImpl implements DatabaseManager {
                     mDaoRecord.createOrUpdate(recordEntity);
 
                     Log.i(TAG, "Record is saved - " + record.toString());
+                } else {
+                    record = getRecordById(record.getRecordId());
                 }
+
+                savedRecords.add(record);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return records;
+        return savedRecords;
     }
 
     @Override
-    public Record getById(Long id) {
+    public Record getRecordById(Long id) {
         RecordEntity recordEntity = null;
         List<OptionEntity> optionEntities = null;
 
@@ -133,6 +154,7 @@ public class DatabaseManagerImpl implements DatabaseManager {
             optionEntity = new OptionEntity(entity, option.getOptionName());
             mDaoOption.assignEmptyForeignCollection(optionEntity, OptionEntity.VOTES_FIELD_NAME);
             mDaoOption.createOrUpdate(optionEntity);
+            option.setOptionId(optionEntity.getId().longValue());
 
             for (String vote : option.getVotes()) {
                 voteEntity = new VoteEntity(record.getRecordId(), optionEntity, vote);

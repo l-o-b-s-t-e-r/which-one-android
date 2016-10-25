@@ -56,6 +56,26 @@ public class VoteEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VoteEntity that = (VoteEntity) o;
+
+        if (mRecordId != null ? !mRecordId.equals(that.mRecordId) : that.mRecordId != null)
+            return false;
+        return mVotedUser != null ? mVotedUser.equals(that.mVotedUser) : that.mVotedUser == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mRecordId != null ? mRecordId.hashCode() : 0;
+        result = 31 * result + (mVotedUser != null ? mVotedUser.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "VoteEntity{" +
                 "mVotedUser='" + mVotedUser + '\'' +

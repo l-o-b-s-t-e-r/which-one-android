@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
-import com.android.project.model.Option;
 import com.android.project.model.Record;
 import com.android.project.util.ImageManager;
 import com.android.project.util.QuizViewBuilder;
@@ -86,6 +85,14 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         }
     }
 
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.mQuizSubscriber != null) {
+            holder.mQuizSubscriber.unsubscribe();
+        }
+    }
+
     public void cleanData() {
         mRecords.clear();
         notifyDataSetChanged();
@@ -115,6 +122,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
         private Record mRecord;
         private Target mAvatarTarget;
+        private Subscriber<Record> mQuizSubscriber;
 
         public ViewHolder(CardView cardView) {
             super(cardView);
@@ -126,30 +134,17 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    mRecord.getOptions()
-                            .get(checkedId)
-                            .getVotes()
-                            .add(mUsername);
-
                     radioGroup.removeAllViews();
-                    int allVotesCount = mRecord.getAllVotes().size();
-                    List<Subscriber<Void>> subscribers = new ArrayList<>();
-                    for (Option option : mRecord.getOptions()) {
-                        Subscriber<Void> subscriber =
-                                QuizViewBuilder.createFinalOption(
-                                        radioGroup,
-                                        option,
-                                        allVotesCount,
-                                        option.getVotes().contains(mUsername));
 
-                        subscribers.add(subscriber);
-                    }
+                    mQuizSubscriber = createQuizSubscriber(
+                            QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord, mUsername)
+                    );
 
                     mActionListener.sendVote(
-                            mRecord.getRecordId(),
+                            mRecord,
                             mRecord.getOptions().get(checkedId),
                             mUsername,
-                            subscribers
+                            mQuizSubscriber
                     );
                 }
             });
@@ -181,23 +176,36 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             radioGroup.removeAllViews();
 
             if (votedQuiz) {
-                for (Option option : mRecord.getOptions()) {
-                    radioGroup.addView(
-                            QuizViewBuilder.createFinalOption(option, mRecord.getAllVotes().size(), option.getVotes().contains(mUsername))
-                    );
-                }
+                QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord, mUsername);
             } else {
-                for (Option option : mRecord.getOptions()) {
-                    radioGroup.addView(
-                            QuizViewBuilder.createBaseOption(option, radioGroup.getChildCount())
-                    );
-                }
+                QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
             }
         }
 
         private void createImageRecyclerAdapter() {
             RecordRecyclerViewAdapter recordRecyclerViewAdapter = new RecordRecyclerViewAdapter(mRecord.getImages(), mActionListener);
             recyclerView.setAdapter(recordRecyclerViewAdapter);
+        }
+
+        private Subscriber<Record> createQuizSubscriber(final List<QuizViewBuilder.ViewHolder> viewHolderOptions) {
+            return new Subscriber<Record>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onNext(Record record) {
+                    for (QuizViewBuilder.ViewHolder viewHolder : viewHolderOptions) {
+                        viewHolder.setContent(record);
+                    }
+                }
+            };
         }
     }
 }

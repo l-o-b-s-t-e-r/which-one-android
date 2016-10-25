@@ -104,7 +104,6 @@ public class RequestServiceImpl implements RequestService {
         return mRequest
                 .getLastUserRecords(userName)
                 .subscribeOn(Schedulers.io());
-        //.compose(this.<List<Record>>applySchedulers());
     }
 
     @Override
@@ -112,7 +111,6 @@ public class RequestServiceImpl implements RequestService {
         return mRequest
                 .getNextUserRecords(userName, recordId)
                 .subscribeOn(Schedulers.io());
-        //.compose(this.<List<Record>>applySchedulers());
     }
 
     @Override
@@ -191,7 +189,7 @@ public class RequestServiceImpl implements RequestService {
     public Observable<Void> sendVote(Long recordId, String optionName, String userName) {
         return mRequest
                 .sendVote(userName, recordId, optionName)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @SuppressWarnings("unchecked")

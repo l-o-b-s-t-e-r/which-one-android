@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
-import com.android.project.activities.wall.WallRecyclerViewAdapter;
 import com.android.project.model.Record;
 import com.android.project.util.ImageManager;
 import com.squareup.picasso.Callback;
@@ -31,7 +30,7 @@ import butterknife.OnClick;
 
 public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRecyclerViewAdapter.ViewHolder> {
 
-    private static final String TAG = WallRecyclerViewAdapter.class.getSimpleName();
+    private static final String TAG = HomeWallRecyclerViewAdapter.class.getSimpleName();
     private final Long MIN_ANIMATION_DURATION = 3000L;
     private final int DELTA = 1000;
     private boolean allRecordsLoaded;

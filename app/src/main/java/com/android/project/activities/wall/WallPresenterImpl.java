@@ -42,7 +42,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
 
     @Override
     public Record getRecordById(Long recordId) {
-        return databaseManager.getById(recordId);
+        return databaseManager.getRecordById(recordId);
     }
 
     @Override
@@ -134,12 +134,19 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     }
 
     @Override
-    public void sendVote(final Long recordId, final Option option, final String userName, final List<Subscriber<Void>> subscribers) {
-        Log.i(TAG, String.format("sendVote: recordId - %d, option - %s, username - %s", recordId, option.getOptionName(), userName));
+    public void sendVote(final Record record, final Option option, final String username, final Subscriber<Record> quizSubscriber) {
+        Log.i(TAG, String.format("sendVote: recordId - %d, option - %s, username - %s", record.getRecordId(), option.getOptionName(), username));
 
         Subscription subscription =
-                requestService.sendVote(recordId, option.getOptionName(), userName)
-                        .subscribe(new Subscriber<Void>() {
+                requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
+                        .flatMap(new Func1<Void, Observable<Option>>() {
+                            @Override
+                            public Observable<Option> call(Void aVoid) {
+                                return Observable.just(databaseManager.addVote(record.getRecordId(), option, username));
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Option>() {
                             @Override
                             public void onCompleted() {
 
@@ -152,17 +159,22 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                             }
 
                             @Override
-                            public void onNext(Void aVoid) {
+                            public void onNext(Option option) {
                                 Log.i(TAG, "sendVote: SUCCESS");
-                                databaseManager.addVote(recordId, option, userName);
+                                addUserVote(option, username);
 
-                                for (Subscriber<Void> subscriber : subscribers) {
-                                    subscriber.onNext(null);
+                                if (!quizSubscriber.isUnsubscribed()) {
+                                    Observable.just(record)
+                                            .subscribe(quizSubscriber);
                                 }
                             }
                         });
 
         compositeSubscription.add(subscription);
+    }
+
+    private void addUserVote(Option option, String username) {
+        option.getVotes().add(username);
     }
 
     @Override

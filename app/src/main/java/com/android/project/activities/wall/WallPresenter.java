@@ -20,7 +20,7 @@ public interface WallPresenter {
 
         void showRecordDetail(Long recordId);
 
-        void showUserPage(String userName);
+        void showUserPage(String username);
 
         void clearWall();
     }
@@ -33,9 +33,9 @@ public interface WallPresenter {
 
         void openRecordDetail(Long recordId);
 
-        void openUserPage(String userName);
+        void openUserPage(String username);
 
-        void sendVote(Long recordId, Option option, String userName, List<Subscriber<Void>> subscribers);
+        void sendVote(Record record, Option option, String username, Subscriber<Record> quizSubscriber);
 
         Record getRecordById(Long recordId);
     }
