@@ -116,8 +116,9 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void setImage(File picturePath) {
-        mRecyclerViewAdapter.addItem(picturePath);
+    @Override
+    public void showImage(File imageFile) {
+        mRecyclerViewAdapter.addItem(imageFile);
         mLinearLayoutManager.scrollToPosition(mRecyclerViewAdapter.getItemCount() - 1);
         container.addView(QuizViewBuilder.getInstance().createNewOption(container));
     }
@@ -127,14 +128,14 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         if (resultCode == RESULT_OK && requestCode == LOAD_IMAGE) {
             if (data == null || data.getData() == null) {
                 Log.i(TAG, "Image has been loaded from camera");
-                setImage(ImageKeeper.getInstance().getImageFile());
+                mActionListener.loadImage(ImageKeeper.getInstance().getImageFile());
             } else {
                 Log.i(TAG, "Image has been loaded from gallery");
                 String[] picturePath = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(data.getData(), picturePath, null, null, null);
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(picturePath[0]));
-                setImage(new File(imagePath));
+                mActionListener.loadImage(new File(imagePath));
                 cursor.close();
             }
         }

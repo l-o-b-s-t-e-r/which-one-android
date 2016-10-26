@@ -1,8 +1,10 @@
 package com.android.project.activities.newrecord;
 
 import android.graphics.BitmapFactory;
+import android.os.Looper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,10 +25,12 @@ import butterknife.OnClick;
 
 public class NewRecordRecyclerViewAdapter extends RecyclerView.Adapter<NewRecordRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<File> mImages;
+    private static final String TAG = NewRecordRecyclerViewAdapter.class.getSimpleName();
+
+    private ArrayList<File> mImageFiles;
 
     public NewRecordRecyclerViewAdapter() {
-        mImages = new ArrayList<>();
+        mImageFiles = new ArrayList<>();
     }
 
     @Override
@@ -39,27 +43,28 @@ public class NewRecordRecyclerViewAdapter extends RecyclerView.Adapter<NewRecord
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setContent(mImages.get(position), position);
+        holder.setContent(mImageFiles.get(position), position);
     }
 
-    public void addItem(File picturePath) {
-        mImages.add(picturePath);
-        notifyItemInserted(mImages.size());
+    public void addItem(File imageFile) {
+        mImageFiles.add(imageFile);
+        Log.i(TAG, String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
+        notifyItemInserted(mImageFiles.size());
 
     }
 
     public void removeItem(int position) {
-        mImages.remove(position);
+        mImageFiles.remove(position);
         notifyItemRemoved(position);
     }
 
     public List<File> getAllImages() {
-        return mImages;
+        return mImageFiles;
     }
 
     @Override
     public int getItemCount() {
-        return mImages.size();
+        return mImageFiles.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

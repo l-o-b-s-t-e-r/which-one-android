@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.project.WhichOneApp;
@@ -23,8 +24,9 @@ import java.io.FileOutputStream;
 public class ImageManager {
 
     public static final String IMAGE_URL = RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER;
+    private static final String TAG = ImageManager.class.getSimpleName();
     private static final Float CORNER_RADIUS = 50.0f;
-
+    private static final Integer MAX_SIDE_LENGTH = 400;
     private static ImageManager mImageManager;
 
     private ImageManager() {
@@ -90,8 +92,39 @@ public class ImageManager {
             e.printStackTrace();
         }
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
+        return imageFile;
+    }
+
+    public File resizeImage(File imageFile) {
+        Float scaleKoef;
+        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+
+        Log.i(TAG, String.format("bitmap: height - %d, width - %d, imageFile length: %d", bitmap.getHeight(), bitmap.getWidth(), imageFile.length()));
+
+        if (bitmap.getHeight() <= MAX_SIDE_LENGTH && bitmap.getWidth() <= MAX_SIDE_LENGTH) {
+            return imageFile;
+        }
+
+        if (bitmap.getHeight() >= bitmap.getWidth()) {
+            scaleKoef = (float) MAX_SIDE_LENGTH / bitmap.getHeight();
+        } else {
+            scaleKoef = (float) MAX_SIDE_LENGTH / bitmap.getWidth();
+        }
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, Float.valueOf(scaleKoef * bitmap.getWidth()).intValue(), Float.valueOf(scaleKoef * bitmap.getHeight()).intValue(), false);
+
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(imageFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+        Log.i(TAG, String.format("resizedBitmap: height - %d, width - %d, imageFile length: %d", resizedBitmap.getHeight(), resizedBitmap.getWidth(), imageFile.length()));
         return imageFile;
     }
 }

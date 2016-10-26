@@ -5,14 +5,19 @@ import android.util.Log;
 import com.android.project.WhichOneApp;
 import com.android.project.api.RequestService;
 import com.android.project.database.DatabaseManager;
+import com.android.project.util.ImageManager;
 
 import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -34,6 +39,38 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
     public NewRecordPresenterImpl(NewRecordPresenter.View newItemView) {
         mNewRecordView = newItemView;
         WhichOneApp.getMainComponent().inject(this);
+    }
+
+    @Override
+    public void loadImage(File imageFile) {
+        Log.i(TAG, "loadImage: " + imageFile.getAbsolutePath());
+
+        mNewRecordView.showProgress();
+        Subscription subscription =
+                resizeImage(imageFile)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<File>() {
+                            @Override
+                            public void onCompleted() {
+                                mNewRecordView.hideProgress();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "loadImage: " + e.getMessage());
+                                mNewRecordView.hideProgress();
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(File file) {
+                                Log.i(TAG, "loadImage: SUCCESS");
+                                mNewRecordView.showImage(file);
+                            }
+                        });
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -65,6 +102,15 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
                         });
 
         compositeSubscription.add(subscription);
+    }
+
+    private Observable<File> resizeImage(final File imageFile) {
+        return Observable.defer(new Func0<Observable<File>>() {
+            @Override
+            public Observable<File> call() {
+                return Observable.just(ImageManager.getInstance().resizeImage(imageFile));
+            }
+        });
     }
 
     @Override
