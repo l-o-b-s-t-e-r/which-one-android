@@ -14,7 +14,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -41,7 +41,14 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
     @Override
     public void loadRecord(Long recordId) {
         Log.i(TAG, "loadRecord: recordId - " + recordId);
-        mDetailView.showRecord(databaseManager.getRecordById(recordId));
+
+        Subscription subscription =
+                Observable.defer(() -> Observable.just(databaseManager.getRecordById(recordId)))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(mDetailView::showRecord);
+
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -50,12 +57,7 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
 
         Subscription subscription =
                 requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
-                        .flatMap(new Func1<Record, Observable<Record>>() {
-                            @Override
-                            public Observable<Record> call(Record newRecord) {
-                                return Observable.just(databaseManager.update(newRecord));
-                            }
-                        })
+                        .flatMap(newRecord -> Observable.just(databaseManager.update(newRecord)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Record>() {
                             @Override
@@ -72,7 +74,6 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
                             @Override
                             public void onNext(Record newRecord) {
                                 Log.i(TAG, "sendVote: SUCCESS");
-
                                 mDetailView.updateQuiz(newRecord);
                             }
                         });

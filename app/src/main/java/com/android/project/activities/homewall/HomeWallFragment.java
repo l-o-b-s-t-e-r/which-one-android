@@ -132,13 +132,10 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     }
 
     private SwipeRefreshLayout.OnRefreshListener getRefreshListener() {
-        return new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+        return () -> {
                 refreshing = true;
                 clearHomeWall();
                 mActionListener.loadLastRecords(mRequestedUsername);
-            }
         };
     }
 }

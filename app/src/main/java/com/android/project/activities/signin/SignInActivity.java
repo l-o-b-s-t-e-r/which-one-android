@@ -51,7 +51,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mSharedPreferences.contains(getString(R.string.user_name))) {
             Log.i(TAG, "Application remembers this user. Start MainActivity");
-            startActivity(getMainActivityIntent());
+            startActivity(new Intent(this, MainActivity.class));
         }
 
         mActionListener = new SignInPresenterImpl(this);
@@ -68,9 +68,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
         remindDialog.setButton(AlertDialog.BUTTON_POSITIVE, "SEND", new Message());
         remindDialog.show();
-        remindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        remindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 EditText editTextEmail = ButterKnife.findById(view, R.id.email);
                 ProgressBar progressBar = ButterKnife.findById(view, R.id.progressBar);
                 progressBar.setIndeterminate(true);
@@ -84,7 +82,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
                 }
 
                 remindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-            }
         });
     }
 
@@ -117,7 +114,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
                     .putString(getString(R.string.user_name), editTextName.getText().toString().trim())
                     .apply();
 
-            startActivity(getMainActivityIntent());
+            startActivity(new Intent(this, MainActivity.class));
         } else {
             Toast.makeText(SignInActivity.this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
             editTextName.setError(getString(R.string.wrong_password_or_name));
@@ -139,15 +136,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     protected void onStop() {
         mActionListener.onStop();
         super.onStop();
-    }
-
-    private Intent getMainActivityIntent() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        return intent;
     }
 
     @Override

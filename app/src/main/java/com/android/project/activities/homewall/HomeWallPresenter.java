@@ -21,8 +21,6 @@ public interface HomeWallPresenter {
 
     interface ActionListener extends CommonPresenter.ActionListener {
 
-        Record getRecordById(Long recordId);
-
         void loadLastRecords(String requestedUsername);
 
         void loadNextRecords(String requestedUsername, Long lastLoadedRecordId);

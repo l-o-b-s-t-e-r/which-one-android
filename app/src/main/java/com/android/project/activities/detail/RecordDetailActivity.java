@@ -132,9 +132,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     }
 
     private RadioGroup.OnCheckedChangeListener getOnCheckedChangeListener() {
-        return new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+        return (group, checkedId) -> {
                 radioGroup.removeAllViews();
 
                 mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord);
@@ -144,7 +142,6 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
                         mRecord.getOptions().get(checkedId),
                         mUsername
                 );
-            }
         };
     }
 }

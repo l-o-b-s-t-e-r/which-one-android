@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = WallFragment.class.getSimpleName();
+
     @BindView(R.id.main_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
@@ -68,7 +68,6 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.wall_fragment, container, false);
-        Log.i(TAG, "WAAAAAAAL FRAGMENT CREATED");
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
         swipeLayout.setOnRefreshListener(getRefreshListener());
@@ -151,20 +150,17 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     private void refreshVotedRecords() {
-        mRecyclerViewAdapter.refreshRecords(mSharedPreferences.getStringSet(RECORD_ID, new HashSet<String>()));
+        mRecyclerViewAdapter.refreshRecords(mSharedPreferences.getStringSet(RECORD_ID, new HashSet<>()));
         mSharedPreferences.edit()
                 .remove(RECORD_ID)
                 .apply();
     }
 
     private SwipeRefreshLayout.OnRefreshListener getRefreshListener() {
-        return new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mActionListener.onStop();
-                clearWall();
-                updateWall();
-            }
+        return () -> {
+            mActionListener.onStop();
+            clearWall();
+            updateWall();
         };
     }
 }

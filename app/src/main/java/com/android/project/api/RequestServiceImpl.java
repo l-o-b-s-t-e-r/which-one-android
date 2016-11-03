@@ -22,7 +22,7 @@ import rx.schedulers.Schedulers;
 public class RequestServiceImpl implements RequestService {
 
     public static final String BASE_URL = "http://10.0.3.2:8080/project/"; // for Genimotion
-    //public static final String BASE_URL = "http://10.0.2.2:8080/project/"; // for AVD
+    //public static final String BASE_URL = "http://10.0.2.2:8080/project/"; // for native AVD
     //public static final String BASE_URL = "http://52.27.160.199:8080/project/";
     public static final String IMAGE_FOLDER = "images/";
     private static final String TAG = RequestServiceImpl.class.getName();
@@ -30,14 +30,11 @@ public class RequestServiceImpl implements RequestService {
     private RequestAPI mRequest;
 
     public RequestServiceImpl() {
-        mSchedulersTransformer = new Observable.Transformer() {
-            @Override
-            public Object call(Object o) {
-                return ((Observable) o)
+        mSchedulersTransformer =
+                observable -> observable
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
-            }
-        };
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -95,7 +92,6 @@ public class RequestServiceImpl implements RequestService {
         return mRequest
                 .getNextRecords(recordId, targetUsername)
                 .subscribeOn(Schedulers.io());
-        //.compose(this.<List<Record>>applySchedulers());
     }
 
     @Override

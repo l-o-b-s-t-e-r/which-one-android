@@ -16,7 +16,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -105,12 +104,7 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
     }
 
     private Observable<File> resizeImage(final File imageFile) {
-        return Observable.defer(new Func0<Observable<File>>() {
-            @Override
-            public Observable<File> call() {
-                return Observable.just(ImageManager.getInstance().resizeImage(imageFile));
-            }
-        });
+        return Observable.defer(() -> Observable.just(ImageManager.getInstance().resizeImage(imageFile)));
     }
 
     @Override

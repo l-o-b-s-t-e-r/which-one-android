@@ -1,10 +1,8 @@
 package com.android.project.activities.newrecord;
 
 import android.graphics.BitmapFactory;
-import android.os.Looper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -48,7 +46,6 @@ public class NewRecordRecyclerViewAdapter extends RecyclerView.Adapter<NewRecord
 
     public void addItem(File imageFile) {
         mImageFiles.add(imageFile);
-        Log.i(TAG, String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
         notifyItemInserted(mImageFiles.size());
 
     }

@@ -103,14 +103,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         final FloatingActionButton fab = ButterKnife.findById(this, R.id.fab);
         final CoordinatorLayout.LayoutParams fabLayoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(MainActivity.this, NewRecordActivity.class));
-                }
-            });
-        }
+
+        fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, NewRecordActivity.class)));
 
         mUpdateAnimation = AnimationUtils.loadAnimation(this, R.anim.update);
         final Animation fabAnimationShowRight = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_right);
@@ -252,14 +246,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         MenuItem updateItem = menu.findItem(R.id.action_update);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
-        updateActionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(mUpdateAnimation);
+        updateActionView.setOnClickListener(view -> {
+            view.startAnimation(mUpdateAnimation);
                 mWallFragment.showSwipeLayoutProgress();
                 mWallFragment.updateWall();
             }
-        });
+        );
 
         updateItem.setActionView(updateActionView);
 
@@ -275,16 +267,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sign_out:
-                Intent intent = new Intent(this, SignInActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-
                 PreferenceManager.getDefaultSharedPreferences(this).edit()
                         .remove(getString(R.string.user_name))
                         .apply();
 
-                startActivity(intent);
+                startActivity(new Intent(this, SignInActivity.class));
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

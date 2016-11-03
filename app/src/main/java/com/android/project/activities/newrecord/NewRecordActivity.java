@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +36,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
 
     private final String TAG = NewRecordActivity.class.getSimpleName();
     private final int LOAD_IMAGE = 1;
-    private final int MAX_IMAGES = 9;
+    private final int MAX_IMAGES = 5;
     private final int MAX_OPTIONS = 9;
 
     @BindView(R.id.options_container)
@@ -145,9 +144,6 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
             case R.id.action_add_image:
                 if (mRecyclerViewAdapter.getItemCount() < MAX_IMAGES) {
                     startActivityForResult(ImageKeeper.getInstance().getChooserIntent(this), LOAD_IMAGE);

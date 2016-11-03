@@ -15,7 +15,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -42,11 +41,6 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     }
 
     @Override
-    public Record getRecordById(Long recordId) {
-        return databaseManager.getRecordById(recordId);
-    }
-
-    @Override
     public void loadLastRecords(String requestedUsername) {
         Log.i(TAG, "loadLastRecords: username - " + requestedUsername);
 
@@ -54,13 +48,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getLastUserRecords(requestedUsername, mTargetUsername)
-                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
-                            @Override
-                            public Observable<List<Record>> call(List<Record> records) {
-                                Log.i(TAG, "loadLastRecords: records have been loaded");
-                                return Observable.just(databaseManager.saveAll(records));
-                            }
-                        })
+                        .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<List<Record>>() {
                             @Override
@@ -93,13 +81,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getNextUserRecords(requestedUsername, lastLoadedRecordId, mTargetUsername)
-                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
-                            @Override
-                            public Observable<List<Record>> call(List<Record> records) {
-                                Log.i(TAG, "loadNextRecords: records have been loaded");
-                                return Observable.just(databaseManager.saveAll(records));
-                            }
-                        })
+                        .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<List<Record>>() {
                             @Override

@@ -82,8 +82,8 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     protected void onStop() {
-        mActionListener.onStop();
         super.onStop();
+        mActionListener.onStop();
     }
 
     @Override

@@ -93,11 +93,8 @@ public class QuizViewBuilder {
 
         ImageView delete = ButterKnife.findById(view, R.id.delete);
 
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                parent.removeView(view);
-            }
+        delete.setOnClickListener(v -> {
+            parent.removeView(view);
         });
 
         return view;

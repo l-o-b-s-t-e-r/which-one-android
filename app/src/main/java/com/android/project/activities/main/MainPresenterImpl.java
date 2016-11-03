@@ -16,8 +16,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Func0;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -79,12 +77,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Subscription subscription =
                 resizeImage(imageFile)
                         .subscribeOn(Schedulers.io())
-                        .flatMap(new Func1<File, Observable<User>>() {
-                            @Override
-                            public Observable<User> call(File file) {
-                                return requestService.updateBackground(file, name);
-                            }
-                        })
+                        .flatMap(file -> requestService.updateBackground(file, name))
                         .subscribe(new Subscriber<User>() {
                             @Override
                             public void onCompleted() {
@@ -114,12 +107,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Subscription subscription =
                 cropImage(imageFile)
                         .subscribeOn(Schedulers.io())
-                        .flatMap(new Func1<File, Observable<User>>() {
-                            @Override
-                            public Observable<User> call(File file) {
-                                return requestService.updateAvatar(file, name);
-                            }
-                        })
+                        .flatMap(file -> requestService.updateAvatar(file, name))
                         .subscribe(new Subscriber<User>() {
                             @Override
                             public void onCompleted() {
@@ -148,20 +136,10 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
     }
 
     private Observable<File> cropImage(final File imageFile) {
-        return Observable.defer(new Func0<Observable<File>>() {
-            @Override
-            public Observable<File> call() {
-                return Observable.just(ImageManager.getInstance().cropImageAsSquare(imageFile));
-            }
-        });
+        return Observable.defer(() -> Observable.just(ImageManager.getInstance().cropImageAsSquare(imageFile)));
     }
 
     private Observable<File> resizeImage(final File imageFile) {
-        return Observable.defer(new Func0<Observable<File>>() {
-            @Override
-            public Observable<File> call() {
-                return Observable.just(ImageManager.getInstance().resizeImage(imageFile));
-            }
-        });
+        return Observable.defer(() -> Observable.just(ImageManager.getInstance().resizeImage(imageFile)));
     }
 }

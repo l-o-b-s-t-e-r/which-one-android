@@ -16,7 +16,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -55,13 +54,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getLastRecords(mTargetUsername)
-                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
-                            @Override
-                            public Observable<List<Record>> call(List<Record> records) {
-                                Log.i(TAG, "loadLastRecords: records have been loaded");
-                                return Observable.just(databaseManager.saveAll(records));
-                            }
-                        })
+                        .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<List<Record>>() {
                             @Override
@@ -94,13 +87,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getNextRecords(lastLoadedRecordId, mTargetUsername)
-                        .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
-                            @Override
-                            public Observable<List<Record>> call(List<Record> records) {
-                                Log.i(TAG, "loadNextRecords: records have been loaded");
-                                return Observable.just(databaseManager.saveAll(records));
-                            }
-                        })
+                        .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<List<Record>>() {
                             @Override
@@ -141,12 +128,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
 
         Subscription subscription =
                 requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
-                        .flatMap(new Func1<Record, Observable<Record>>() {
-                            @Override
-                            public Observable<Record> call(Record newRecord) {
-                                return Observable.just(databaseManager.update(newRecord));
-                            }
-                        })
+                        .flatMap(newRecord -> Observable.just(databaseManager.update(newRecord)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Record>() {
                             @Override

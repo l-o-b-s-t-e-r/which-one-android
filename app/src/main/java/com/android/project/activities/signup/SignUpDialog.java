@@ -56,24 +56,18 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
 
         ButterKnife.bind(this, view);
 
-        editTextName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    mActionListener.checkName(editTextName.getText().toString().trim());
-                }
+        editTextName.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                mActionListener.checkName(editTextName.getText().toString().trim());
             }
         });
 
-        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (Patterns.EMAIL_ADDRESS.matcher(editTextEmail.getText().toString().trim()).matches()) {
-                        mActionListener.checkEmail(editTextEmail.getText().toString().trim());
-                    } else {
-                        editTextEmail.setError(getString(R.string.incorrect_email));
-                    }
+        editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                if (Patterns.EMAIL_ADDRESS.matcher(editTextEmail.getText().toString().trim()).matches()) {
+                    mActionListener.checkEmail(editTextEmail.getText().toString().trim());
+                } else {
+                    editTextEmail.setError(getString(R.string.incorrect_email));
                 }
             }
         });

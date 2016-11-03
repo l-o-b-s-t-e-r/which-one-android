@@ -137,9 +137,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             ButterKnife.bind(this, cardView);
             createIncludedRecyclerView();
 
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
+            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
                     radioGroup.removeAllViews();
 
                     mQuizSubscriber = createQuizSubscriber(
@@ -153,7 +151,6 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                             mQuizSubscriber,
                             mPosition
                     );
-                }
             });
         }
 
