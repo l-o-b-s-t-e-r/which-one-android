@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
+import com.android.project.model.Image;
 import com.android.project.model.Record;
 import com.android.project.util.ImageManager;
 import com.android.project.util.QuizViewBuilder;
@@ -54,7 +55,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.setContent(mRecords.get(position));
+        holder.setContent(mRecords.get(position), position);
 
         if (!allRecordsLoaded && position == mRecords.size() - 1) {
             mActionListener.loadNextRecords(mRecords.get(position).getRecordId());
@@ -93,8 +94,13 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         }
     }
 
+    public void updateRecord(Integer index, Record record) {
+        mRecords.set(index, record);
+    }
+
     public void cleanData() {
         mRecords.clear();
+        allRecordsLoaded = false;
         notifyDataSetChanged();
     }
 
@@ -108,8 +114,8 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         @BindView(R.id.username)
         TextView username;
 
-        @BindView(R.id.title)
-        TextView title;
+        @BindView(R.id.description)
+        TextView description;
 
         @BindView(R.id.record_recycler)
         RecyclerView recyclerView;
@@ -121,15 +127,15 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         ImageView avatar;
 
         private Record mRecord;
+        private Integer mPosition;
         private Target mAvatarTarget;
         private Subscriber<Record> mQuizSubscriber;
+        private RecordRecyclerViewAdapter mRecordRecyclerViewAdapter;
 
         public ViewHolder(CardView cardView) {
             super(cardView);
             ButterKnife.bind(this, cardView);
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(WhichOneApp.getContext(), LinearLayoutManager.HORIZONTAL, false));
-            recyclerView.setNestedScrollingEnabled(false);
+            createIncludedRecyclerView();
 
             radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -137,54 +143,62 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                     radioGroup.removeAllViews();
 
                     mQuizSubscriber = createQuizSubscriber(
-                            QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord, mUsername)
+                            QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord)
                     );
 
                     mActionListener.sendVote(
                             mRecord,
                             mRecord.getOptions().get(checkedId),
                             mUsername,
-                            mQuizSubscriber
+                            mQuizSubscriber,
+                            mPosition
                     );
                 }
             });
         }
 
-        @OnClick({R.id.avatar, R.id.title})
+        @OnClick({R.id.avatar, R.id.username})
         public void onUserClick() {
             mActionListener.openUserPage(mRecord.getUsername());
         }
 
-        public void setContent(Record record) {
+        public void setContent(Record record, Integer position) {
             Log.i(TAG, "setContent: record - " + record.toString());
 
             mRecord = record;
+            mPosition = position;
             mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
             username.setText(record.getUsername());
-            title.setText(record.getTitle());
+            description.setText(record.getDescription());
 
             WhichOneApp.getPicasso()
                     .load(ImageManager.IMAGE_URL + record.getAvatar())
                     .into(mAvatarTarget);
 
-            buildOptions(mRecord.getAllVotes().contains(mUsername));
-
-            createImageRecyclerAdapter();
+            buildOptions();
+            setImages(record.getRecordId(), record.getImages());
         }
 
-        private void buildOptions(boolean votedQuiz) {
+        private void buildOptions() {
             radioGroup.removeAllViews();
 
-            if (votedQuiz) {
-                QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord, mUsername);
+            if (mRecord.getSelectedOption() != null) {
+                QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
             } else {
                 QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
             }
         }
 
-        private void createImageRecyclerAdapter() {
-            RecordRecyclerViewAdapter recordRecyclerViewAdapter = new RecordRecyclerViewAdapter(mRecord.getImages(), mActionListener);
-            recyclerView.setAdapter(recordRecyclerViewAdapter);
+        private void createIncludedRecyclerView() {
+            recyclerView.setLayoutManager(new LinearLayoutManager(WhichOneApp.getContext(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView.setNestedScrollingEnabled(false);
+
+            mRecordRecyclerViewAdapter = new RecordRecyclerViewAdapter(mActionListener);
+            recyclerView.setAdapter(mRecordRecyclerViewAdapter);
+        }
+
+        private void setImages(Long recordId, List<Image> images) {
+            mRecordRecyclerViewAdapter.setContent(recordId, images);
         }
 
         private Subscriber<Record> createQuizSubscriber(final List<QuizViewBuilder.ViewHolder> viewHolderOptions) {

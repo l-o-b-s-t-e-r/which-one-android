@@ -22,6 +22,8 @@ public interface WallPresenter {
 
         void showUserPage(String username);
 
+        void updateRecord(Integer position, Record record);
+
         void clearWall();
     }
 
@@ -35,7 +37,7 @@ public interface WallPresenter {
 
         void openUserPage(String username);
 
-        void sendVote(Record record, Option option, String username, Subscriber<Record> quizSubscriber);
+        void sendVote(Record record, Option option, String username, Subscriber<Record> quizSubscriber, Integer position);
 
         Record getRecordById(Long recordId);
     }

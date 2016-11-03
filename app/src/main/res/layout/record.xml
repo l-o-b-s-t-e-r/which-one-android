@@ -14,19 +14,16 @@
 
         <include layout="@layout/record_header" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Title"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/record_recycler"
             android:layout_width="wrap_content"
             android:layout_height="150dp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp" />
 
         <RadioGroup
             android:id="@+id/radio_group"

@@ -112,14 +112,8 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Log.i(TAG, String.format("updateAvatar: file - %s, name - %s", imageFile.getAbsolutePath(), name));
 
         Subscription subscription =
-                resizeImage(imageFile)
+                cropImage(imageFile)
                         .subscribeOn(Schedulers.io())
-                        .flatMap(new Func1<File, Observable<File>>() {
-                            @Override
-                            public Observable<File> call(File file) {
-                                return cropImage(file);
-                            }
-                        })
                         .flatMap(new Func1<File, Observable<User>>() {
                             @Override
                             public Observable<User> call(File file) {

@@ -50,14 +50,14 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
 
         Subscription subscription =
                 requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
-                        .flatMap(new Func1<Void, Observable<Option>>() {
+                        .flatMap(new Func1<Record, Observable<Record>>() {
                             @Override
-                            public Observable<Option> call(Void aVoid) {
-                                return Observable.just(databaseManager.addVote(record.getRecordId(), option, username));
+                            public Observable<Record> call(Record newRecord) {
+                                return Observable.just(databaseManager.update(newRecord));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Option>() {
+                        .subscribe(new Subscriber<Record>() {
                             @Override
                             public void onCompleted() {
 
@@ -70,19 +70,14 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
                             }
 
                             @Override
-                            public void onNext(Option option) {
+                            public void onNext(Record newRecord) {
                                 Log.i(TAG, "sendVote: SUCCESS");
 
-                                addUserVote(option, username);
-                                mDetailView.updateQuiz();
+                                mDetailView.updateQuiz(newRecord);
                             }
                         });
 
         compositeSubscription.add(subscription);
-    }
-
-    private void addUserVote(Option option, String username) {
-        option.getVotes().add(username);
     }
 
     @Override

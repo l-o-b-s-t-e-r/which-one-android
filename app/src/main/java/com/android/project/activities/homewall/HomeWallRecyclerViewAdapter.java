@@ -74,6 +74,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     public void cleanData() {
         mRecords.clear();
+        allRecordsLoaded = false;
         notifyDataSetChanged();
     }
 

@@ -22,7 +22,7 @@ public interface SearchPresenter {
 
         void loadUsers(String searchQuery);
 
-        void loadNextUsers(String searchQuery, Long lastLoadedUserId);
+        void loadNextUsers(String searchQuery, String lastLoadedUsername);
 
         void loadUserPage(User user);
 

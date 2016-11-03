@@ -9,7 +9,10 @@ import com.android.project.di.MainComponent;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.leakcanary.LeakCanary;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 /**
  * Created by Lobster on 14.09.16.
@@ -33,6 +36,20 @@ public class WhichOneApp extends Application {
         return mContext;
     }
 
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+
+        return dir.delete();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -44,11 +61,26 @@ public class WhichOneApp extends Application {
                 .appModule(new AppModule(this))
                 .build();
 
-        mPicasso = Picasso.with(this);
+        LruCache picassoLruCache = new LruCache(this);
+        picassoLruCache.clear();
+        clearImageDiskCache();
+
+        //mPicasso = Picasso.with(this);
+        mPicasso = new Picasso.Builder(this)
+                .memoryCache(picassoLruCache)
+                .build();
+
         mPicasso.setIndicatorsEnabled(true);
 
-
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+    }
+
+    public boolean clearImageDiskCache() {
+        File cache = new File(this.getCacheDir(), "picasso-cache");
+        if (cache.exists() && cache.isDirectory()) {
+            return deleteDir(cache);
+        }
+        return false;
     }
 
 }

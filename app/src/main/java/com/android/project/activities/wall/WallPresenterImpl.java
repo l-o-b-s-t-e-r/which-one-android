@@ -33,9 +33,11 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     @Inject
     public CompositeSubscription compositeSubscription;
 
+    private String mTargetUsername;
     private WallPresenter.View mWallView;
 
-    public WallPresenterImpl(WallPresenter.View wallView) {
+    public WallPresenterImpl(String targetUsername, WallPresenter.View wallView) {
+        mTargetUsername = targetUsername;
         mWallView = wallView;
         WhichOneApp.getMainComponent().inject(this);
     }
@@ -52,7 +54,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         mWallView.showProgress();
         Subscription subscription =
                 requestService
-                        .getLastRecords()
+                        .getLastRecords(mTargetUsername)
                         .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
                             public Observable<List<Record>> call(List<Record> records) {
@@ -69,7 +71,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(TAG, "loadLastRecords: " + e.getMessage());
+                                Log.e(TAG, "loadLastRecords2: " + e.getMessage());
                                 mWallView.hideProgress();
                                 e.printStackTrace();
                             }
@@ -91,7 +93,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         mWallView.showProgress();
         Subscription subscription =
                 requestService
-                        .getNextRecords(lastLoadedRecordId)
+                        .getNextRecords(lastLoadedRecordId, mTargetUsername)
                         .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
                             public Observable<List<Record>> call(List<Record> records) {
@@ -134,19 +136,19 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     }
 
     @Override
-    public void sendVote(final Record record, final Option option, final String username, final Subscriber<Record> quizSubscriber) {
+    public void sendVote(final Record record, final Option option, final String username, final Subscriber<Record> quizSubscriber, final Integer position) {
         Log.i(TAG, String.format("sendVote: recordId - %d, option - %s, username - %s", record.getRecordId(), option.getOptionName(), username));
 
         Subscription subscription =
                 requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
-                        .flatMap(new Func1<Void, Observable<Option>>() {
+                        .flatMap(new Func1<Record, Observable<Record>>() {
                             @Override
-                            public Observable<Option> call(Void aVoid) {
-                                return Observable.just(databaseManager.addVote(record.getRecordId(), option, username));
+                            public Observable<Record> call(Record newRecord) {
+                                return Observable.just(databaseManager.update(newRecord));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Option>() {
+                        .subscribe(new Subscriber<Record>() {
                             @Override
                             public void onCompleted() {
 
@@ -159,12 +161,12 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                             }
 
                             @Override
-                            public void onNext(Option option) {
+                            public void onNext(Record newRecord) {
                                 Log.i(TAG, "sendVote: SUCCESS");
-                                addUserVote(option, username);
 
+                                mWallView.updateRecord(position, newRecord);
                                 if (!quizSubscriber.isUnsubscribed()) {
-                                    Observable.just(record)
+                                    Observable.just(newRecord)
                                             .subscribe(quizSubscriber);
                                 }
                             }
@@ -173,9 +175,6 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         compositeSubscription.add(subscription);
     }
 
-    private void addUserVote(Option option, String username) {
-        option.getVotes().add(username);
-    }
 
     @Override
     public void onStop() {

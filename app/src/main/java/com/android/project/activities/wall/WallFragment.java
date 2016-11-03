@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 public class WallFragment extends Fragment implements WallPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
-
+    private static final String TAG = WallFragment.class.getSimpleName();
     @BindView(R.id.main_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
@@ -41,6 +42,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    private String mTargetUsername;
     private WallPresenter.ActionListener mActionListener;
     private WallRecyclerViewAdapter mRecyclerViewAdapter;
     private SharedPreferences mSharedPreferences;
@@ -55,8 +57,8 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mActionListener = new WallPresenterImpl(this);
-        mRecyclerViewAdapter = new WallRecyclerViewAdapter(mActionListener, getUsername());
+        mActionListener = new WallPresenterImpl(getTargetUsername(), this);
+        mRecyclerViewAdapter = new WallRecyclerViewAdapter(mActionListener, getTargetUsername());
 
 
         super.onCreate(savedInstanceState);
@@ -66,6 +68,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.wall_fragment, container, false);
+        Log.i(TAG, "WAAAAAAAL FRAGMENT CREATED");
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
         swipeLayout.setOnRefreshListener(getRefreshListener());
@@ -82,6 +85,11 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     public void onResume() {
         super.onResume();
         refreshVotedRecords();
+    }
+
+    @Override
+    public void updateRecord(Integer position, Record record) {
+        mRecyclerViewAdapter.updateRecord(position, record);
     }
 
     public void updateWall() {
@@ -116,6 +124,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     public void onStop() {
         super.onStop();
         mActionListener.onStop();
+        mRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -133,8 +142,12 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         swipeLayout.setRefreshing(true);
     }
 
-    private String getUsername() {
-        return mSharedPreferences.getString(getString(R.string.user_name), "");
+    private String getTargetUsername() {
+        if (mTargetUsername == null) {
+            mTargetUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
+        }
+
+        return mTargetUsername;
     }
 
     private void refreshVotedRecords() {
@@ -148,6 +161,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mActionListener.onStop();
                 clearWall();
                 updateWall();
             }

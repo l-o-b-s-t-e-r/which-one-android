@@ -1,5 +1,5 @@
 #
-# generated on 2016/09/25 02:31:30
+# generated on 2016/11/01 03:35:17
 #
 # --table-start--
 dataClass=com.android.project.model.ImageEntity
@@ -9,6 +9,7 @@ tableName=imageentity
 fieldName=mRecord
 columnName=record_id
 foreign=true
+indexName=imageentity_record_id_idx
 foreignAutoRefresh=true
 maxForeignAutoRefreshLevel=2
 # --field-end--
@@ -33,6 +34,7 @@ generatedId=true
 fieldName=mRecord
 columnName=record_id
 foreign=true
+indexName=optionentity_record_id_idx
 foreignAutoRefresh=true
 maxForeignAutoRefreshLevel=2
 # --field-end--
@@ -41,11 +43,8 @@ fieldName=mOptionName
 columnName=option_name
 # --field-end--
 # --field-start--
-fieldName=mVotes
-columnName=votes
-foreignCollection=true
-foreignCollectionEager=true
-foreignCollectionColumnName=votes
+fieldName=mVoteCount
+columnName=vote_count
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -68,8 +67,12 @@ fieldName=mAvatarPath
 columnName=avatar_path
 # --field-end--
 # --field-start--
-fieldName=mTitle
-columnName=title
+fieldName=mDescription
+columnName=description
+# --field-end--
+# --field-start--
+fieldName=mSelectedOption
+columnName=selected_option
 # --field-end--
 # --field-start--
 fieldName=mImages
@@ -78,32 +81,12 @@ foreignCollection=true
 foreignCollectionEager=true
 foreignCollectionColumnName=images
 # --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
-dataClass=com.android.project.model.VoteEntity
-tableName=voteentity
-# --table-fields-start--
 # --field-start--
-fieldName=id
-columnName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=mRecordId
-columnName=record_id
-# --field-end--
-# --field-start--
-fieldName=mOption
-columnName=option_id
-foreign=true
-foreignAutoRefresh=true
-maxForeignAutoRefreshLevel=2
-# --field-end--
-# --field-start--
-fieldName=mVotedUser
-columnName=voted_user
+fieldName=mOptions
+columnName=options
+foreignCollection=true
+foreignCollectionEager=true
+foreignCollectionColumnName=options
 # --field-end--
 # --table-fields-end--
 # --table-end--

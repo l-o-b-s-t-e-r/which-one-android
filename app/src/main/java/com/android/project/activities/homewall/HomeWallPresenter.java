@@ -23,9 +23,9 @@ public interface HomeWallPresenter {
 
         Record getRecordById(Long recordId);
 
-        void loadLastRecords(String username);
+        void loadLastRecords(String requestedUsername);
 
-        void loadNextRecords(String username, Long lastLoadedRecordId);
+        void loadNextRecords(String requestedUsername, Long lastLoadedRecordId);
 
         void loadRecordDetail(Long recordId);
     }

@@ -42,8 +42,8 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
 
     @BindView(R.id.options_container)
     LinearLayout container;
-    @BindView(R.id.title)
-    EditText editTextTitle;
+    @BindView(R.id.description)
+    EditText description;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.toolbar)
@@ -84,12 +84,6 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
             return;
         }
 
-        String recordTitle = editTextTitle.getText().toString().trim();
-        if (recordTitle.isEmpty()) {
-            Toast.makeText(this, getString(R.string.new_record_empty_title), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         String optionName;
         List<String> allOptions = new ArrayList<>();
 
@@ -108,7 +102,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
                 mRecyclerViewAdapter.getAllImages(),
                 allOptions,
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(getString(R.string.user_name), ""),
-                recordTitle);
+                description.getText().toString().trim());
     }
 
     @Override

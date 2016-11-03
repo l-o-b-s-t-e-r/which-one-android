@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.android.project.R;
 import com.android.project.activities.wall.WallFragment;
@@ -33,6 +34,8 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     Toolbar toolbar;
     @BindView(R.id.detail_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.description)
+    TextView description;
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
 
@@ -71,11 +74,12 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         Log.i(TAG, "showRecord: record - " + record.toString());
 
         mRecord = record;
+        description.setText(record.getDescription());
         mRecyclerViewAdapter.updateData(record.getImages());
 
         radioGroup.removeAllViews();
-        if (mRecord.getAllVotes().contains(mUsername)) {
-            QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord, mUsername);
+        if (mRecord.getSelectedOption() != null) {
+            QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
         } else {
             QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
             }
@@ -93,7 +97,8 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     }
 
     @Override
-    public void updateQuiz() {
+    public void updateQuiz(Record newRecord) {
+        mRecord = newRecord;
         addRecordToSharedPreferences();
 
         for (QuizViewBuilder.ViewHolder viewHolder : mViewHolderOptions) {
@@ -132,7 +137,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 radioGroup.removeAllViews();
 
-                mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord, mUsername);
+                mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord);
 
                 mActionListener.sendVote(
                         mRecord,

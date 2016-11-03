@@ -6,20 +6,10 @@ package com.android.project.model;
 
 public class Image{
 
-    private Long recordId;
     private String image;
 
-    public Image(Long recordId, String image) {
-        this.recordId = recordId;
+    public Image(String image) {
         this.image = image;
-    }
-
-    public Long getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(Long recordId) {
-        this.recordId = recordId;
     }
 
     public String getImage() {
@@ -28,5 +18,12 @@ public class Image{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "image='" + image + '\'' +
+                '}';
     }
 }

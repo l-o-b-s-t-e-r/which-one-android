@@ -11,7 +11,7 @@ public class ImageEntity {
     public static final String RECORD_ID_FIELD_NAME = "record_id";
     public static final String IMAGE_NAME_FIELD_NAME = "image_name";
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = RECORD_ID_FIELD_NAME)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = RECORD_ID_FIELD_NAME, index = true)
     private RecordEntity mRecord;
     @DatabaseField(id = true, columnName = IMAGE_NAME_FIELD_NAME)
     private String mImagePath;

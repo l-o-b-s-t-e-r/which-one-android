@@ -32,9 +32,11 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     @Inject
     public CompositeSubscription compositeSubscription;
 
+    private String mTargetUsername;
     private HomeWallPresenter.View mHomeWallView;
 
-    public HomeWallPresenterImpl(HomeWallPresenter.View homeWallView) {
+    public HomeWallPresenterImpl(String targetUsername, HomeWallPresenter.View homeWallView) {
+        mTargetUsername = targetUsername;
         mHomeWallView = homeWallView;
         WhichOneApp.getMainComponent().inject(this);
     }
@@ -45,13 +47,13 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     }
 
     @Override
-    public void loadLastRecords(String username) {
-        Log.i(TAG, "loadLastRecords: username - " + username);
+    public void loadLastRecords(String requestedUsername) {
+        Log.i(TAG, "loadLastRecords: username - " + requestedUsername);
 
         mHomeWallView.showProgress();
         Subscription subscription =
                 requestService
-                        .getLastUserRecords(username)
+                        .getLastUserRecords(requestedUsername, mTargetUsername)
                         .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
                             public Observable<List<Record>> call(List<Record> records) {
@@ -84,13 +86,13 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     }
 
     @Override
-    public void loadNextRecords(String username, Long lastLoadedRecordId) {
-        Log.i(TAG, String.format("loadNextRecords: username - %s, lastLoadedRecordId - %d", username, lastLoadedRecordId));
+    public void loadNextRecords(String requestedUsername, Long lastLoadedRecordId) {
+        Log.i(TAG, String.format("loadNextRecords: username - %s, lastLoadedRecordId - %d", requestedUsername, lastLoadedRecordId));
 
         mHomeWallView.showProgress();
         Subscription subscription =
                 requestService
-                        .getNextUserRecords(username, lastLoadedRecordId)
+                        .getNextUserRecords(requestedUsername, lastLoadedRecordId, mTargetUsername)
                         .flatMap(new Func1<List<Record>, Observable<List<Record>>>() {
                             @Override
                             public Observable<List<Record>> call(List<Record> records) {

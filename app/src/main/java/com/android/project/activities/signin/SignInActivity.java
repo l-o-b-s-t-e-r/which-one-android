@@ -51,22 +51,10 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mSharedPreferences.contains(getString(R.string.user_name))) {
             Log.i(TAG, "Application remembers this user. Start MainActivity");
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(getMainActivityIntent());
         }
 
         mActionListener = new SignInPresenterImpl(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume");
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Log.i(TAG, "onNewIntent");
     }
 
     @OnClick(R.id.forgot_password)
@@ -129,12 +117,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
                     .putString(getString(R.string.user_name), editTextName.getText().toString().trim())
                     .apply();
 
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                    Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            startActivity(intent);
+            startActivity(getMainActivityIntent());
         } else {
             Toast.makeText(SignInActivity.this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
             editTextName.setError(getString(R.string.wrong_password_or_name));
@@ -156,6 +139,15 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     protected void onStop() {
         mActionListener.onStop();
         super.onStop();
+    }
+
+    private Intent getMainActivityIntent() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        return intent;
     }
 
     @Override

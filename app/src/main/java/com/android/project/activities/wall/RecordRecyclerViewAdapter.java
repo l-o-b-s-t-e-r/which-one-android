@@ -1,6 +1,7 @@
 package com.android.project.activities.wall;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,18 @@ import butterknife.OnClick;
 public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = RecordRecyclerViewAdapter.class.getSimpleName();
+    private Long mRecordId;
     private List<Image> mImages;
     private WallPresenter.ActionListener mActionListener;
 
-    public RecordRecyclerViewAdapter(List<Image> images, WallPresenter.ActionListener actionListener) {
-        mImages = images;
+    public RecordRecyclerViewAdapter(WallPresenter.ActionListener actionListener) {
         mActionListener = actionListener;
+    }
+
+    public void setContent(Long recordId, List<Image> images) {
+        mRecordId = recordId;
+        mImages = images;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -66,11 +73,11 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
 
         @OnClick(R.id.record_image)
         public void onImageClick() {
-            mActionListener.openRecordDetail(mImages.get(0).getRecordId());
+            mActionListener.openRecordDetail(mRecordId);
         }
 
         public void setContent(final Image image) {
-            imageView.setImageResource(R.drawable.user);
+            spinner.setVisibility(View.VISIBLE);
 
             WhichOneApp.getPicasso()
                     .load(ImageManager.IMAGE_URL + image.getImage())
@@ -82,7 +89,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
 
                         @Override
                         public void onError() {
-
+                            Log.e(TAG, "ERROR");
                         }
                     });
         }

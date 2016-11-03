@@ -22,6 +22,9 @@ public interface RequestAPI {
     @GET("sign_up")
     Observable<Void> signUp(@Query("name") String name, @Query("password") String password, @Query("email") String email);
 
+    @GET("sign_in")
+    Observable<Void> signIn(@Query("name") String name, @Query("password") String password);
+
     @GET("check_name")
     Observable<Void> checkName(@Query("name") String name);
 
@@ -31,32 +34,29 @@ public interface RequestAPI {
     @GET("remind_info")
     Observable<Void> remindInfo(@Query("email") String email);
 
-    @GET("sign_in")
-    Observable<Void> signIn(@Query("name") String name, @Query("password") String password);
-
     @GET("get_user_info")
     Observable<User> getUserInfo(@Query("name") String name);
 
     @GET("get_last_records")
-    Observable<List<Record>> getLastRecords();
+    Observable<List<Record>> getLastRecords(@Query("targetUsername") String targetUsername);
 
     @GET("get_next_records")
-    Observable<List<Record>> getNextRecords(@Query("recordId") Long recordId);
+    Observable<List<Record>> getNextRecords(@Query("recordId") Long recordId, @Query("targetUsername") String targetUsername);
 
     @GET("get_last_user_records")
-    Observable<List<Record>> getLastUserRecords(@Query("name") String name);
+    Observable<List<Record>> getLastUserRecords(@Query("requestedUsername") String requestedUsername, @Query("targetUsername") String targetUsername);
 
     @GET("get_next_user_records")
-    Observable<List<Record>> getNextUserRecords(@Query("name") String name, @Query("recordId") Long recordId);
+    Observable<List<Record>> getNextUserRecords(@Query("requestedUsername") String requestedUsername, @Query("recordId") Long recordId, @Query("targetUsername") String targetUsername);
 
     @GET("get_users")
     Observable<List<User>> getUsers(@Query("searchQuery") String searchQuery);
 
     @GET("get_users_from_id")
-    Observable<List<User>> getUsersFromId(@Query("searchQuery") String searchQuery, @Query("userId") Long userId);
+    Observable<List<User>> getUsersFromId(@Query("searchQuery") String searchQuery, @Query("lastUsername") String lastUsername);
 
     @POST("save_vote")
-    Observable<Void> sendVote(@Query("userName") String userName, @Query("recordId") Long recordId, @Query("option") String option);
+    Observable<Record> sendVote(@Query("userName") String userName, @Query("recordId") Long recordId, @Query("optionName") String optionName);
 
     @Multipart
     @POST("update_avatar")
@@ -71,6 +71,6 @@ public interface RequestAPI {
     Observable<Void> addRecord(@Part("files\"; filename=\"*.png") List<RequestBody> files,
                                @Part("options") List<RequestBody> options,
                                @Part("name") RequestBody name,
-                               @Part("title") RequestBody title);
+                               @Part("description") RequestBody description);
 
 }

@@ -81,7 +81,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     @Override
     public void showUserPage(User user) {
         Intent intent = new Intent(this, UserPageActivity.class);
-        intent.putExtra(getString(R.string.user_name_opened_page), user.getName());
+        intent.putExtra(getString(R.string.user_name_opened_page), user.getUsername());
         startActivity(intent);
     }
 

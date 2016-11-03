@@ -29,7 +29,6 @@
                 android:layout_height="300dp"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/background_top"
                 app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
@@ -63,13 +62,12 @@
     </RelativeLayout>
 
 
-    <com.android.project.util.SquareImageView
+    <ImageView
         android:id="@+id/avatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="top"
         android:layout_marginTop="75dp"
-        android:src="@drawable/user"
         app:layout_behavior="com.android.project.util.ImageBehavior" />
 
     <android.support.design.widget.FloatingActionButton

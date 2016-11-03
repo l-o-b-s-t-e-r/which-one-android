@@ -25,6 +25,8 @@ import butterknife.OnClick;
  */
 public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder> {
 
+    private static final String TAG = SearchRecyclerViewAdapter.class.getSimpleName();
+
     private List<User> mUsers;
     private String mSearchQuery;
     private SearchPresenter.ActionListener mActionListener;
@@ -47,7 +49,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.setContent(mUsers.get(position));
         if (position == mUsers.size() - 1) {
-            mActionListener.loadNextUsers(mSearchQuery, mUsers.get(position).getId());
+            mActionListener.loadNextUsers(mSearchQuery, mUsers.get(position).getUsername());
         }
     }
 
@@ -88,7 +90,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         public void setContent(User user) {
             mUser = user;
 
-            username.setText(mUser.getName());
+            username.setText(mUser.getUsername());
             WhichOneApp.getPicasso()
                     .load(ImageManager.IMAGE_URL + mUser.getAvatar())
                     .into(mAvatarTarget);

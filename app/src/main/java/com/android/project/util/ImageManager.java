@@ -26,7 +26,7 @@ public class ImageManager {
     public static final String IMAGE_URL = RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER;
     private static final String TAG = ImageManager.class.getSimpleName();
     private static final Float CORNER_RADIUS = 50.0f;
-    private static final Integer MAX_SIDE_LENGTH = 400;
+    private static final Integer MAX_SIDE_LENGTH = 600;
     private static ImageManager mImageManager;
 
     private ImageManager() {
@@ -41,7 +41,7 @@ public class ImageManager {
         return mImageManager;
     }
 
-    public String startLoadImage(String imageName) {
+    public String startLoadImage(final String imageName) {
         WhichOneApp.getPicasso()
                 .load(IMAGE_URL + imageName)
                 .fetch();
@@ -74,16 +74,16 @@ public class ImageManager {
     public File cropImageAsSquare(File imageFile) {
         Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
 
-        if (bitmap.getWidth() == bitmap.getHeight()) {
-            return imageFile;
+        if (bitmap.getWidth() != bitmap.getHeight()) {
+            int sideLength = Math.min(bitmap.getHeight(), bitmap.getWidth());
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                bitmap = Bitmap.createBitmap(bitmap, (bitmap.getWidth() - sideLength) / 2, 0, sideLength, sideLength);
+            } else {
+                bitmap = Bitmap.createBitmap(bitmap, 0, (bitmap.getHeight() - sideLength) / 2, sideLength, sideLength);
+            }
         }
 
-        int sideLength = Math.min(bitmap.getHeight(), bitmap.getWidth());
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            bitmap = Bitmap.createBitmap(bitmap, (bitmap.getWidth() - sideLength) / 2, 0, sideLength, sideLength);
-        } else {
-            bitmap = Bitmap.createBitmap(bitmap, 0, (bitmap.getHeight() - sideLength) / 2, sideLength, sideLength);
-        }
+        bitmap = Bitmap.createScaledBitmap(bitmap, MAX_SIDE_LENGTH, MAX_SIDE_LENGTH, false);
 
         FileOutputStream outputStream = null;
         try {
@@ -91,6 +91,7 @@ public class ImageManager {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 

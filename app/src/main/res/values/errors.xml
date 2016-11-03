@@ -4,7 +4,7 @@
     <string name="empty_field">Field cannot be empty</string>
     <string name="password_not_match">Password does not match</string>
     <string name="space_existence">Field cannot contain a space</string>
-    <string name="invalid_characters">Username must have only a-z and 0-9</string>
+    <string name="invalid_characters">Username must have only a–z and 0–9</string>
     <string name="existing_name">Such name already exists</string>
     <string name="existing_email">Such email already exists</string>
     <string name="incorrect_email">Email is incorrect</string>

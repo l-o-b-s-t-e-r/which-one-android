@@ -84,32 +84,31 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Observable<List<Record>> getLastRecords() {
+    public Observable<List<Record>> getLastRecords(String targetUsername) {
         return mRequest
-                .getLastRecords()
+                .getLastRecords(targetUsername)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<Record>> getNextRecords(Long recordId, String targetUsername) {
+        return mRequest
+                .getNextRecords(recordId, targetUsername)
                 .subscribeOn(Schedulers.io());
         //.compose(this.<List<Record>>applySchedulers());
     }
 
     @Override
-    public Observable<List<Record>> getNextRecords(Long recordId) {
+    public Observable<List<Record>> getLastUserRecords(String requestedUsername, String targetUsername) {
         return mRequest
-                .getNextRecords(recordId)
-                .subscribeOn(Schedulers.io());
-        //.compose(this.<List<Record>>applySchedulers());
-    }
-
-    @Override
-    public Observable<List<Record>> getLastUserRecords(String userName) {
-        return mRequest
-                .getLastUserRecords(userName)
+                .getLastUserRecords(requestedUsername, targetUsername)
                 .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<List<Record>> getNextUserRecords(String userName, Long recordId) {
+    public Observable<List<Record>> getNextUserRecords(String requestedUsername, Long recordId, String targetUsername) {
         return mRequest
-                .getNextUserRecords(userName, recordId)
+                .getNextUserRecords(requestedUsername, recordId, targetUsername)
                 .subscribeOn(Schedulers.io());
     }
 
@@ -121,15 +120,15 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Observable<Void> addRecord(List<File> files, List<String> options, String name, String title) {
+    public Observable<Void> addRecord(List<File> files, List<String> options, String name, String description) {
         List<RequestBody> requestFiles = new ArrayList<>();
         List<RequestBody> requestOptions = new ArrayList<>();
 
         RequestBody requestName =
                 RequestBody.create(MediaType.parse("text/plain"), name);
 
-        RequestBody requestTitle =
-                RequestBody.create(MediaType.parse("text/plain"), title);
+        RequestBody requestDescription =
+                RequestBody.create(MediaType.parse("text/plain"), description);
 
         for (File f : files) {
             requestFiles.add(RequestBody.create(MediaType.parse("image/png"), f));
@@ -140,7 +139,7 @@ public class RequestServiceImpl implements RequestService {
         }
 
         return mRequest
-                .addRecord(requestFiles, requestOptions, requestName, requestTitle)
+                .addRecord(requestFiles, requestOptions, requestName, requestDescription)
                 .compose(this.<Void>applySchedulers());
     }
 
@@ -155,7 +154,7 @@ public class RequestServiceImpl implements RequestService {
 
         return mRequest
                 .updateBackground(requestFile, requestName)
-                .compose(this.<User>applySchedulers());
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -178,15 +177,14 @@ public class RequestServiceImpl implements RequestService {
                 .compose(this.<List<User>>applySchedulers());
     }
 
-    @Override
-    public Observable<List<User>> getUsersFromId(String searchQuery, Long userId) {
+    public Observable<List<User>> getUsersFromUsername(String searchQuery, String lastUsername) {
         return mRequest
-                .getUsersFromId(searchQuery, userId)
+                .getUsersFromId(searchQuery, lastUsername)
                 .compose(this.<List<User>>applySchedulers());
     }
 
     @Override
-    public Observable<Void> sendVote(Long recordId, String optionName, String userName) {
+    public Observable<Record> sendVote(Long recordId, String optionName, String userName) {
         return mRequest
                 .sendVote(userName, recordId, optionName)
                 .subscribeOn(Schedulers.io());

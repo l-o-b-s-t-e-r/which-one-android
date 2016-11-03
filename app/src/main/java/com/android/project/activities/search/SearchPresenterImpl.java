@@ -69,13 +69,13 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
     }
 
     @Override
-    public void loadNextUsers(String searchQuery, Long lastLoadedUserId) {
-        Log.i(TAG, String.format("loadNextUsers: searchQuery - %s, lastLoadedUserId - %d", searchQuery, lastLoadedUserId));
+    public void loadNextUsers(String searchQuery, String lastLoadedUsername) {
+        Log.i(TAG, String.format("loadNextUsers: searchQuery - %s, lastLoadedUsername - %s", searchQuery, lastLoadedUsername));
 
         mSearchView.showProgress();
         Subscription subscription =
                 requestService
-                        .getUsersFromId(searchQuery, lastLoadedUserId)
+                        .getUsersFromUsername(searchQuery, lastLoadedUsername)
                         .subscribe(new Subscriber<List<User>>() {
                             @Override
                             public void onCompleted() {

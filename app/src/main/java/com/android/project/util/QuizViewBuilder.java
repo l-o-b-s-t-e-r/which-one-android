@@ -60,26 +60,26 @@ public class QuizViewBuilder {
         }
     }
 
-    public void createVotedOptions(RadioGroup radioGroup, Record record, String username) {
+    public void createVotedOptions(RadioGroup radioGroup, Record record) {
         LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         for (Option option : record.getOptions()) {
             View view = inflater.inflate(R.layout.quiz_option, null);
 
-            ViewHolder viewHolder = new ViewHolder(view, option, username);
+            ViewHolder viewHolder = new ViewHolder(view, option);
             viewHolder.setContent(record);
 
             radioGroup.addView(view, radioGroup.getChildCount());
         }
     }
 
-    public List<ViewHolder> createProgressOption(final RadioGroup radioGroup, final Record record, final String username) {
+    public List<ViewHolder> createProgressOption(final RadioGroup radioGroup, final Record record) {
         LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         final List<ViewHolder> viewHolderOptions = new ArrayList<>();
         for (Option option : record.getOptions()) {
             View view = inflater.inflate(R.layout.quiz_option, null);
-            ViewHolder viewHolder = new ViewHolder(view, option, username);
+            ViewHolder viewHolder = new ViewHolder(view, option);
             viewHolderOptions.add(viewHolder);
             radioGroup.addView(view, radioGroup.getChildCount());
         }
@@ -114,24 +114,22 @@ public class QuizViewBuilder {
         @BindView(R.id.option_name)
         TextView optionName;
 
-        private String mUsername;
         private Option mOption;
 
         public ViewHolder() {
 
         }
 
-        public ViewHolder(View view, Option option, String username) {
+        public ViewHolder(View view, Option option) {
             ButterKnife.bind(this, view);
 
-            mUsername = username;
             mOption = option;
             optionName.setText(option.getOptionName());
         }
 
         public void setContent(Record record) {
-            Integer optionVotesCount = mOption.getVotes().size();
-            Integer allVotesCount = record.getAllVotes().size();
+            Integer optionVotesCount = record.getOption(mOption.getOptionName()).getVoteCount();
+            Integer allVotesCount = record.getVoteCount();
 
             progressBar.setIndeterminate(false);
             progressBar.setProgress(optionVotesCount);
@@ -140,7 +138,7 @@ public class QuizViewBuilder {
             voteCount.setText(String.valueOf(optionVotesCount));
             percent.setText(FORMAT.format((float) optionVotesCount / allVotesCount));
 
-            if (mOption.getVotes().contains(mUsername)) {
+            if (mOption.getOptionName().equals(record.getSelectedOption())) {
                 progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
             }
         }

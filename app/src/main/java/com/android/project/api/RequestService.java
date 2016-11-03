@@ -23,13 +23,13 @@ public interface RequestService {
 
     Observable<Void> signIn(String name, String password);
 
-    Observable<List<Record>> getLastRecords();
+    Observable<List<Record>> getLastRecords(String targetUsername);
 
-    Observable<List<Record>> getNextRecords(Long recordId);
+    Observable<List<Record>> getNextRecords(Long recordId, String targetUsername);
 
-    Observable<List<Record>> getLastUserRecords(String userName);
+    Observable<List<Record>> getLastUserRecords(String requestedUsername, String targetUsername);
 
-    Observable<List<Record>> getNextUserRecords(String userName, Long recordId);
+    Observable<List<Record>> getNextUserRecords(String requestedUsername, Long recordId, String targetUsername);
 
     Observable<User> getUserInfo(String name);
 
@@ -37,11 +37,11 @@ public interface RequestService {
 
     Observable<User> updateAvatar(File avatar, String name);
 
-    Observable<Void> addRecord(List<File> files, List<String> options, String name, String title);
+    Observable<Void> addRecord(List<File> files, List<String> options, String name, String description);
 
     Observable<List<User>> getUsers(String searchQuery);
 
-    Observable<List<User>> getUsersFromId(String searchQuery, Long userId);
+    Observable<List<User>> getUsersFromUsername(String searchQuery, String lastUsername);
 
-    Observable<Void> sendVote(Long recordId, String optionName, String userName);
+    Observable<Record> sendVote(Long recordId, String optionName, String userName);
 }

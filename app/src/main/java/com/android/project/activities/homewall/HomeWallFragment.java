@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import butterknife.ButterKnife;
 
 public class HomeWallFragment extends Fragment implements HomeWallPresenter.View {
 
+    private static final String TAG = HomeWallFragment.class.getSimpleName();
+
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeLayout;
     @BindView(R.id.progressBar)
@@ -33,7 +36,8 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     @BindView(R.id.home_wall_recycler)
     RecyclerView recyclerView;
 
-    private String mUsername;
+    private String mTargetUsername;
+    private String mRequestedUsername;
     private HomeWallPresenter.ActionListener mActionListener;
     private HomeWallRecyclerViewAdapter mRecyclerViewAdapter;
 
@@ -52,7 +56,8 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        mActionListener = new HomeWallPresenterImpl(this);
+        mTargetUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
+        mActionListener = new HomeWallPresenterImpl(mTargetUsername, this);
         mRecyclerViewAdapter = new HomeWallRecyclerViewAdapter(mActionListener);
 
         super.onCreate(savedInstanceState);
@@ -62,21 +67,22 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_wall, container, false);
+        Log.i(TAG, "HOOOOOME WAAAAAAAL FRAGMENT CREATED");
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
         swipeLayout.setOnRefreshListener(getRefreshListener());
 
         Bundle bundle = getActivity().getIntent().getExtras();
         if (bundle == null) {
-            mUsername = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.user_name), "");
+            mRequestedUsername = mTargetUsername;
         } else {
-            mUsername = bundle.getString(getString(R.string.user_name_opened_page));
+            mRequestedUsername = bundle.getString(getString(R.string.user_name_opened_page));
         }
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(mRecyclerViewAdapter);
 
-        mActionListener.loadLastRecords(mUsername);
+        mActionListener.loadLastRecords(mRequestedUsername);
 
         return view;
     }
@@ -131,7 +137,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
             public void onRefresh() {
                 refreshing = true;
                 clearHomeWall();
-                mActionListener.loadLastRecords(mUsername);
+                mActionListener.loadLastRecords(mRequestedUsername);
             }
         };
     }

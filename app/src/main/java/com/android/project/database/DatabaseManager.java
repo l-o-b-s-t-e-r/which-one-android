@@ -1,6 +1,5 @@
 package com.android.project.database;
 
-import com.android.project.model.Option;
 import com.android.project.model.Record;
 
 import java.util.List;
@@ -10,9 +9,11 @@ import java.util.List;
  */
 public interface DatabaseManager {
 
-    Long save(Record record);
+    Record save(Record record);
 
-    Option addVote(Long recordId, Option option, String votedUser);
+    Record update(Record record);
+
+    void delete(Integer recordId);
 
     List<Record> saveAll(List<Record> records);
 

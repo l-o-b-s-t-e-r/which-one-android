@@ -8,7 +8,6 @@ import com.android.project.R;
 import com.android.project.model.ImageEntity;
 import com.android.project.model.OptionEntity;
 import com.android.project.model.RecordEntity;
-import com.android.project.model.VoteEntity;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -24,13 +23,12 @@ import java.sql.SQLException;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "which_one.db";
-    private static final int DATABASE_VERSION = 25;
+    private static final int DATABASE_VERSION = 40;
     private static DatabaseHelper mDatabaseHelper;
 
     private Dao<ImageEntity, Integer> mImageDao;
     private Dao<OptionEntity, Integer> mOptionDao;
     private Dao<RecordEntity, Integer> mRecordDao;
-    private Dao<VoteEntity, Integer> mVoteDao;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -50,7 +48,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, ImageEntity.class);
             TableUtils.createTable(connectionSource, OptionEntity.class);
             TableUtils.createTable(connectionSource, RecordEntity.class);
-            TableUtils.createTable(connectionSource, VoteEntity.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);
@@ -63,7 +60,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, ImageEntity.class, true);
             TableUtils.dropTable(connectionSource, OptionEntity.class, true);
             TableUtils.dropTable(connectionSource, RecordEntity.class, true);
-            TableUtils.dropTable(connectionSource, VoteEntity.class, true);
             onCreate(sqliteDatabase, connectionSource);
 
         } catch (SQLException e) {
@@ -96,14 +92,4 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
         return mRecordDao;
     }
-
-    public Dao<VoteEntity, Integer> getVoteDao() throws SQLException {
-        if (mVoteDao == null) {
-            mVoteDao = getDao(VoteEntity.class);
-        }
-
-        return mVoteDao;
-    }
-
-
 }

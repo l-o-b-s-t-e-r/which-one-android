@@ -13,7 +13,7 @@ public interface RecordDetailPresenter {
 
         void showRecord(Record record);
 
-        void updateQuiz();
+        void updateQuiz(Record newRecord);
 
     }
 

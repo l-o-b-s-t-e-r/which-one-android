@@ -9,10 +9,11 @@ import java.util.List;
 
 public class Record{
 
+    private Long recordId;
     private String username;
     private String avatar;
-    private Long recordId;
-    private String title;
+    private String description;
+    private String selectedOption;
     private List<Image> images;
     private List<Option> options;
 
@@ -20,13 +21,34 @@ public class Record{
 
     }
 
-    public Record(String username, String avatar, Long recordId, String title, List<Image> images, List<Option> options) {
+    public Record(String username, String avatar, Long recordId, String description, String selectedOption, List<Image> images, List<Option> options) {
         this.username = username;
         this.avatar = avatar;
         this.recordId = recordId;
-        this.title = title;
+        this.description = description;
+        this.selectedOption = selectedOption;
         this.images = images;
         this.options = options;
+    }
+
+    public Record(RecordEntity entity) {
+        setRecordId(entity.getRecordId());
+        setUsername(entity.getUsername());
+        setAvatar(entity.getAvatarPath());
+        setDescription(entity.getDescription());
+        setSelectedOption(entity.getSelectedOption());
+
+        List<Image> images = new ArrayList<>();
+        for (ImageEntity imageEntity : entity.getImages()) {
+            images.add(new Image(imageEntity.getImagePath()));
+        }
+        setImages(images);
+
+        List<Option> options = new ArrayList<>();
+        for (OptionEntity optionEntity : entity.getOptions()) {
+            options.add(new Option(optionEntity.getOptionName(), optionEntity.getVoteCount()));
+        }
+        setOptions(options);
     }
 
     public List<Image> getImages() {
@@ -69,23 +91,39 @@ public class Record{
         this.avatar = avatar;
     }
 
-    public String getTitle() {
-        return title;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public List<String> getAllVotes(){
-        List<String> votes = new ArrayList<>();
-        for (Option o: options){
-            if (o != null) {
-                votes.addAll(o.getVotes());
+    public String getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(String selectedOption) {
+        this.selectedOption = selectedOption;
+    }
+
+    public int getVoteCount() {
+        int voteCount = 0;
+        for (Option option : options) {
+            voteCount += option.getVoteCount();
+        }
+
+        return voteCount;
+    }
+
+    public Option getOption(String optionName) {
+        for (Option option : options) {
+            if (option.getOptionName().equals(optionName)) {
+                return option;
             }
         }
 
-        return votes;
+        return null;
     }
 
     @Override

@@ -54,18 +54,18 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     public void showUserInfo(User user) {
-        collapsingToolbar.setTitle(user.getName());
+        collapsingToolbar.setTitle(user.getUsername());
 
         mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
 
         WhichOneApp.getPicasso()
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
-                .placeholder(R.drawable.logo)
+                .error(R.drawable.logo)
                 .into(mAvatarTarget);
 
         WhichOneApp.getPicasso()
                 .load(ImageManager.IMAGE_URL + user.getBackground())
-                .placeholder(R.drawable.background_top)
+                .error(R.drawable.background_top)
                 .into(background);
     }
 
@@ -79,8 +79,6 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
         return super.onOptionsItemSelected(item);
     }
-
-    ;
 
     @Override
     protected void onStop() {

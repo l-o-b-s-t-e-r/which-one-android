@@ -38,6 +38,8 @@ import com.android.project.activities.wall.WallFragment;
 import com.android.project.model.User;
 import com.android.project.util.ImageKeeper;
 import com.android.project.util.ImageManager;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Target;
 
 import java.io.File;
@@ -72,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall);
         ButterKnife.bind(this);
-
-        Log.i(TAG, "onCreate");
 
         Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -234,12 +234,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         WhichOneApp.getPicasso()
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
-                .placeholder(R.drawable.logo)
+                .error(R.drawable.logo)
                 .into(mAvatarTarget);
 
         WhichOneApp.getPicasso()
                 .load(ImageManager.IMAGE_URL + user.getBackground())
-                .placeholder(R.drawable.background_top)
+                .error(R.drawable.background_top)
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                 .into(background);
     }
 
@@ -249,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         MenuItem updateItem = menu.findItem(R.id.action_update);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
+        ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
         updateActionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
