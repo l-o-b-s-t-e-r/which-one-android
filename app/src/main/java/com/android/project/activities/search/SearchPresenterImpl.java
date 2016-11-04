@@ -7,11 +7,8 @@ import com.android.project.api.RequestService;
 import com.android.project.database.DatabaseManager;
 import com.android.project.model.User;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -41,29 +38,16 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
     public void loadUsers(String searchQuery) {
         Log.i(TAG, "loadUsers: searchQuery - " + searchQuery);
 
-        mSearchView.showProgress();
         Subscription subscription =
                 requestService
                         .getUsers(searchQuery)
-                        .subscribe(new Subscriber<List<User>>() {
-                            @Override
-                            public void onCompleted() {
-                                mSearchView.hideProgress();
-                            }
+                        .doOnSubscribe(mSearchView::showProgress)
+                        .doOnUnsubscribe(mSearchView::hideProgress)
+                        .subscribe(
+                                mSearchView::showUsers,
+                                Throwable::printStackTrace
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadUsers: " + e.getMessage());
-                                mSearchView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(List<User> users) {
-                                Log.i(TAG, "loadUsers: loaded, users - " + users.toString());
-                                mSearchView.showUsers(users);
-                            }
-                        });
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -72,29 +56,16 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
     public void loadNextUsers(String searchQuery, String lastLoadedUsername) {
         Log.i(TAG, String.format("loadNextUsers: searchQuery - %s, lastLoadedUsername - %s", searchQuery, lastLoadedUsername));
 
-        mSearchView.showProgress();
         Subscription subscription =
                 requestService
                         .getUsersFromUsername(searchQuery, lastLoadedUsername)
-                        .subscribe(new Subscriber<List<User>>() {
-                            @Override
-                            public void onCompleted() {
-                                mSearchView.hideProgress();
-                            }
+                        .doOnSubscribe(mSearchView::showProgress)
+                        .doOnUnsubscribe(mSearchView::hideProgress)
+                        .subscribe(
+                                mSearchView::showUsers,
+                                Throwable::printStackTrace
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadNextUsers: " + e.getMessage());
-                                mSearchView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(List<User> users) {
-                                Log.i(TAG, "loadNextUsers: loaded, users - " + users.toString());
-                                mSearchView.showUsers(users);
-                            }
-                        });
+                        );
 
         compositeSubscription.add(subscription);
     }

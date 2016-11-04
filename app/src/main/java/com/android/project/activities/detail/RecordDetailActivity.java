@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,9 +41,11 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
 
+    @Inject
+    RecordDetailPresenter.ActionListener presenter;
+
     private String mUsername;
     private Record mRecord;
-    private RecordDetailPresenter.ActionListener mActionListener;
     private RecordDetailRecyclerViewAdapter mRecyclerViewAdapter;
     private List<QuizViewBuilder.ViewHolder> mViewHolderOptions;
 
@@ -65,8 +69,8 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        mActionListener = new RecordDetailPresenterImpl(this);
-        mActionListener.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
+        presenter = new RecordDetailPresenterImpl(this);
+        presenter.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
     }
 
     @Override
@@ -109,7 +113,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     @Override
     protected void onStop() {
         super.onStop();
-        mActionListener.onStop();
+        presenter.onStop();
     }
 
     @Override
@@ -124,7 +128,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
     private void addRecordToSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RecordDetailActivity.this);
-        Set<String> IDs = sharedPreferences.getStringSet(WallFragment.RECORD_ID, new HashSet<String>());
+        Set<String> IDs = sharedPreferences.getStringSet(WallFragment.RECORD_ID, new HashSet<>());
         IDs.add(mRecord.getRecordId().toString());
         sharedPreferences.edit()
                 .putStringSet(WallFragment.RECORD_ID, IDs)
@@ -137,7 +141,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
                 mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord);
 
-                mActionListener.sendVote(
+            presenter.sendVote(
                         mRecord,
                         mRecord.getOptions().get(checkedId),
                         mUsername

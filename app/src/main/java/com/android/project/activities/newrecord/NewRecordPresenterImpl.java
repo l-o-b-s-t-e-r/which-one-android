@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,30 +43,16 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
     public void loadImage(File imageFile) {
         Log.i(TAG, "loadImage: " + imageFile.getAbsolutePath());
 
-        mNewRecordView.showProgress();
         Subscription subscription =
                 resizeImage(imageFile)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<File>() {
-                            @Override
-                            public void onCompleted() {
-                                mNewRecordView.hideProgress();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadImage: " + e.getMessage());
-                                mNewRecordView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(File file) {
-                                Log.i(TAG, "loadImage: SUCCESS");
-                                mNewRecordView.showImage(file);
-                            }
-                        });
+                        .doOnSubscribe(mNewRecordView::showProgress)
+                        .doOnUnsubscribe(mNewRecordView::hideProgress)
+                        .subscribe(
+                                mNewRecordView::showImage,
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -76,29 +61,15 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
     public void sendRecord(List<File> images, List<String> options, String username, String title) {
         Log.i(TAG, String.format("sendRecord: images - %s, options - %s, username - %s, title - %s", images.toString(), options.toString(), username, title));
 
-        mNewRecordView.showProgress();
         Subscription subscription =
                 requestService
                         .addRecord(images, options, username, title)
-                        .subscribe(new Subscriber<Void>() {
-                            @Override
-                            public void onCompleted() {
-                                mNewRecordView.hideProgress();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "sendRecord: " + e.getMessage());
-                                mNewRecordView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Void aVoid) {
-                                Log.i(TAG, "sendRecord: sent (SUCCESS)");
-                                mNewRecordView.loadMainActivity();
-                            }
-                        });
+                        .doOnSubscribe(mNewRecordView::showProgress)
+                        .doOnUnsubscribe(mNewRecordView::hideProgress)
+                        .subscribe(
+                                aVoid -> mNewRecordView.loadMainActivity(),
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }

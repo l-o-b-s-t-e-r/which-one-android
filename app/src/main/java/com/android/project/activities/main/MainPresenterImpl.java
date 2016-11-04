@@ -5,7 +5,6 @@ import android.util.Log;
 import com.android.project.WhichOneApp;
 import com.android.project.api.RequestService;
 import com.android.project.database.DatabaseManager;
-import com.android.project.model.User;
 import com.android.project.util.ImageManager;
 
 import java.io.File;
@@ -13,8 +12,6 @@ import java.io.File;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -48,24 +45,11 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .getUserInfo(name)
-                        .subscribe(new Observer<User>() {
-                            @Override
-                            public void onCompleted() {
+                        .subscribe(
+                                mMainView::showUserInfo,
+                                Throwable::printStackTrace
 
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadUserInfo: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(User user) {
-                                Log.i(TAG, "loadUserInfo: (LOADED) user - " + user.toString());
-                                mMainView.showUserInfo(user);
-                            }
-                        });
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -78,24 +62,10 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
                 resizeImage(imageFile)
                         .subscribeOn(Schedulers.io())
                         .flatMap(file -> requestService.updateBackground(file, name))
-                        .subscribe(new Subscriber<User>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "updateBackground: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(User user) {
-                                Log.i(TAG, "updateBackground: (SUCCESS) user - " + user.toString());
-                                mMainView.showUserInfo(user);
-                            }
-                        });
+                        .subscribe(
+                                mMainView::showUserInfo,
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -108,24 +78,10 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
                 cropImage(imageFile)
                         .subscribeOn(Schedulers.io())
                         .flatMap(file -> requestService.updateAvatar(file, name))
-                        .subscribe(new Subscriber<User>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "updateAvatar: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(User user) {
-                                Log.i(TAG, "updateAvatar: (SUCCESS) user - " + user.toString());
-                                mMainView.showUserInfo(user);
-                            }
-                        });
+                        .subscribe(
+                                mMainView::showUserInfo,
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }

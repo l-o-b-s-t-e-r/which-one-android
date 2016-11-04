@@ -7,7 +7,6 @@ import com.android.project.api.RequestService;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -36,25 +35,10 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .checkName(name)
-                        .subscribe(new Subscriber<Void>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                mSignUpView.showCheckNameResult(false);
-                                Log.e(TAG, "checkName: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Void aVoid) {
-                                Log.i(TAG, "checkName: SUCCESS");
-                                mSignUpView.showCheckNameResult(true);
-                            }
-                        });
+                        .subscribe(
+                                aVoid -> mSignUpView.showCheckNameResult(true),
+                                throwable -> mSignUpView.showCheckNameResult(false)
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -66,25 +50,8 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
         Subscription subscription =
                 requestService
                         .checkEmail(email)
-                        .subscribe(new Subscriber<Void>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                mSignUpView.showCheckEmailResult(false);
-                                Log.e(TAG, "checkEmail: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Void aVoid) {
-                                Log.i(TAG, "checkEmail: SUCCESS");
-                                mSignUpView.showCheckEmailResult(true);
-                            }
-                        });
+                        .subscribe(aVoid -> mSignUpView.showCheckEmailResult(true),
+                                throwable -> mSignUpView.showCheckEmailResult(false));
 
         compositeSubscription.add(subscription);
     }
@@ -93,30 +60,15 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
     public void signUp(String name, String password, String email) {
         Log.i(TAG, String.format("signUp: name - %s, password - %s, email - %s", name, password, email));
 
-        mSignUpView.showProgress();
         Subscription subscription =
                 requestService
                         .signUp(name, password, email)
-                        .subscribe(new Subscriber<Void>() {
-                            @Override
-                            public void onCompleted() {
-                                mSignUpView.hideProgress();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                mSignUpView.hideProgress();
-                                mSignUpView.signUpResult(false);
-                                Log.e(TAG, "signUp: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Void aVoid) {
-                                Log.i(TAG, "signUp: SUCCESS");
-                                mSignUpView.signUpResult(true);
-                            }
-                        });
+                        .doOnSubscribe(mSignUpView::showProgress)
+                        .doOnUnsubscribe(mSignUpView::hideProgress)
+                        .subscribe(
+                                aVoid -> mSignUpView.signUpResult(true),
+                                throwable -> mSignUpView.signUpResult(false)
+                        );
 
         compositeSubscription.add(subscription);
     }

@@ -5,14 +5,10 @@ import android.util.Log;
 import com.android.project.WhichOneApp;
 import com.android.project.api.RequestService;
 import com.android.project.database.DatabaseManager;
-import com.android.project.model.Record;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -44,31 +40,18 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     public void loadLastRecords(String requestedUsername) {
         Log.i(TAG, "loadLastRecords: username - " + requestedUsername);
 
-        mHomeWallView.showProgress();
         Subscription subscription =
                 requestService
                         .getLastUserRecords(requestedUsername, mTargetUsername)
                         .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Record>>() {
-                            @Override
-                            public void onCompleted() {
-                                mHomeWallView.hideProgress();
-                            }
+                        .doOnSubscribe(mHomeWallView::showProgress)
+                        .doOnUnsubscribe(mHomeWallView::hideProgress)
+                        .subscribe(
+                                mHomeWallView::updateRecords,
+                                Throwable::printStackTrace
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadLastRecords: " + e.getMessage());
-                                mHomeWallView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(List<Record> records) {
-                                Log.i(TAG, "loadLastRecords: records have been mapped");
-                                mHomeWallView.updateRecords(records);
-                            }
-                        });
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -77,31 +60,18 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     public void loadNextRecords(String requestedUsername, Long lastLoadedRecordId) {
         Log.i(TAG, String.format("loadNextRecords: username - %s, lastLoadedRecordId - %d", requestedUsername, lastLoadedRecordId));
 
-        mHomeWallView.showProgress();
         Subscription subscription =
                 requestService
                         .getNextUserRecords(requestedUsername, lastLoadedRecordId, mTargetUsername)
                         .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Record>>() {
-                            @Override
-                            public void onCompleted() {
-                                mHomeWallView.hideProgress();
-                            }
+                        .doOnSubscribe(mHomeWallView::showProgress)
+                        .doOnUnsubscribe(mHomeWallView::hideProgress)
+                        .subscribe(
+                                mHomeWallView::updateRecords,
+                                Throwable::printStackTrace
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadNextRecords: " + e.getMessage());
-                                mHomeWallView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(List<Record> records) {
-                                Log.i(TAG, "loadNextRecords: records have been mapped");
-                                mHomeWallView.updateRecords(records);
-                            }
-                        });
+                        );
 
         compositeSubscription.add(subscription);
     }

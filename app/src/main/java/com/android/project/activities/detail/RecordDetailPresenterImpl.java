@@ -11,7 +11,6 @@ import com.android.project.model.Record;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -59,24 +58,10 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
                 requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
                         .flatMap(newRecord -> Observable.just(databaseManager.update(newRecord)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Record>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "sendVote: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Record newRecord) {
-                                Log.i(TAG, "sendVote: SUCCESS");
-                                mDetailView.updateQuiz(newRecord);
-                            }
-                        });
+                        .subscribe(
+                                mDetailView::updateQuiz,
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }

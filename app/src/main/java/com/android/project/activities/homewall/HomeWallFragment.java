@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_wall, container, false);
-        Log.i(TAG, "HOOOOOME WAAAAAAAL FRAGMENT CREATED");
+
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
         swipeLayout.setOnRefreshListener(getRefreshListener());

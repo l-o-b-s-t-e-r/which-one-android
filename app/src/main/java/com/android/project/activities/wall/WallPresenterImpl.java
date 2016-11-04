@@ -8,8 +8,6 @@ import com.android.project.database.DatabaseManager;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -50,31 +48,18 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     public void loadLastRecords() {
         Log.i(TAG, "loadLastRecords: start loading");
 
-        mWallView.showProgress();
         Subscription subscription =
                 requestService
                         .getLastRecords(mTargetUsername)
                         .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Record>>() {
-                            @Override
-                            public void onCompleted() {
-                                mWallView.hideProgress();
-                            }
+                        .doOnSubscribe(mWallView::showProgress)
+                        .doOnUnsubscribe(mWallView::hideProgress)
+                        .subscribe(
+                                mWallView::showRecords,
+                                Throwable::printStackTrace
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadLastRecords2: " + e.getMessage());
-                                mWallView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(List<Record> records) {
-                                Log.i(TAG, "loadLastRecords: records have been mapped");
-                                mWallView.showRecords(records);
-                            }
-                        });
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -83,31 +68,17 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     public void loadNextRecords(Long lastLoadedRecordId) {
         Log.i(TAG, "loadNextRecords: start loading");
 
-        mWallView.showProgress();
         Subscription subscription =
                 requestService
                         .getNextRecords(lastLoadedRecordId, mTargetUsername)
                         .flatMap(records -> Observable.just(databaseManager.saveAll(records)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Record>>() {
-                            @Override
-                            public void onCompleted() {
-                                mWallView.hideProgress();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "loadNextRecords: " + e.getMessage());
-                                mWallView.hideProgress();
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(List<Record> records) {
-                                Log.i(TAG, "loadNextRecords: records have been mapped");
-                                mWallView.showRecords(records);
-                            }
-                        });
+                        .doOnSubscribe(mWallView::showProgress)
+                        .doOnUnsubscribe(mWallView::hideProgress)
+                        .subscribe(
+                                mWallView::showRecords,
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }
@@ -130,29 +101,18 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                 requestService.sendVote(record.getRecordId(), option.getOptionName(), username)
                         .flatMap(newRecord -> Observable.just(databaseManager.update(newRecord)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Record>() {
-                            @Override
-                            public void onCompleted() {
+                        .subscribe(
+                                newRecord -> {
+                                    Log.i(TAG, "sendVote: SUCCESS");
 
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "sendVote: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Record newRecord) {
-                                Log.i(TAG, "sendVote: SUCCESS");
-
-                                mWallView.updateRecord(position, newRecord);
-                                if (!quizSubscriber.isUnsubscribed()) {
-                                    Observable.just(newRecord)
-                                            .subscribe(quizSubscriber);
-                                }
-                            }
-                        });
+                                    mWallView.updateRecord(position, newRecord);
+                                    if (!quizSubscriber.isUnsubscribed()) {
+                                        Observable.just(newRecord)
+                                                .subscribe(quizSubscriber);
+                                    }
+                                },
+                                Throwable::printStackTrace
+                        );
 
         compositeSubscription.add(subscription);
     }

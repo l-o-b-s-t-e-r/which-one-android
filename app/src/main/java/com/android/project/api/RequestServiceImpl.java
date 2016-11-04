@@ -31,10 +31,9 @@ public class RequestServiceImpl implements RequestService {
 
     public RequestServiceImpl() {
         mSchedulersTransformer =
-                observable -> observable
+                observable -> ((Observable) observable)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
-
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
