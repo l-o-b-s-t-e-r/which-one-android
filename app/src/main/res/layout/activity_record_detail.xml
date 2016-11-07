@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.detail.RecordDetailActivity"
+    tools:context=".view.detail.RecordDetailActivity"
     tools:showIn="@layout/activity_record_detail">
 
     <android.support.v7.widget.Toolbar

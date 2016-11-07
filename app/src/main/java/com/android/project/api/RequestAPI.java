@@ -23,7 +23,7 @@ public interface RequestAPI {
     Observable<Void> signUp(@Query("name") String name, @Query("password") String password, @Query("email") String email);
 
     @GET("sign_in")
-    Observable<Void> signIn(@Query("name") String name, @Query("password") String password);
+    Observable<User> signIn(@Query("name") String name, @Query("password") String password);
 
     @GET("check_name")
     Observable<Void> checkName(@Query("name") String name);
@@ -32,7 +32,7 @@ public interface RequestAPI {
     Observable<Void> checkEmail(@Query("email") String email);
 
     @GET("remind_info")
-    Observable<Void> remindInfo(@Query("email") String email);
+    Observable<User> remindInfo(@Query("email") String email);
 
     @GET("get_user_info")
     Observable<User> getUserInfo(@Query("name") String name);

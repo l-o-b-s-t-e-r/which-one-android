@@ -1,25 +1,29 @@
 package com.android.project.model;
 
-import java.io.Serializable;
-
 /**
  * Created by Lobster on 26.07.16.
  */
 
-public class User implements Serializable {
+public class User {
 
-    private Long id;
     private String username;
     private String password;
     private String avatar;
     private String background;
 
-    public Long getId() {
-        return id;
+    public User() {
+
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User(UserEntity entity) {
+        username = entity.getUsername();
+        password = entity.getPassword();
+        avatar = entity.getAvatar();
+        background = entity.getBackground();
+    }
+
+    public User(String username) {
+        this.username = username;
     }
 
     public String getUsername() {
@@ -54,10 +58,18 @@ public class User implements Serializable {
         this.background = background;
     }
 
+    public UserEntity toEntity(UserEntity entity) {
+        entity.setUsername(username);
+        entity.setPassword(password);
+        entity.setAvatar(avatar);
+        entity.setBackground(background);
+
+        return entity;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", avatar='" + avatar + '\'' +

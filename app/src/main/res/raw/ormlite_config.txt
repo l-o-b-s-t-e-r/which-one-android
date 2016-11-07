@@ -1,5 +1,5 @@
 #
-# generated on 2016/11/01 03:35:17
+# generated on 2016/11/06 05:34:40
 #
 # --table-start--
 dataClass=com.android.project.model.ImageEntity
@@ -87,6 +87,30 @@ columnName=options
 foreignCollection=true
 foreignCollectionEager=true
 foreignCollectionColumnName=options
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.android.project.model.UserEntity
+tableName=userentity
+# --table-fields-start--
+# --field-start--
+fieldName=mUsername
+columnName=username
+id=true
+# --field-end--
+# --field-start--
+fieldName=mPassword
+columnName=password
+# --field-end--
+# --field-start--
+fieldName=mAvatar
+columnName=avatar
+# --field-end--
+# --field-start--
+fieldName=mBackground
+columnName=background
 # --field-end--
 # --table-fields-end--
 # --table-end--

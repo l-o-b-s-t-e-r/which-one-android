@@ -83,7 +83,8 @@ public class ImageManager {
             }
         }
 
-        bitmap = Bitmap.createScaledBitmap(bitmap, MAX_SIDE_LENGTH, MAX_SIDE_LENGTH, false);
+        Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, MAX_SIDE_LENGTH, MAX_SIDE_LENGTH, false);
+        bitmap.recycle();
 
         FileOutputStream outputStream = null;
         try {
@@ -93,7 +94,8 @@ public class ImageManager {
         }
 
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        croppedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        croppedBitmap.recycle();
 
         return imageFile;
     }
@@ -115,6 +117,7 @@ public class ImageManager {
         }
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, Float.valueOf(scaleKoef * bitmap.getWidth()).intValue(), Float.valueOf(scaleKoef * bitmap.getHeight()).intValue(), false);
+        bitmap.recycle();
 
         FileOutputStream outputStream = null;
         try {
@@ -124,6 +127,7 @@ public class ImageManager {
         }
 
         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        resizedBitmap.recycle();
 
         Log.i(TAG, String.format("resizedBitmap: height - %d, width - %d, imageFile length: %d", resizedBitmap.getHeight(), resizedBitmap.getWidth(), imageFile.length()));
         return imageFile;

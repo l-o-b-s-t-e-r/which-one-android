@@ -13,7 +13,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -26,15 +25,9 @@ public class RequestServiceImpl implements RequestService {
     //public static final String BASE_URL = "http://52.27.160.199:8080/project/";
     public static final String IMAGE_FOLDER = "images/";
     private static final String TAG = RequestServiceImpl.class.getName();
-    private Observable.Transformer mSchedulersTransformer;
     private RequestAPI mRequest;
 
     public RequestServiceImpl() {
-        mSchedulersTransformer =
-                observable -> ((Observable) observable)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -48,35 +41,35 @@ public class RequestServiceImpl implements RequestService {
     public Observable<Void> signUp(String name, String password, String email) {
         return mRequest
                 .signUp(name, password, email)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<Void> signIn(String name, String password) {
+    public Observable<User> signIn(String name, String password) {
         return mRequest
                 .signIn(name, password)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Observable<Void> checkName(String name) {
         return mRequest
                 .checkName(name)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Observable<Void> checkEmail(String email) {
         return mRequest
                 .checkEmail(email)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<Void> remindInfo(String email) {
+    public Observable<User> remindInfo(String email) {
         return mRequest
                 .remindInfo(email)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -111,7 +104,7 @@ public class RequestServiceImpl implements RequestService {
     public Observable<User> getUserInfo(String name) {
         return mRequest
                 .getUserInfo(name)
-                .compose(this.<User>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -135,7 +128,7 @@ public class RequestServiceImpl implements RequestService {
 
         return mRequest
                 .addRecord(requestFiles, requestOptions, requestName, requestDescription)
-                .compose(this.<Void>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -149,7 +142,7 @@ public class RequestServiceImpl implements RequestService {
 
         return mRequest
                 .updateBackground(requestFile, requestName)
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -162,20 +155,20 @@ public class RequestServiceImpl implements RequestService {
 
         return mRequest
                 .updateAvatar(requestFile, requestName)
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Observable<List<User>> getUsers(String searchQuery) {
         return mRequest
                 .getUsers(searchQuery)
-                .compose(this.<List<User>>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     public Observable<List<User>> getUsersFromUsername(String searchQuery, String lastUsername) {
         return mRequest
                 .getUsersFromId(searchQuery, lastUsername)
-                .compose(this.<List<User>>applySchedulers());
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -183,11 +176,6 @@ public class RequestServiceImpl implements RequestService {
         return mRequest
                 .sendVote(userName, recordId, optionName)
                 .subscribeOn(Schedulers.io());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> Observable.Transformer<T, T> applySchedulers() {
-        return (Observable.Transformer<T, T>) mSchedulersTransformer;
     }
 }
 

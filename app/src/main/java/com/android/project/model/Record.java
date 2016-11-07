@@ -107,6 +107,16 @@ public class Record{
         this.selectedOption = selectedOption;
     }
 
+    public RecordEntity toEntity(RecordEntity entity) {
+        entity.setRecordId(recordId);
+        entity.setUsername(username);
+        entity.setAvatarPath(avatar);
+        entity.setDescription(description);
+        entity.setSelectedOption(selectedOption);
+
+        return entity;
+    }
+
     public int getVoteCount() {
         int voteCount = 0;
         for (Option option : options) {

@@ -1,22 +1,28 @@
 package com.android.project.database;
 
 import com.android.project.model.Record;
+import com.android.project.model.User;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by Lobster on 15.09.16.
  */
 public interface DatabaseManager {
 
-    Record save(Record record);
+    Observable<User> save(User user);
 
-    Record update(Record record);
+    Observable<User> update(User user);
 
-    void delete(Integer recordId);
+    Observable<Record> getRecordById(Long id);
 
-    List<Record> saveAll(List<Record> records);
+    Observable<User> getUserByName(String username);
 
-    Record getRecordById(Long id);
+    Observable<List<Record>> saveAll(List<Record> records);
 
+    Observable<Record> update(Record record);
+
+    void clearAll();
 }

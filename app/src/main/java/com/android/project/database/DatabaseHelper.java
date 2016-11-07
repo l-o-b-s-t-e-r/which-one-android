@@ -8,7 +8,7 @@ import com.android.project.R;
 import com.android.project.model.ImageEntity;
 import com.android.project.model.OptionEntity;
 import com.android.project.model.RecordEntity;
-import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.android.project.model.UserEntity;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -23,23 +23,10 @@ import java.sql.SQLException;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "which_one.db";
-    private static final int DATABASE_VERSION = 40;
-    private static DatabaseHelper mDatabaseHelper;
-
-    private Dao<ImageEntity, Integer> mImageDao;
-    private Dao<OptionEntity, Integer> mOptionDao;
-    private Dao<RecordEntity, Integer> mRecordDao;
+    private static final int DATABASE_VERSION = 41;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
-    }
-
-    public static DatabaseHelper getInstance(Context context) {
-        if (mDatabaseHelper == null) {
-            mDatabaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-        }
-
-        return mDatabaseHelper;
     }
 
     @Override
@@ -48,6 +35,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, ImageEntity.class);
             TableUtils.createTable(connectionSource, OptionEntity.class);
             TableUtils.createTable(connectionSource, RecordEntity.class);
+            TableUtils.createTable(connectionSource, UserEntity.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);
@@ -60,6 +48,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, ImageEntity.class, true);
             TableUtils.dropTable(connectionSource, OptionEntity.class, true);
             TableUtils.dropTable(connectionSource, RecordEntity.class, true);
+            TableUtils.dropTable(connectionSource, UserEntity.class, true);
             onCreate(sqliteDatabase, connectionSource);
 
         } catch (SQLException e) {
@@ -68,28 +57,33 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public Dao<ImageEntity, Integer> getImageDao() throws SQLException {
-        if (mImageDao == null) {
-            mImageDao = getDao(ImageEntity.class);
+    public void onClear() {
+        try {
+            TableUtils.clearTable(getConnectionSource(), ImageEntity.class);
+            TableUtils.clearTable(getConnectionSource(), OptionEntity.class);
+            TableUtils.clearTable(getConnectionSource(), RecordEntity.class);
+            TableUtils.clearTable(getConnectionSource(), UserEntity.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        return mImageDao;
     }
 
-    public Dao<OptionEntity, Integer> getOptionDao() throws SQLException {
-        if (mOptionDao == null) {
-            mOptionDao = getDao(OptionEntity.class);
-        }
+    public Dao<ImageEntity, Integer> getImageDao() throws SQLException {
+        return getDao(ImageEntity.class);
+    }
 
-        return mOptionDao;
+    ;
+
+    public Dao<OptionEntity, Integer> getOptionDao() throws SQLException {
+        return getDao(OptionEntity.class);
     }
 
 
     public Dao<RecordEntity, Integer> getRecordDao() throws SQLException {
-        if (mRecordDao == null) {
-            mRecordDao = getDao(RecordEntity.class);
-        }
+        return getDao(RecordEntity.class);
+    }
 
-        return mRecordDao;
+    public Dao<UserEntity, Integer> getUserDao() throws SQLException {
+        return getDao(UserEntity.class);
     }
 }

@@ -3,9 +3,12 @@ package com.android.project;
 import android.app.Application;
 import android.content.Context;
 
+import com.android.project.di.AppComponent;
 import com.android.project.di.AppModule;
-import com.android.project.di.DaggerMainComponent;
-import com.android.project.di.MainComponent;
+import com.android.project.di.DaggerAppComponent;
+import com.android.project.di.UserComponent;
+import com.android.project.di.UserModule;
+import com.android.project.model.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.leakcanary.LeakCanary;
@@ -22,18 +25,28 @@ public class WhichOneApp extends Application {
 
     private static Context mContext;
     private static Picasso mPicasso;
-    private static MainComponent mMainComponent;
+    private static AppComponent mAppComponent;
+    private static UserComponent mUserComponent;
 
     public static Picasso getPicasso() {
         return mPicasso;
     }
 
-    public static MainComponent getMainComponent() {
-        return mMainComponent;
+    public static AppComponent getMainComponent() {
+        return mAppComponent;
+    }
+
+    public static UserComponent getUserComponent() {
+        return mUserComponent;
     }
 
     public static Context getContext() {
         return mContext;
+    }
+
+    public static UserComponent createUserComponent(User user) {
+        mUserComponent = mAppComponent.plus(new UserModule(user));
+        return mUserComponent;
     }
 
     public static boolean deleteDir(File dir) {
@@ -50,6 +63,8 @@ public class WhichOneApp extends Application {
         return dir.delete();
     }
 
+    //<-- TEMPORARY -->>//
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -57,7 +72,7 @@ public class WhichOneApp extends Application {
 
         mContext = getApplicationContext();
 
-        mMainComponent = DaggerMainComponent.builder()
+        mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
 

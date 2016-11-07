@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.signin.SignInActivity"
+            android:name=".view.signin.SignInActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,26 +27,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.main.MainActivity"
+            android:name=".view.main.MainActivity"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".activities.search.SearchActivity" />
         </activity>
         <activity
-            android:name=".activities.detail.RecordDetailActivity"
+            android:name=".view.detail.RecordDetailActivity"
             android:label="@string/title_activity_record_detail"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.newrecord.NewRecordActivity"
+            android:name=".view.newrecord.NewRecordActivity"
             android:label="@string/title_activity_new_item_activitye"
-            android:parentActivityName=".activities.main.MainActivity"
+            android:parentActivityName=".view.main.MainActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.userpage.UserPageActivity" />
+        <activity android:name=".view.userpage.UserPageActivity" />
         <activity
-            android:name=".activities.search.SearchActivity"
+            android:name=".view.search.SearchActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.main.MainActivity"
+            android:parentActivityName=".view.main.MainActivity"
             android:theme="@style/Theme.AppCompat.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

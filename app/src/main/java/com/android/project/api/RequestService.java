@@ -19,9 +19,9 @@ public interface RequestService {
 
     Observable<Void> checkEmail(String email);
 
-    Observable<Void> remindInfo(String email);
+    Observable<User> remindInfo(String email);
 
-    Observable<Void> signIn(String name, String password);
+    Observable<User> signIn(String name, String password);
 
     Observable<List<Record>> getLastRecords(String targetUsername);
 
