@@ -162,4 +162,10 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         progressBar.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
+    }
+
 }

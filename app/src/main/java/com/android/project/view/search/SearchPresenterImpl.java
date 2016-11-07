@@ -35,7 +35,7 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
                         .doOnUnsubscribe(mSearchView::hideProgress)
                         .subscribe(
                                 mSearchView::showUsers,
-                                Throwable::printStackTrace
+                                mSearchView::onError
 
                         );
 
@@ -53,7 +53,7 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
                         .doOnUnsubscribe(mSearchView::hideProgress)
                         .subscribe(
                                 mSearchView::showUsers,
-                                Throwable::printStackTrace
+                                mSearchView::onError
 
                         );
 

@@ -8,10 +8,8 @@ import com.android.project.util.ImageManager;
 import java.io.File;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -36,12 +34,13 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
         Log.i(TAG, "loadImage: " + imageFile.getAbsolutePath());
 
         Subscription subscription =
-                resizeImage(imageFile)
-                        .subscribeOn(Schedulers.io())
+                ImageManager.getInstance().resizeImage(imageFile)
+                        .doOnSubscribe(mNewRecordView::showProgress)
+                        .doOnUnsubscribe(mNewRecordView::hideProgress)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mNewRecordView::showImage,
-                                Throwable::printStackTrace
+                                mNewRecordView::onError
                         );
 
         compositeSubscription.add(subscription);
@@ -55,16 +54,16 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
                 mRequestService
                         .addRecord(images, options, username, title)
                         .doOnSubscribe(mNewRecordView::showProgress)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 aVoid -> mNewRecordView.loadMainActivity(),
-                                Throwable::printStackTrace
+                                throwable -> {
+                                    mNewRecordView.onError(throwable);
+                                    mNewRecordView.hideProgress();
+                                }
                         );
 
         compositeSubscription.add(subscription);
-    }
-
-    private Observable<File> resizeImage(final File imageFile) {
-        return Observable.defer(() -> Observable.just(ImageManager.getInstance().resizeImage(imageFile)));
     }
 
     @Override

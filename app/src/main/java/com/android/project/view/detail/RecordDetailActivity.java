@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
@@ -91,7 +92,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
             QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
         } else {
             QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
-            }
+        }
     }
 
     @Override
@@ -115,6 +116,29 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         }
     }
 
+    private void addRecordToSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RecordDetailActivity.this);
+        Set<String> IDs = sharedPreferences.getStringSet(WallFragment.RECORD_ID, new HashSet<>());
+        IDs.add(mRecord.getRecordId().toString());
+        sharedPreferences.edit()
+                .putStringSet(WallFragment.RECORD_ID, IDs)
+                .apply();
+    }
+
+    private RadioGroup.OnCheckedChangeListener getOnCheckedChangeListener() {
+        return (group, checkedId) -> {
+            radioGroup.removeAllViews();
+
+            mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord);
+
+            presenter.sendVote(
+                    mRecord,
+                    mRecord.getOptions().get(checkedId),
+                    user.getUsername()
+            );
+        };
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -131,26 +155,9 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
     }
 
-    private void addRecordToSharedPreferences() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RecordDetailActivity.this);
-        Set<String> IDs = sharedPreferences.getStringSet(WallFragment.RECORD_ID, new HashSet<>());
-        IDs.add(mRecord.getRecordId().toString());
-        sharedPreferences.edit()
-                .putStringSet(WallFragment.RECORD_ID, IDs)
-                .apply();
-    }
-
-    private RadioGroup.OnCheckedChangeListener getOnCheckedChangeListener() {
-        return (group, checkedId) -> {
-                radioGroup.removeAllViews();
-
-                mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord);
-
-            presenter.sendVote(
-                        mRecord,
-                        mRecord.getOptions().get(checkedId),
-                    user.getUsername()
-                );
-        };
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
     }
 }

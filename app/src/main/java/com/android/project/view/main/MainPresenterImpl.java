@@ -8,10 +8,8 @@ import com.android.project.util.ImageManager;
 
 import java.io.File;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -43,7 +41,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mMainView::showUserInfo,
-                                Throwable::printStackTrace
+                                mMainView::onError
 
                         );
 
@@ -55,14 +53,13 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Log.i(TAG, String.format("updateBackground: file - %s, name - %s", imageFile.getAbsolutePath(), name));
 
         Subscription subscription =
-                resizeImage(imageFile)
-                        .subscribeOn(Schedulers.io())
+                ImageManager.getInstance().resizeImage(imageFile)
                         .flatMap(file -> mRequestService.updateBackground(file, name))
                         .flatMap(mDatabaseManager::update)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mMainView::updateBackground,
-                                Throwable::printStackTrace
+                                mMainView::onError
                         );
 
         compositeSubscription.add(subscription);
@@ -73,14 +70,13 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Log.i(TAG, String.format("updateAvatar: file - %s, name - %s", imageFile.getAbsolutePath(), name));
 
         Subscription subscription =
-                cropImage(imageFile)
-                        .subscribeOn(Schedulers.io())
+                ImageManager.getInstance().cropImageAsSquare(imageFile)
                         .flatMap(file -> mRequestService.updateAvatar(file, name)
                                 .flatMap(mDatabaseManager::update))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mMainView::updateAvatar,
-                                Throwable::printStackTrace
+                                mMainView::onError
                         );
 
         compositeSubscription.add(subscription);
@@ -94,13 +90,5 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
     @Override
     public void onStop() {
         compositeSubscription.clear();
-    }
-
-    private Observable<File> cropImage(final File imageFile) {
-        return Observable.defer(() -> Observable.just(ImageManager.getInstance().cropImageAsSquare(imageFile)));
-    }
-
-    private Observable<File> resizeImage(final File imageFile) {
-        return Observable.defer(() -> Observable.just(ImageManager.getInstance().resizeImage(imageFile)));
     }
 }

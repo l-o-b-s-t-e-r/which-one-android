@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
@@ -109,5 +110,11 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     @Override
     public void hideProgress() {
 
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
     }
 }

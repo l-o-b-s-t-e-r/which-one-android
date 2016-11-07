@@ -82,6 +82,18 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e(TAG, "ON START");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "ON RESUME");
+    }
+
     @OnClick(R.id.done)
     void sendRecord() {
         if (recyclerViewAdapter.getItemCount() < 1 || container.getChildCount() < 1) {
@@ -138,6 +150,8 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
                 cursor.close();
             }
         }
+
+        Log.e(TAG, "onActivityResult");
     }
 
     @Override
@@ -183,5 +197,11 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     @Override
     public void hideProgress() {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
     }
 }

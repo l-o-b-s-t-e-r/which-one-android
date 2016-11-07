@@ -11,6 +11,8 @@ public interface CommonPresenter {
 
         void hideProgress();
 
+        void onError(Throwable throwable);
+
     }
 
     interface ActionListener {

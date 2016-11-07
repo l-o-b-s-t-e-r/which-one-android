@@ -41,7 +41,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mHomeWallView::updateRecords,
-                                Throwable::printStackTrace
+                                mHomeWallView::onError
 
                         );
 
@@ -61,7 +61,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mHomeWallView::updateRecords,
-                                Throwable::printStackTrace
+                                mHomeWallView::onError
 
                         );
 

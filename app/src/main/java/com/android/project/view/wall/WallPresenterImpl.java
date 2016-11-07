@@ -38,7 +38,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         record -> mWallView.updateRecord(record, position, true),
-                        Throwable::printStackTrace
+                        mWallView::onError
                 );
     }
 
@@ -55,7 +55,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mWallView::showRecords,
-                                Throwable::printStackTrace
+                                mWallView::onError
 
                         );
 
@@ -75,7 +75,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mWallView::showRecords,
-                                Throwable::printStackTrace
+                                mWallView::onError
                         );
 
         compositeSubscription.add(subscription);
@@ -110,7 +110,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                                                 .subscribe(quizSubscriber);
                                     }
                                 },
-                                Throwable::printStackTrace
+                                mWallView::onError
                         );
 
         compositeSubscription.add(subscription);

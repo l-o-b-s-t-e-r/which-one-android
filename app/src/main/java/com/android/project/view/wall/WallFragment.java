@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
@@ -141,6 +142,12 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     public void hideProgress() {
         swipeLayout.setRefreshing(false);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(getContext(), getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
     }
 
     public void showSwipeLayoutProgress() {

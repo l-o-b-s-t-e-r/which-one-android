@@ -51,7 +51,7 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mDetailView::updateQuiz,
-                                Throwable::printStackTrace
+                                mDetailView::onError
                         );
 
         compositeSubscription.add(subscription);

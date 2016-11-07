@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
@@ -304,5 +305,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void hideProgress() {
 
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
     }
 }

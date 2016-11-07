@@ -50,8 +50,6 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
     public void signIn(String username, String password) {
         Log.i(TAG, String.format("signIn: name - %s, password - %s", username, password));
 
-        Log.e(TAG, String.valueOf(System.nanoTime()));
-
         Subscription subscription =
                 mRequestService
                         .signIn(username, password)
@@ -59,11 +57,11 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
                         .flatMap(mDatabaseManager::save)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                user -> {
-                                    mSignInView.openUserPage(user);
-                                    Log.e(TAG, String.valueOf(System.nanoTime()));
-                                },
-                                mSignInView::onErrorSingIn
+                                mSignInView::openUserPage,
+                                throwable -> {
+                                    mSignInView.onErrorSingIn(throwable);
+                                    mSignInView.hideProgress();
+                                }
                         );
 
         compositeSubscription.add(subscription);

@@ -182,4 +182,10 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
         buttonSignUp.setEnabled(true);
         mDialog.setCanceledOnTouchOutside(true);
     }
+
+    @Override
+    public void onError(Throwable throwable) {
+        Toast.makeText(getContext(), getString(R.string.general_error), Toast.LENGTH_SHORT).show();
+        throwable.printStackTrace();
+    }
 }
