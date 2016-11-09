@@ -40,7 +40,7 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mSignInView::openUserPage,
-                                mSignInView::onErrorSingIn
+                                throwable -> mSignInView.setContentView()
                         );
 
         compositeSubscription.add(subscription);

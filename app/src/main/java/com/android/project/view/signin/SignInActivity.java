@@ -51,8 +51,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_singin);
-        ButterKnife.bind(this);
 
         WhichOneApp.getMainComponent()
                 .plus(new SignInModule(this))
@@ -63,7 +61,15 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
         if (username != null) {
             Log.i(TAG, "Application remembers this user. Start MainActivity");
             presenter.signIn(username);
+        } else {
+            setContentView();
         }
+    }
+
+    @Override
+    public void setContentView() {
+        setContentView(R.layout.activity_singin);
+        ButterKnife.bind(this);
     }
 
     @OnClick(R.id.forgot_password)
@@ -117,7 +123,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
     @Override
     public void openUserPage(User user) {
-        Log.e(TAG, "openUserPage");
         WhichOneApp.createUserComponent(user);
 
         mSharedPreferences

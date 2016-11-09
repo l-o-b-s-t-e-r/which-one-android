@@ -17,6 +17,8 @@ public interface MainPresenter {
         void updateAvatar(User user);
 
         void updateBackground(User user);
+
+        void signOut();
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {

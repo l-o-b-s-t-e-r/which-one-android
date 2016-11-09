@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         ViewPager viewPager = ButterKnife.findById(this, R.id.viewPager);
+
         TabLayout tabLayout = ButterKnife.findById(this, R.id.tab_layout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -279,16 +280,21 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sign_out:
-                PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-
-                presenter.clearDatabase();
-
-                startActivity(new Intent(this, SignInActivity.class));
-                finish();
+                signOut();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void signOut() {
+        presenter.clearDatabase();
+        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+        WhichOneApp.releaseUserComponent();
+
+        startActivity(new Intent(this, SignInActivity.class));
+        finish();
     }
 
     @Override

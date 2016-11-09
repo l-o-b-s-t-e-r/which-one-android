@@ -58,6 +58,26 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         HomeWallFragment fragment = new HomeWallFragment();
         tabLayout.addTab(tabLayout.newTab());
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 1) {
+                    fragment.onSelected();
+                    tabLayout.removeOnTabSelectedListener(this);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         return fragment;
     }
 
@@ -84,12 +104,11 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
             mRequestedUsername = user.getUsername();
         } else {
             mRequestedUsername = bundle.getString(getString(R.string.user_name_opened_page));
+            presenter.loadLastRecords(mRequestedUsername, user.getUsername());
         }
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(recyclerViewAdapter);
-
-        presenter.loadLastRecords(mRequestedUsername, user.getUsername());
 
         return view;
     }
@@ -132,6 +151,14 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
 
         swipeLayout.setRefreshing(false);
         progressBar.setVisibility(View.GONE);
+    }
+
+    /*public ViewPager.OnPageChangeListener getOnPageChangeListener(){
+
+    }*/
+
+    public void onSelected() {
+        presenter.loadLastRecords(mRequestedUsername, user.getUsername());
     }
 
     @Override

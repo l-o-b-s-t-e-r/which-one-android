@@ -8,6 +8,8 @@ import com.android.project.util.CommonPresenter;
  */
 public interface SignInPresenter {
     interface View extends CommonPresenter.View {
+        void setContentView();
+
         void openUserPage(User user);
 
         void onSuccessRemind(User user);

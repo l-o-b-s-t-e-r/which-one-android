@@ -113,6 +113,11 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     }
 
     @Override
+    public void signOut() {
+
+    }
+
+    @Override
     public void onError(Throwable throwable) {
         Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
         throwable.printStackTrace();

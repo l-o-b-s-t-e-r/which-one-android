@@ -46,7 +46,12 @@ public class WhichOneApp extends Application {
 
     public static UserComponent createUserComponent(User user) {
         mUserComponent = mAppComponent.plus(new UserModule(user));
+
         return mUserComponent;
+    }
+
+    public static void releaseUserComponent() {
+        mUserComponent = null;
     }
 
     public static boolean deleteDir(File dir) {
