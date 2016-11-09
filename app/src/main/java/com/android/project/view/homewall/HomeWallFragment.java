@@ -97,7 +97,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
 
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
-        swipeLayout.setOnRefreshListener(getRefreshListener());
+        swipeLayout.setOnRefreshListener(getOnRefreshListener());
 
         Bundle bundle = getActivity().getIntent().getExtras();
         if (bundle == null) {
@@ -171,7 +171,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         swipeLayout.setRefreshing(true);
     }
 
-    private SwipeRefreshLayout.OnRefreshListener getRefreshListener() {
+    private SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
         return () -> {
                 refreshing = true;
                 clearHomeWall();

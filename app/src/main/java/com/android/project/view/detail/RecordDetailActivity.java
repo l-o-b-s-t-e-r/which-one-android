@@ -3,11 +3,11 @@ package com.android.project.view.detail;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
@@ -36,14 +36,14 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = RecordDetailActivity.class.getSimpleName();
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.detail_recycler)
     RecyclerView recyclerView;
     @BindView(R.id.description)
     TextView description;
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
+    @BindView(R.id.swipe_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Inject
     User user;
@@ -51,7 +51,6 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     RecordDetailPresenter.ActionListener presenter;
     @Inject
     RecordDetailRecyclerViewAdapter recyclerViewAdapter;
-
 
     private Record mRecord;
     private List<QuizViewBuilder.ViewHolder> mViewHolderOptions;
@@ -65,31 +64,32 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
                 .plus(new RecordDetailModule(this))
                 .inject(this);
 
-        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        swipeRefreshLayout.setOnRefreshListener(getOnRefreshListener());
 
         radioGroup.setOnCheckedChangeListener(getOnCheckedChangeListener());
 
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        presenter.loadRecord(getIntent().getLongExtra(RECORD_ID, -1L));
+        presenter.loadRecordFromDB(getIntent().getLongExtra(RECORD_ID, -1L));
     }
 
     @Override
     public void showRecord(Record record) {
-        Log.i(TAG, "showRecord: record - " + record.toString());
+        Log.i(TAG, "showRecord: record - " + record.toString() + user.getAvatar());
 
         mRecord = record;
         description.setText(record.getDescription());
         recyclerViewAdapter.updateData(record.getImages());
 
         radioGroup.removeAllViews();
-        if (mRecord.getSelectedOption() != null) {
-            QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
+        if (mRecord.isVoted()) {
+            mViewHolderOptions = QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
         } else {
             QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
         }
@@ -107,19 +107,21 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     }
 
     @Override
-    public void updateQuiz(Record newRecord) {
-        mRecord = newRecord;
-        addRecordToSharedPreferences();
+    public void updateQuiz(Record updatedRecord) {
+        addRecordToSharedPreferences(updatedRecord);
+        mRecord = updatedRecord;
 
-        for (QuizViewBuilder.ViewHolder viewHolder : mViewHolderOptions) {
-            viewHolder.setContent(mRecord);
+        if (mRecord.isVoted()) {
+            for (QuizViewBuilder.ViewHolder viewHolder : mViewHolderOptions) {
+                viewHolder.setContent(mRecord);
+            }
         }
     }
 
-    private void addRecordToSharedPreferences() {
+    private void addRecordToSharedPreferences(Record record) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RecordDetailActivity.this);
         Set<String> IDs = sharedPreferences.getStringSet(WallFragment.RECORD_ID, new HashSet<>());
-        IDs.add(mRecord.getRecordId().toString());
+        IDs.add(record.getRecordId().toString());
         sharedPreferences.edit()
                 .putStringSet(WallFragment.RECORD_ID, IDs)
                 .apply();
@@ -139,6 +141,13 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         };
     }
 
+    private SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
+        return () -> {
+            presenter.onStop();
+            presenter.loadRecordFromServer(mRecord.getRecordId(), user.getUsername());
+        };
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -152,7 +161,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
     @Override
     public void hideProgress() {
-
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

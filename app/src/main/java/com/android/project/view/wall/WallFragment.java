@@ -77,7 +77,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
         View view = inflater.inflate(R.layout.wall_fragment, container, false);
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
-        swipeLayout.setOnRefreshListener(getRefreshListener());
+        swipeLayout.setOnRefreshListener(getOnRefreshListener());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -163,7 +163,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
                 .apply();
     }
 
-    private SwipeRefreshLayout.OnRefreshListener getRefreshListener() {
+    private SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
         return () -> {
             presenter.onStop();
             clearWall();

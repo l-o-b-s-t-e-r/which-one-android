@@ -107,6 +107,10 @@ public class Record{
         this.selectedOption = selectedOption;
     }
 
+    public Boolean isVoted() {
+        return selectedOption != null;
+    }
+
     public RecordEntity toEntity(RecordEntity entity) {
         entity.setRecordId(recordId);
         entity.setUsername(username);

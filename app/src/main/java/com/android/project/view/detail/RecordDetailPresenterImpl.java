@@ -30,13 +30,30 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
     }
 
     @Override
-    public void loadRecord(Long recordId) {
-        Log.i(TAG, "loadRecord: recordId - " + recordId);
+    public void loadRecordFromDB(Long recordId) {
+        Log.i(TAG, "loadRecordFromDB: recordId - " + recordId);
 
         Subscription subscription =
                 mDatabaseManager.getRecordById(recordId)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(mDetailView::showRecord);
+
+        compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void loadRecordFromServer(Long recordId, String targetUsername) {
+        Log.i(TAG, "loadRecordFromServer: recordId - " + recordId);
+
+        Subscription subscription =
+                mRequestService.getRecord(recordId, targetUsername)
+                        .doOnUnsubscribe(mDetailView::hideProgress)
+                        .flatMap(mDatabaseManager::update)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                mDetailView::updateQuiz,
+                                mDetailView::onError
+                        );
 
         compositeSubscription.add(subscription);
     }

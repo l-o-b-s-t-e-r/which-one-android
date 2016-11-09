@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
@@ -95,8 +94,6 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
         @BindView(R.id.image)
         ImageView image;
-        @BindView(R.id.progressBar)
-        ProgressBar spinner;
 
         private Record mRecord;
         private Animation mAnimation;
@@ -149,6 +146,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
             mRecord = record;
             currentAnimatedImage = 0;
+            changeImage = false;
 
             mAnimation.setDuration(animationDuration(mRecord.getImages().size()));
 
@@ -157,7 +155,6 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {
-                            spinner.setVisibility(View.GONE);
                             image.startAnimation(mAnimation);
                         }
 

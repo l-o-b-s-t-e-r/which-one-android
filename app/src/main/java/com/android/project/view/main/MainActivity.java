@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void updateAvatar(User user) {
+        WhichOneApp.createUserComponent(user);
         mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
 
         WhichOneApp.getPicasso()
@@ -246,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void updateBackground(User user) {
+        WhichOneApp.createUserComponent(user);
+
         WhichOneApp.getPicasso()
                 .load(ImageManager.IMAGE_URL + user.getBackground())
                 .error(R.drawable.background_top)

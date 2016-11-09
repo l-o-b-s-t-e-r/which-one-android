@@ -37,6 +37,9 @@ public interface RequestAPI {
     @GET("get_user_info")
     Observable<User> getUserInfo(@Query("name") String name);
 
+    @GET("get_record")
+    Observable<Record> getRecord(@Query("recordId") Long recordId, @Query("targetUsername") String targetUsername);
+
     @GET("get_last_records")
     Observable<List<Record>> getLastRecords(@Query("targetUsername") String targetUsername);
 

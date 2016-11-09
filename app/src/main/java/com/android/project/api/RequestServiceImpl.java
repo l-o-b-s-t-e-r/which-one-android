@@ -73,6 +73,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public Observable<Record> getRecord(Long recordId, String targetUsername) {
+        return mRequest
+                .getRecord(recordId, targetUsername)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Observable<List<Record>> getLastRecords(String targetUsername) {
         return mRequest
                 .getLastRecords(targetUsername)

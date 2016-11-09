@@ -13,13 +13,14 @@ public interface RecordDetailPresenter {
 
         void showRecord(Record record);
 
-        void updateQuiz(Record newRecord);
-
+        void updateQuiz(Record updatedRecord);
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {
 
-        void loadRecord(Long recordId);
+        void loadRecordFromDB(Long recordId);
+
+        void loadRecordFromServer(Long recordId, String targetUsername);
 
         void sendVote(Record record, Option option, String username);
 

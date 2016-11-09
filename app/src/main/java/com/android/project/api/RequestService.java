@@ -23,6 +23,8 @@ public interface RequestService {
 
     Observable<User> signIn(String name, String password);
 
+    Observable<Record> getRecord(Long recordId, String targetUsername);
+
     Observable<List<Record>> getLastRecords(String targetUsername);
 
     Observable<List<Record>> getNextRecords(Long recordId, String targetUsername);

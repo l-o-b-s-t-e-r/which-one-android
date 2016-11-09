@@ -60,23 +60,27 @@ public class QuizViewBuilder {
         }
     }
 
-    public void createVotedOptions(RadioGroup radioGroup, Record record) {
+    public List<ViewHolder> createVotedOptions(RadioGroup radioGroup, Record record) {
         LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        List<ViewHolder> viewHolderOptions = new ArrayList<>();
         for (Option option : record.getOptions()) {
             View view = inflater.inflate(R.layout.quiz_option, null);
 
             ViewHolder viewHolder = new ViewHolder(view, option);
             viewHolder.setContent(record);
+            viewHolderOptions.add(viewHolder);
 
             radioGroup.addView(view, radioGroup.getChildCount());
         }
+
+        return viewHolderOptions;
     }
 
     public List<ViewHolder> createProgressOption(final RadioGroup radioGroup, final Record record) {
         LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        final List<ViewHolder> viewHolderOptions = new ArrayList<>();
+        List<ViewHolder> viewHolderOptions = new ArrayList<>();
         for (Option option : record.getOptions()) {
             View view = inflater.inflate(R.layout.quiz_option, null);
             ViewHolder viewHolder = new ViewHolder(view, option);
