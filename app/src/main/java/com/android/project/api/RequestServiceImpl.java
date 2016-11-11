@@ -27,9 +27,9 @@ public class RequestServiceImpl implements RequestService {
     private static final String TAG = RequestServiceImpl.class.getName();
     private RequestAPI mRequest;
 
-    public RequestServiceImpl() {
+    public RequestServiceImpl(String url) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(url)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

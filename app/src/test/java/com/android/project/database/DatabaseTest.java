@@ -30,7 +30,6 @@ import rx.observers.TestSubscriber;
         application = TestApplication.class,
         sdk = Build.VERSION_CODES.M
 )
-
 public class DatabaseTest {
 
     private DatabaseManager databaseManager;

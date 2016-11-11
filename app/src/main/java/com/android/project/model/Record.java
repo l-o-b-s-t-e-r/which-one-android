@@ -21,16 +21,6 @@ public class Record{
 
     }
 
-    public Record(String username, String avatar, Long recordId, String description, String selectedOption, List<Image> images, List<Option> options) {
-        this.username = username;
-        this.avatar = avatar;
-        this.recordId = recordId;
-        this.description = description;
-        this.selectedOption = selectedOption;
-        this.images = images;
-        this.options = options;
-    }
-
     public Record(RecordEntity entity) {
         setRecordId(entity.getRecordId());
         setUsername(entity.getUsername());
@@ -49,6 +39,10 @@ public class Record{
             options.add(new Option(optionEntity.getOptionName(), optionEntity.getVoteCount()));
         }
         setOptions(options);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public List<Image> getImages() {
@@ -165,5 +159,52 @@ public class Record{
                 ", images=" + images +
                 ", options=" + options +
                 '}';
+    }
+
+    public static final class Builder {
+        private Record record;
+
+        private Builder() {
+            record = new Record();
+        }
+
+        public Builder recordId(Long recordId) {
+            record.setRecordId(recordId);
+            return this;
+        }
+
+        public Builder username(String username) {
+            record.setUsername(username);
+            return this;
+        }
+
+        public Builder avatar(String avatar) {
+            record.setAvatar(avatar);
+            return this;
+        }
+
+        public Builder description(String description) {
+            record.setDescription(description);
+            return this;
+        }
+
+        public Builder selectedOption(String optionName) {
+            record.setSelectedOption(optionName);
+            return this;
+        }
+
+        public Builder images(List<Image> images) {
+            record.setImages(images);
+            return this;
+        }
+
+        public Builder options(List<Option> options) {
+            record.setOptions(options);
+            return this;
+        }
+
+        public Record build() {
+            return record;
+        }
     }
 }

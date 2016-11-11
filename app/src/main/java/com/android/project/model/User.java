@@ -22,6 +22,10 @@ public class User {
         background = entity.getBackground();
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -95,5 +99,37 @@ public class User {
                 ", avatar='" + avatar + '\'' +
                 ", background='" + background + '\'' +
                 '}';
+    }
+
+    public static final class Builder {
+        private User user;
+
+        private Builder() {
+            user = new User();
+        }
+
+        public Builder username(String username) {
+            user.setUsername(username);
+            return this;
+        }
+
+        public Builder password(String password) {
+            user.setPassword(password);
+            return this;
+        }
+
+        public Builder avatar(String avatar) {
+            user.setAvatar(avatar);
+            return this;
+        }
+
+        public Builder background(String background) {
+            user.setBackground(background);
+            return this;
+        }
+
+        public User build() {
+            return user;
+        }
     }
 }

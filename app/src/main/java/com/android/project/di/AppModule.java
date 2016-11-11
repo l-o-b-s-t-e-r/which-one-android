@@ -42,7 +42,7 @@ public class AppModule {
     @Provides
     @Singleton
     public RequestService provideRequestService() {
-        return new RequestServiceImpl();
+        return new RequestServiceImpl(RequestServiceImpl.BASE_URL);
     }
 
 }

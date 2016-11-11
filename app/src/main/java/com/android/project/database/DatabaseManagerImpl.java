@@ -13,7 +13,6 @@ import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -125,12 +124,9 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
     @Override
     public Observable<Object> clearAll() {
-        return Observable.fromCallable(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                mDatabaseHelper.onClear();
-                return null;
-            }
+        return Observable.fromCallable(() -> {
+            mDatabaseHelper.onClear();
+            return null;
         }).observeOn(Schedulers.computation());
     }
 }
