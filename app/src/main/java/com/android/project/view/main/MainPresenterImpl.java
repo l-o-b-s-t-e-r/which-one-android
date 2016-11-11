@@ -55,7 +55,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Subscription subscription =
                 ImageManager.getInstance().resizeImage(imageFile)
                         .flatMap(file -> mRequestService.updateBackground(file, name))
-                        .flatMap(mDatabaseManager::update)
+                        .flatMap(mDatabaseManager::save)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mMainView::updateBackground,
@@ -72,7 +72,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
         Subscription subscription =
                 ImageManager.getInstance().cropImageAsSquare(imageFile)
                         .flatMap(file -> mRequestService.updateAvatar(file, name)
-                                .flatMap(mDatabaseManager::update))
+                                .flatMap(mDatabaseManager::save))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mMainView::updateAvatar,
@@ -84,7 +84,14 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
 
     @Override
     public void clearDatabase() {
-        mDatabaseManager.clearAll();
+        Subscription subscription =
+                mDatabaseManager.clearAll()
+                        .doOnSubscribe(mMainView::showProgress)
+                        .subscribe(
+                                object -> mMainView.signOut()
+                        );
+
+        compositeSubscription.add(subscription);
     }
 
     @Override

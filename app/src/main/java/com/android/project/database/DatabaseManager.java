@@ -14,8 +14,6 @@ public interface DatabaseManager {
 
     Observable<User> save(User user);
 
-    Observable<User> update(User user);
-
     Observable<Record> getRecordById(Long id);
 
     Observable<User> getUserByName(String username);
@@ -24,5 +22,5 @@ public interface DatabaseManager {
 
     Observable<Record> update(Record record);
 
-    void clearAll();
+    Observable<Object> clearAll();
 }

@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.project.R;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     ImageView background;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
 
@@ -283,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sign_out:
-                signOut();
+                presenter.clearDatabase();
                 break;
         }
 
@@ -292,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void signOut() {
-        presenter.clearDatabase();
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         WhichOneApp.releaseUserComponent();
 
@@ -308,12 +310,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

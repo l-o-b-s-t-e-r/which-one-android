@@ -9,8 +9,6 @@ import com.android.project.di.DaggerAppComponent;
 import com.android.project.di.UserComponent;
 import com.android.project.di.UserModule;
 import com.android.project.model.User;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
@@ -91,8 +89,6 @@ public class WhichOneApp extends Application {
                 .build();
 
         mPicasso.setIndicatorsEnabled(true);
-
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
     }
 
     public boolean clearImageDiskCache() {

@@ -22,10 +22,6 @@ public class User {
         background = entity.getBackground();
     }
 
-    public User(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -65,6 +61,30 @@ public class User {
         entity.setBackground(background);
 
         return entity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (username != null ? !username.equals(user.username) : user.username != null)
+            return false;
+        if (password != null ? !password.equals(user.password) : user.password != null)
+            return false;
+        if (avatar != null ? !avatar.equals(user.avatar) : user.avatar != null) return false;
+        return background != null ? background.equals(user.background) : user.background == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username != null ? username.hashCode() : 0;
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
+        result = 31 * result + (background != null ? background.hashCode() : 0);
+        return result;
     }
 
     @Override

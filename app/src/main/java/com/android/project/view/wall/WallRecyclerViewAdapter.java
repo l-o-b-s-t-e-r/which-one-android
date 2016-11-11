@@ -61,7 +61,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setContent(mRecords.get(position), position);
 
-        if (!allRecordsLoaded && position == mRecords.size() - 1) {
+        if (!allRecordsLoaded && position == mRecords.size() - 2) {
             mPresenter.loadNextRecords(mRecords.get(position).getRecordId(), mUsername);
         }
     }

@@ -1,5 +1,6 @@
 package com.android.project.view.detail;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,9 +20,12 @@ import com.android.project.R;
 import com.android.project.WhichOneApp;
 import com.android.project.model.Record;
 import com.android.project.model.User;
+import com.android.project.util.ImageManager;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.view.detail.di.RecordDetailModule;
+import com.android.project.view.userpage.UserPageActivity;
 import com.android.project.view.wall.WallFragment;
+import com.squareup.picasso.Target;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,12 +35,18 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class RecordDetailActivity extends AppCompatActivity implements RecordDetailPresenter.View {
 
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = RecordDetailActivity.class.getSimpleName();
 
+
+    @BindView(R.id.avatar)
+    ImageView avatar;
+    @BindView(R.id.username)
+    TextView username;
     @BindView(R.id.detail_recycler)
     RecyclerView recyclerView;
     @BindView(R.id.description)
@@ -53,6 +64,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     RecordDetailRecyclerViewAdapter recyclerViewAdapter;
 
     private Record mRecord;
+    private Target mAvatarTarget;
     private List<QuizViewBuilder.ViewHolder> mViewHolderOptions;
 
     @Override
@@ -63,6 +75,8 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         WhichOneApp.getUserComponent()
                 .plus(new RecordDetailModule(this))
                 .inject(this);
+
+        mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -84,6 +98,13 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         Log.i(TAG, "showRecord: record - " + record.toString() + user.getAvatar());
 
         mRecord = record;
+
+        WhichOneApp.getPicasso()
+                .load(ImageManager.IMAGE_URL + mRecord.getAvatar())
+                .into(mAvatarTarget);
+
+        username.setText(mRecord.getUsername());
+
         description.setText(record.getDescription());
         recyclerViewAdapter.updateData(record.getImages());
 
@@ -93,6 +114,18 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         } else {
             QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
         }
+    }
+
+    @OnClick({R.id.avatar, R.id.username})
+    public void onUserClick() {
+        openUserPage(mRecord.getUsername());
+    }
+
+    @Override
+    public void openUserPage(String username) {
+        Intent intent = new Intent(getApplicationContext(), UserPageActivity.class);
+        intent.putExtra(getString(R.string.user_name_opened_page), username);
+        startActivity(intent);
     }
 
     @Override

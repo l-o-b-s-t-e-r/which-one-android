@@ -1,7 +1,5 @@
 package com.android.project.database;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import com.android.project.model.Image;
 import com.android.project.model.ImageEntity;
 import com.android.project.model.Option;
@@ -15,6 +13,7 @@ import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -34,13 +33,6 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
     public DatabaseManagerImpl(DatabaseHelper databaseHelper) {
         mDatabaseHelper = databaseHelper;
-
-        // - temporary ->>
-        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-        db.delete("recordentity", null, null);
-        db.delete("imageentity", null, null);
-        db.delete("optionentity", null, null);
-        db.delete("voteentity", null, null); // <--
 
         try {
             mRecordDao = mDatabaseHelper.getRecordDao();
@@ -62,18 +54,10 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
     private void save(UserEntity userEntity) {
         try {
-            mUserDao.create(userEntity);
+            mUserDao.createOrUpdate(userEntity);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public Observable<User> update(User user) {
-        return Observable.fromCallable(() -> {
-            mUserDao.update(user.toEntity(new UserEntity()));
-            return user;
-        }).subscribeOn(Schedulers.computation());
     }
 
     @Override
@@ -126,7 +110,6 @@ public class DatabaseManagerImpl implements DatabaseManager {
         return record;
     }
 
-    @Override
     public Observable<Record> update(Record record) {
         return Observable.fromCallable(() -> {
             RecordEntity recordEntity = mRecordDao.queryForId(record.getRecordId().intValue());
@@ -141,10 +124,13 @@ public class DatabaseManagerImpl implements DatabaseManager {
     }
 
     @Override
-    public void clearAll() {
-        Observable.empty()
-                .observeOn(Schedulers.computation())
-                .doOnCompleted(mDatabaseHelper::onClear)
-                .subscribe();
+    public Observable<Object> clearAll() {
+        return Observable.fromCallable(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                mDatabaseHelper.onClear();
+                return null;
+            }
+        }).observeOn(Schedulers.computation());
     }
 }

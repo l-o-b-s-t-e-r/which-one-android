@@ -14,6 +14,8 @@ public interface RecordDetailPresenter {
         void showRecord(Record record);
 
         void updateQuiz(Record updatedRecord);
+
+        void openUserPage(String username);
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {

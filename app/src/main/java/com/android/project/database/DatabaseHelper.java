@@ -36,7 +36,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, OptionEntity.class);
             TableUtils.createTable(connectionSource, RecordEntity.class);
             TableUtils.createTable(connectionSource, UserEntity.class);
-
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);
         }
@@ -49,23 +48,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, OptionEntity.class, true);
             TableUtils.dropTable(connectionSource, RecordEntity.class, true);
             TableUtils.dropTable(connectionSource, UserEntity.class, true);
-            onCreate(sqliteDatabase, connectionSource);
-
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to upgrade database from version " + oldVer + " to new "
                     + newVer, e);
         }
+
+        onCreate(sqliteDatabase, connectionSource);
     }
 
-    public void onClear() {
-        try {
-            TableUtils.clearTable(getConnectionSource(), ImageEntity.class);
-            TableUtils.clearTable(getConnectionSource(), OptionEntity.class);
-            TableUtils.clearTable(getConnectionSource(), RecordEntity.class);
-            TableUtils.clearTable(getConnectionSource(), UserEntity.class);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void onClear() throws SQLException {
+        TableUtils.clearTable(getConnectionSource(), ImageEntity.class);
+        TableUtils.clearTable(getConnectionSource(), OptionEntity.class);
+        TableUtils.clearTable(getConnectionSource(), RecordEntity.class);
+        TableUtils.clearTable(getConnectionSource(), UserEntity.class);
     }
 
     public Dao<ImageEntity, Integer> getImageDao() throws SQLException {

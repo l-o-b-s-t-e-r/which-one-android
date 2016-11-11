@@ -11,6 +11,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <include layout="@layout/record_header" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/detail_recycler"
             android:layout_width="match_parent"
