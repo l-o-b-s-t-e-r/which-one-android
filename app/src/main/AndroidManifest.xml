@@ -49,7 +49,7 @@
             android:label="@string/title_activity_new_item_activitye"
             android:parentActivityName=".view.main.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/RecordDetailTheme" />
         <activity
             android:name=".view.userpage.UserPageActivity"
             android:configChanges="orientation"

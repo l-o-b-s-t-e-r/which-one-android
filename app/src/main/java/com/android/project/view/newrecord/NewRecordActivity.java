@@ -49,8 +49,6 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     EditText description;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.new_item_recycler)
     RecyclerView recyclerView;
 
@@ -69,8 +67,6 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         WhichOneApp.getUserComponent()
                 .plus(new NewRecordModule(this))
                 .inject(this);
-
-        setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
