@@ -41,7 +41,8 @@ import com.android.project.view.main.di.MainModule;
 import com.android.project.view.newrecord.NewRecordActivity;
 import com.android.project.view.signin.SignInActivity;
 import com.android.project.view.wall.WallFragment;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.util.Arrays;
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     private WallFragment mWallFragment;
     private Animation mUpdateAnimation;
-    private Target mAvatarTarget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,21 +240,21 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void updateAvatar(User user) {
         WhichOneApp.createUserComponent(user);
-        mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
 
-        WhichOneApp.getPicasso()
+        Glide.with(WhichOneApp.getContext())
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
-                .error(R.drawable.logo)
-                .into(mAvatarTarget);
+                .asBitmap()
+                .into(ImageManager.getInstance().createTarget(
+                        Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, avatar
+                ));
     }
 
     @Override
     public void updateBackground(User user) {
         WhichOneApp.createUserComponent(user);
 
-        WhichOneApp.getPicasso()
+        Glide.with(WhichOneApp.getContext())
                 .load(ImageManager.IMAGE_URL + user.getBackground())
-                .error(R.drawable.background_top)
                 .into(background);
     }
 

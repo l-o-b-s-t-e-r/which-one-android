@@ -14,7 +14,10 @@ import com.android.project.WhichOneApp;
 import com.android.project.model.Record;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
-import com.squareup.picasso.Callback;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,10 +128,9 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                             currentAnimatedImage = 0;
                         }
 
-                        WhichOneApp.getPicasso()
+                        Glide.with(WhichOneApp.getContext())
                                 .load(ImageManager.IMAGE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
                                 .into(image);
-
                     }
 
                     changeImage = !changeImage;
@@ -150,19 +152,21 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
             mAnimation.setDuration(animationDuration(mRecord.getImages().size()));
 
-            WhichOneApp.getPicasso()
+            Glide.with(WhichOneApp.getContext())
                     .load(ImageManager.IMAGE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
-                    .into(image, new Callback() {
+                    .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
-                        public void onSuccess() {
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                             image.startAnimation(mAnimation);
+                            return false;
                         }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+                    })
+                    .into(image);
         }
     }
 }

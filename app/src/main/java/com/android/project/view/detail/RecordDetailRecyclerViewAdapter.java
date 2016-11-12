@@ -11,6 +11,7 @@ import com.android.project.WhichOneApp;
 import com.android.project.model.Image;
 import com.android.project.util.ImageManager;
 import com.android.project.view.wall.RecordRecyclerViewAdapter;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<Record
         }
 
         public void setContent(Image image) {
-            WhichOneApp.getPicasso()
+            Glide.with(WhichOneApp.getContext())
                     .load(ImageManager.IMAGE_URL + image.getImage())
                     .into(imageView);
         }

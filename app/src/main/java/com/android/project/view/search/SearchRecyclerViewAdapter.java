@@ -11,7 +11,8 @@ import com.android.project.R;
 import com.android.project.WhichOneApp;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,12 +81,10 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         ImageView avatar;
 
         private User mUser;
-        private Target mAvatarTarget;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
         }
 
         @OnClick({R.id.avatar, R.id.username})
@@ -97,9 +96,13 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             mUser = user;
 
             username.setText(mUser.getUsername());
-            WhichOneApp.getPicasso()
-                    .load(ImageManager.IMAGE_URL + mUser.getAvatar())
-                    .into(mAvatarTarget);
+
+            Glide.with(WhichOneApp.getContext())
+                    .load(ImageManager.IMAGE_URL + user.getAvatar())
+                    .asBitmap()
+                    .into(ImageManager.getInstance().createTarget(
+                            Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, avatar
+                    ));
         }
     }
 }

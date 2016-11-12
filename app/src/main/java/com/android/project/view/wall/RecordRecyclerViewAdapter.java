@@ -1,7 +1,6 @@
 package com.android.project.view.wall;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,10 @@ import com.android.project.R;
 import com.android.project.WhichOneApp;
 import com.android.project.model.Image;
 import com.android.project.util.ImageManager;
-import com.squareup.picasso.Callback;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
@@ -79,19 +81,21 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
         public void setContent(final Image image) {
             spinner.setVisibility(View.VISIBLE);
 
-            WhichOneApp.getPicasso()
+            Glide.with(WhichOneApp.getContext())
                     .load(ImageManager.IMAGE_URL + image.getImage())
-                    .into(imageView, new Callback() {
+                    .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
-                        public void onSuccess() {
-                            spinner.setVisibility(View.GONE);
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
                         }
 
                         @Override
-                        public void onError() {
-                            Log.e(TAG, "ERROR");
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            spinner.setVisibility(View.GONE);
+                            return false;
                         }
-                    });
+                    })
+                    .into(imageView);
         }
     }
 }

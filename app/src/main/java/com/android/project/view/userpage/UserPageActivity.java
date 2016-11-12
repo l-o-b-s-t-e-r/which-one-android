@@ -15,7 +15,8 @@ import com.android.project.model.User;
 import com.android.project.util.ImageManager;
 import com.android.project.view.main.MainPresenter;
 import com.android.project.view.main.di.MainModule;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,6 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Inject
     MainPresenter.ActionListener presenter;
-    private Target mAvatarTarget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,19 +69,22 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     public void updateAvatar(User user) {
-        mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
+        WhichOneApp.createUserComponent(user);
 
-        WhichOneApp.getPicasso()
+        Glide.with(WhichOneApp.getContext())
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
-                .error(R.drawable.logo)
-                .into(mAvatarTarget);
+                .asBitmap()
+                .into(ImageManager.getInstance().createTarget(
+                        Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, avatar
+                ));
     }
 
     @Override
     public void updateBackground(User user) {
-        WhichOneApp.getPicasso()
+        WhichOneApp.createUserComponent(user);
+
+        Glide.with(WhichOneApp.getContext())
                 .load(ImageManager.IMAGE_URL + user.getBackground())
-                .error(R.drawable.background_top)
                 .into(background);
     }
 

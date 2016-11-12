@@ -97,8 +97,10 @@ public class DatabaseManagerImpl implements DatabaseManager {
 
             mRecordDao.create(recordEntity);
 
+            ImageManager.getInstance().startLoadImage(record.getAvatar(), ImageManager.LOAD_AVATAR);
+
             for (Image image : record.getImages()) {
-                mImageDao.create(new ImageEntity(recordEntity, ImageManager.getInstance().startLoadImage(image.getImage())));
+                mImageDao.create(new ImageEntity(recordEntity, ImageManager.getInstance().startLoadImage(image.getImage(), ImageManager.LOAD_IMAGE)));
             }
 
             for (Option option : record.getOptions()) {

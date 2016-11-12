@@ -2,7 +2,6 @@ package com.android.project.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
@@ -10,8 +9,10 @@ import android.widget.ImageView;
 
 import com.android.project.WhichOneApp;
 import com.android.project.api.RequestServiceImpl;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,9 +27,13 @@ import rx.schedulers.Schedulers;
 
 public class ImageManager {
 
+
     public static final String IMAGE_URL = RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER;
+    public static final int LOAD_IMAGE = 1;
+    public static final int LOAD_AVATAR = 2;
+    public static final int SMALL_AVATAR_SIZE = 200;
     private static final String TAG = ImageManager.class.getSimpleName();
-    private static final Float CORNER_RADIUS = 50.0f;
+    private static final float CORNER_RADIUS = 50.0f;
     private static final Integer MAX_SIDE_LENGTH = 600;
     private static ImageManager mImageManager;
 
@@ -44,35 +49,34 @@ public class ImageManager {
         return mImageManager;
     }
 
-    public String startLoadImage(final String imageName) {
-        WhichOneApp.getPicasso()
-                .load(IMAGE_URL + imageName)
-                .fetch();
+    public String startLoadImage(final String imageName, int loadingCode) {
+
+        if (loadingCode == LOAD_IMAGE) {
+            Glide.with(WhichOneApp.getContext())
+                    .load(IMAGE_URL + imageName)
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+        } else if (loadingCode == LOAD_AVATAR) {
+            Glide.with(WhichOneApp.getContext())
+                    .load(IMAGE_URL + imageName)
+                    .downloadOnly(SMALL_AVATAR_SIZE, SMALL_AVATAR_SIZE);
+        }
 
         return imageName;
     }
 
-    public Target createTarget(final ImageView imageView) {
-        return new Target() {
+
+    public Target<Bitmap> createTarget(int width, int height, ImageView imageView) {
+        return new SimpleTarget<Bitmap>(width, height) {
             @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                RoundedBitmapDrawable imageBitmapDrawable = RoundedBitmapDrawableFactory.create(WhichOneApp.getContext().getResources(), bitmap);
+            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                RoundedBitmapDrawable imageBitmapDrawable = RoundedBitmapDrawableFactory.create(WhichOneApp.getContext().getResources(), resource);
                 imageBitmapDrawable.setCornerRadius(CORNER_RADIUS);
 
                 imageView.setImageDrawable(imageBitmapDrawable);
             }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
         };
     }
+
 
     public Observable<File> cropImageAsSquare(File imageFile) {
         return Observable.fromCallable(() -> {

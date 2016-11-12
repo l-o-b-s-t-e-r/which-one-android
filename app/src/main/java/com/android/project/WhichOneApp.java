@@ -10,10 +10,6 @@ import com.android.project.di.UserComponent;
 import com.android.project.di.UserModule;
 import com.android.project.model.User;
 import com.squareup.leakcanary.LeakCanary;
-import com.squareup.picasso.LruCache;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
 
 /**
  * Created by Lobster on 14.09.16.
@@ -22,13 +18,8 @@ import java.io.File;
 public class WhichOneApp extends Application {
 
     private static Context mContext;
-    private static Picasso mPicasso;
     private static AppComponent mAppComponent;
     private static UserComponent mUserComponent;
-
-    public static Picasso getPicasso() {
-        return mPicasso;
-    }
 
     public static AppComponent getMainComponent() {
         return mAppComponent;
@@ -52,22 +43,6 @@ public class WhichOneApp extends Application {
         mUserComponent = null;
     }
 
-    public static boolean deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-
-        return dir.delete();
-    }
-
-    //<-- TEMPORARY -->>//
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,25 +53,6 @@ public class WhichOneApp extends Application {
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
-
-        LruCache picassoLruCache = new LruCache(this);
-        picassoLruCache.clear();
-        clearImageDiskCache();
-
-        //mPicasso = Picasso.with(this);
-        mPicasso = new Picasso.Builder(this)
-                .memoryCache(picassoLruCache)
-                .build();
-
-        mPicasso.setIndicatorsEnabled(true);
-    }
-
-    public boolean clearImageDiskCache() {
-        File cache = new File(this.getCacheDir(), "picasso-cache");
-        if (cache.exists() && cache.isDirectory()) {
-            return deleteDir(cache);
-        }
-        return false;
     }
 
 }

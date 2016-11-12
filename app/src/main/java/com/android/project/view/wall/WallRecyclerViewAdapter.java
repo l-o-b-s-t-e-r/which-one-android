@@ -17,7 +17,7 @@ import com.android.project.model.Record;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
 import com.android.project.util.QuizViewBuilder;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
         holder.setContent(mRecords.get(position), position);
 
         if (!allRecordsLoaded && position == mRecords.size() - 2) {
-            mPresenter.loadNextRecords(mRecords.get(position).getRecordId(), mUsername);
+            mPresenter.loadNextRecords(mRecords.get(mRecords.size() - 1).getRecordId(), mUsername);
         }
     }
 
@@ -135,7 +135,6 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
         private Record mRecord;
         private Integer mPosition;
-        private Target mAvatarTarget;
         private Subscriber<Record> mQuizSubscriber;
         private RecordRecyclerViewAdapter mRecordRecyclerViewAdapter;
 
@@ -171,13 +170,15 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
             mRecord = record;
             mPosition = position;
-            mAvatarTarget = ImageManager.getInstance().createTarget(avatar);
             username.setText(record.getUsername());
             description.setText(record.getDescription());
 
-            WhichOneApp.getPicasso()
+            Glide.with(WhichOneApp.getContext())
                     .load(ImageManager.IMAGE_URL + record.getAvatar())
-                    .into(mAvatarTarget);
+                    .asBitmap()
+                    .into(ImageManager.getInstance().createTarget(
+                            ImageManager.SMALL_AVATAR_SIZE, ImageManager.SMALL_AVATAR_SIZE, avatar
+                    ));
 
             buildOptions();
             setImages(record.getRecordId(), record.getImages());
