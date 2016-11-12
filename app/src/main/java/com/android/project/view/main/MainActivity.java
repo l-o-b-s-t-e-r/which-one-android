@@ -70,6 +70,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     ProgressBar progressBar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Inject
     User user;
@@ -77,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     MainPresenter.ActionListener presenter;
 
     private WallFragment mWallFragment;
-    private Animation mUpdateAnimation;
+    private Animation mUpdateAnimation, fabAnimationShowRight, fabAnimationHideRight, fabAnimationShowLeft, fabAnimationHideLeft;
+    private CoordinatorLayout.LayoutParams fabLayoutParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,93 +98,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         showUserInfo(user);
 
         setSupportActionBar(toolbar);
-        FragmentManager fragmentManager = getSupportFragmentManager();
 
-        ViewPager viewPager = ButterKnife.findById(this, R.id.viewPager);
+        setViewPager();
+        setAnimations();
 
-        TabLayout tabLayout = ButterKnife.findById(this, R.id.tab_layout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        fabLayoutParams = (CoordinatorLayout.LayoutParams)fab.getLayoutParams();
 
-        mWallFragment = (WallFragment) WallFragment.newInstance(tabLayout);
-        List<Fragment> fragments = Arrays.asList(
-                mWallFragment,
-                HomeWallFragment.newInstance(tabLayout)
-        );
+        fabAnimationHideRight.setAnimationListener(getHideRightAnimationListener());
+        fabAnimationHideLeft.setAnimationListener(getHideLeftAnimationListener());
 
-        FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments, Arrays.asList("WALL", "HOME"));
-        viewPager.setAdapter(tabAdapter);
-        tabLayout.setupWithViewPager(viewPager);
 
-        final FloatingActionButton fab = ButterKnife.findById(this, R.id.fab);
-        final CoordinatorLayout.LayoutParams fabLayoutParams = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-
-        fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, NewRecordActivity.class)));
-
-        mUpdateAnimation = AnimationUtils.loadAnimation(this, R.anim.update);
-        final Animation fabAnimationShowRight = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_right);
-        final Animation fabAnimationHideRight = AnimationUtils.loadAnimation(this, R.anim.fab_hide_changing_right);
-        final Animation fabAnimationShowLeft = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_left);
-        final Animation fabAnimationHideLeft = AnimationUtils.loadAnimation(this, R.anim.fab_hide_changing_left);
-
-        fabAnimationHideRight.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                fabLayoutParams.gravity = Gravity.BOTTOM | Gravity.START;
-                fab.setLayoutParams(fabLayoutParams);
-                fab.startAnimation(fabAnimationShowRight);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-
-        fabAnimationHideLeft.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                fabLayoutParams.gravity = Gravity.BOTTOM | Gravity.END;
-                fab.setLayoutParams(fabLayoutParams);
-                fab.startAnimation(fabAnimationShowLeft);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (fab.getVisibility() == View.GONE) {
-                    fab.setVisibility(View.VISIBLE);
-                }
-
-                switch (position) {
-                    case 0:
-                        fab.startAnimation(fabAnimationHideLeft);
-                        return;
-                    case 1:
-                        fab.startAnimation(fabAnimationHideRight);
-                        return;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+        viewPager.addOnPageChangeListener(getOnPageChangeListener());
     }
 
     @OnClick(R.id.avatar)
@@ -188,6 +119,84 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @OnClick(R.id.background)
     void updateBackground() {
         startActivityForResult(ImageKeeper.getInstance().getChooserIntent(this), UPDATE_BACKGROUND);
+    }
+
+    @OnClick(R.id.fab)
+    void onFabClick(){
+        startActivity(new Intent(MainActivity.this, NewRecordActivity.class));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem updateItem = menu.findItem(R.id.action_update);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
+        updateActionView.setOnClickListener(view -> {
+                    view.startAnimation(mUpdateAnimation);
+                    mWallFragment.showSwipeLayoutProgress();
+                    mWallFragment.updateWall();
+                }
+        );
+
+        updateItem.setActionView(updateActionView);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void showUserInfo(User user) {
+        collapsingToolbar.setTitle(user.getUsername());
+
+        updateAvatar(user);
+        updateBackground(user);
+    }
+
+    @Override
+    public void updateAvatar(User user) {
+        WhichOneApp.createUserComponent(user);
+
+        Glide.with(WhichOneApp.getContext())
+                .load(ImageManager.IMAGE_URL + user.getAvatar())
+                .asBitmap()
+                .into(ImageManager.getInstance().createTarget(
+                        Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, avatar
+                ));
+    }
+
+    @Override
+    public void updateBackground(User user) {
+        WhichOneApp.createUserComponent(user);
+
+        Glide.with(WhichOneApp.getContext())
+                .load(ImageManager.IMAGE_URL + user.getBackground())
+                .into(background);
+    }
+
+    @Override
+    public void signOut() {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+        WhichOneApp.releaseUserComponent();
+
+        startActivity(new Intent(this, SignInActivity.class));
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sign_out:
+                presenter.clearDatabase();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -230,79 +239,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
-    public void showUserInfo(User user) {
-        collapsingToolbar.setTitle(user.getUsername());
-
-        updateAvatar(user);
-        updateBackground(user);
-    }
-
-    @Override
-    public void updateAvatar(User user) {
-        WhichOneApp.createUserComponent(user);
-
-        Glide.with(WhichOneApp.getContext())
-                .load(ImageManager.IMAGE_URL + user.getAvatar())
-                .asBitmap()
-                .into(ImageManager.getInstance().createTarget(
-                        Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, avatar
-                ));
-    }
-
-    @Override
-    public void updateBackground(User user) {
-        WhichOneApp.createUserComponent(user);
-
-        Glide.with(WhichOneApp.getContext())
-                .load(ImageManager.IMAGE_URL + user.getBackground())
-                .into(background);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        MenuItem updateItem = menu.findItem(R.id.action_update);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
-        updateActionView.setOnClickListener(view -> {
-                    view.startAnimation(mUpdateAnimation);
-                    mWallFragment.showSwipeLayoutProgress();
-                    mWallFragment.updateWall();
-                }
-        );
-
-        updateItem.setActionView(updateActionView);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_sign_out:
-                presenter.clearDatabase();
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void signOut() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-        WhichOneApp.releaseUserComponent();
-
-        startActivity(new Intent(this, SignInActivity.class));
-        finish();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         presenter.onStop();
@@ -322,5 +258,86 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public void onError(Throwable throwable) {
         Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_SHORT).show();
         throwable.printStackTrace();
+    }
+
+    private void setViewPager(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        mWallFragment = (WallFragment) WallFragment.newInstance(tabLayout);
+
+        List<Fragment> fragments = Arrays.asList(
+                mWallFragment,
+                HomeWallFragment.newInstance(tabLayout)
+        );
+
+        FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments, Arrays.asList("WALL", "HOME"));
+        viewPager.setAdapter(tabAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void setAnimations(){
+        mUpdateAnimation = AnimationUtils.loadAnimation(this, R.anim.update);
+
+        fabAnimationShowRight = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_right);
+        fabAnimationHideRight = AnimationUtils.loadAnimation(this, R.anim.fab_hide_changing_right);
+        fabAnimationShowLeft = AnimationUtils.loadAnimation(this, R.anim.fab_show_changing_left);
+        fabAnimationHideLeft = AnimationUtils.loadAnimation(this, R.anim.fab_hide_changing_left);
+    }
+
+    private Animation.AnimationListener getHideRightAnimationListener(){
+        return new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fabLayoutParams.gravity = Gravity.BOTTOM | Gravity.START;
+                fab.setLayoutParams(fabLayoutParams);
+                fab.startAnimation(fabAnimationShowRight);
+            }
+
+            public void onAnimationStart(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {}
+
+        };
+    }
+
+    private Animation.AnimationListener getHideLeftAnimationListener(){
+        return new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fabLayoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+                fab.setLayoutParams(fabLayoutParams);
+                fab.startAnimation(fabAnimationShowLeft);
+            }
+
+            public void onAnimationStart(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {}
+
+        };
+    }
+
+    private ViewPager.OnPageChangeListener getOnPageChangeListener(){
+        return new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                if (fab.getVisibility() == View.GONE) {
+                    fab.setVisibility(View.VISIBLE);
+                }
+
+                switch (position) {
+                    case 0:
+                        fab.startAnimation(fabAnimationHideLeft);
+                        break;
+                    case 1:
+                        fab.startAnimation(fabAnimationHideRight);
+                        break;
+                }
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrollStateChanged(int state) {}
+        };
     }
 }

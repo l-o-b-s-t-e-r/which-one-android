@@ -62,7 +62,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 1) {
-                    fragment.onSelected();
+                    fragment.loadRecords();
                     tabLayout.removeOnTabSelectedListener(this);
                 }
             }
@@ -153,11 +153,8 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
         progressBar.setVisibility(View.GONE);
     }
 
-    /*public ViewPager.OnPageChangeListener getOnPageChangeListener(){
 
-    }*/
-
-    public void onSelected() {
+    public void loadRecords() {
         presenter.loadLastRecords(mRequestedUsername, user.getUsername());
     }
 
