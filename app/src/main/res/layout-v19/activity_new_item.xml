@@ -50,7 +50,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_done_white_24dp"
+        android:src="@mipmap/ic_send"
         app:backgroundTint="@android:color/holo_green_light" />
 
     <ProgressBar

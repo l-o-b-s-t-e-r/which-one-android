@@ -75,12 +75,11 @@
         android:indeterminate="true"
         android:visibility="gone" />
 
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:adjustViewBounds="true"
-        android:src="@drawable/logo" />
+        android:src="@mipmap/ic_logo" />
 
 </RelativeLayout>

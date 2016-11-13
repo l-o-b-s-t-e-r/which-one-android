@@ -5,6 +5,7 @@
 
     <ImageView
         android:id="@+id/avatar"
+        android:src="@mipmap/ic_small_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerCrop" />
