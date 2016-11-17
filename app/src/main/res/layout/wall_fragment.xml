@@ -13,16 +13,16 @@
             android:id="@+id/main_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/progressBar"
             android:layout_alignParentTop="true" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
             android:indeterminate="true"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

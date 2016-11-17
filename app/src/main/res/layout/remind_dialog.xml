@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <EditText
         android:id="@+id/email"
@@ -11,20 +10,17 @@
         android:layout_marginLeft="@dimen/sign_up_dialog_margin"
         android:layout_marginRight="@dimen/sign_up_dialog_margin"
         android:background="@android:color/transparent"
-        android:hint="@string/email"
+        android:hint="@string/email_hint"
         android:inputType="textEmailAddress" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/email"
-        android:layout_alignLeft="@id/email"
-        android:layout_alignRight="@id/email"
         android:layout_alignStart="@id/email"
         android:layout_below="@id/email"
-        android:indeterminate="false"
         android:max="100"
         android:progress="100" />
 

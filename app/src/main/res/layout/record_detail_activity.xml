@@ -4,6 +4,7 @@
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/record_detail_padding_top"
     tools:context=".view.detail.RecordDetailActivity">
 
     <ScrollView
@@ -15,29 +16,34 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/record_header" />
+            <include layout="@layout/short_user_info_layout" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/detail_recycler"
+                android:id="@+id/record_detail_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="@dimen/big_image_recycler_view" />
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp" />
+                android:layout_marginStart="@dimen/description_margin_L"
+                android:textSize="@dimen/description_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tablayout_separator_height"
+                android:layout_marginEnd="@dimen/separator_margin_LR"
+                android:layout_marginStart="@dimen/separator_margin_LR"
+                android:layout_marginTop="@dimen/separator_margin_top"
+                android:background="@color/colorSeparator" />
 
             <RadioGroup
                 android:id="@+id/radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/darker_gray"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp" />
+                android:layout_marginTop="@dimen/options_margin_top" />
 
         </LinearLayout>
-
     </ScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

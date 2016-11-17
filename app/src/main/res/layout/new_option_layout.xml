@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/new_option_margin_LR"
+    android:layout_marginRight="@dimen/new_option_margin_LR"
     android:orientation="horizontal">
 
     <EditText
         android:id="@+id/option_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="Option name" />
+        android:hint="@string/new_option_hint"
+        android:textColor="@color/colorText"
+        android:textColorHint="@color/colorHint" />
 
     <ImageView
         android:id="@+id/delete"
@@ -20,10 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/option_name"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_alignTop="@id/option_name"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
         android:src="@mipmap/ic_delete_option" />
 
 </RelativeLayout>

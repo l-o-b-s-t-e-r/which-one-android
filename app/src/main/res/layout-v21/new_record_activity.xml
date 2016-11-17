@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".view.newrecord.NewRecordActivity">
 
     <ScrollView
@@ -20,51 +19,47 @@
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="Desription" />
+                android:layout_marginLeft="@dimen/new_record_descr_margin_LR"
+                android:layout_marginRight="@dimen/new_record_descr_margin_LR"
+                android:hint="@string/description_hint"
+                android:textColor="@color/colorText"
+                android:textColorHint="@color/colorHint" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/new_item_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
-
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="@dimen/big_image_recycler_view" />
 
             <LinearLayout
                 android:id="@+id/options_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp" />
+                android:paddingLeft="@dimen/options_padding_LR"
+                android:paddingRight="@dimen/options_padding_LR" />
 
         </LinearLayout>
-
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/progressBar"
-        android:layout_alignStart="@+id/progressBar"
-        android:layout_alignTop="@+id/progressBar"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@+id/progress_bar"
+        android:layout_alignStart="@+id/progress_bar"
+        android:layout_alignTop="@+id/progress_bar"
+        android:layout_margin="@dimen/new_record_fab_margin"
         android:src="@mipmap/ic_send"
-        app:backgroundTint="@android:color/holo_green_light" />
+        app:backgroundTint="@color/colorFab" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/new_record_progress_bar_size"
+        android:layout_height="@dimen/new_record_progress_bar_size"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="@dimen/new_record_progress_bar_margin"
+        android:layout_marginEnd="@dimen/new_record_progress_bar_margin"
         android:indeterminate="true"
         android:visibility="invisible" />
 

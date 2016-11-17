@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.userpage.UserPageActivity">
+
+    <include layout="@layout/main_header" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/big_avatar_side_length"
+        android:layout_height="@dimen/big_avatar_side_length"
+        android:layout_gravity="top"
+        android:layout_marginTop="@dimen/main_avatar_margin_top"
+        android:src="@mipmap/ic_avatar"
+        app:layout_behavior="com.android.project.util.AvatarBehavior" />
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.android.project.view.homewall.HomeWallFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout="@layout/home_wall_fragment" />
+
+</android.support.design.widget.CoordinatorLayout>
+

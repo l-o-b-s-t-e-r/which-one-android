@@ -2,46 +2,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingLeft="@dimen/options_padding_LR"
+    android:paddingRight="@dimen/options_padding_LR">
 
     <TextView
         android:id="@+id/vote_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:text="" />
+        android:textColor="@color/colorText" />
 
     <TextView
         android:id="@+id/option_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/vote_count"
         android:layout_toStartOf="@id/vote_count"
-        android:text="Title" />
+        android:text="@string/template_title"
+        android:textColor="@color/colorText" />
 
     <TextView
         android:id="@+id/percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/option_name"
-        android:gravity="center"
-        android:text="%" />
+        android:text="@string/percent"
+        android:textColor="@color/colorText" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/percent"
         android:layout_alignTop="@id/percent"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/percent"
+        android:layout_marginEnd="10dp"
         android:layout_toStartOf="@id/percent"
         android:indeterminate="true" />
 

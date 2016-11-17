@@ -3,7 +3,7 @@
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.wall.WallFragment">
+    tools:context=".view.homewall.HomeWallFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,14 +13,15 @@
             android:id="@+id/home_wall_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/progressBar"
+            android:layout_above="@+id/progress_bar"
             android:layout_alignParentTop="true" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
             android:indeterminate="true"
             android:visibility="gone" />
     </RelativeLayout>

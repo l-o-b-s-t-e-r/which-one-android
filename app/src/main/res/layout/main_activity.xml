@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.main.MainActivity">
+
+    <include layout="@layout/main_header" />
+
+    <include layout="@layout/tab_layout" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/big_avatar_side_length"
+        android:layout_height="@dimen/big_avatar_side_length"
+        android:layout_gravity="top"
+        android:layout_marginTop="@dimen/main_avatar_margin_top"
+        android:src="@mipmap/ic_avatar"
+        app:layout_behavior="com.android.project.util.AvatarBehavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/main_fab_margin"
+        android:src="@mipmap/ic_add_record"
+        app:backgroundTint="@color/colorFab"
+        app:layout_behavior="com.android.project.util.FabBehavior" />
+
+</android.support.design.widget.CoordinatorLayout>
