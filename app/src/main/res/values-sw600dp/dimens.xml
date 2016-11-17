@@ -6,9 +6,9 @@
     <dimen name="btn_text_size">20sp</dimen>
 
     <!-- main activity -->
-    <dimen name="header_height">250dp</dimen>
-    <dimen name="big_avatar_side_length">150dp</dimen>
-    <dimen name="main_avatar_margin_top">50dp</dimen>
+    <dimen name="header_height">400dp</dimen>
+    <dimen name="big_avatar_side_length">200dp</dimen>
+    <dimen name="main_avatar_margin_top">100dp</dimen>
     <dimen name="header_username_margin_B">16dp</dimen>
     <dimen name="header_username_margin_L">10dp</dimen>
     <dimen name="tablayout_separator_height">1dp</dimen>
@@ -25,18 +25,18 @@
     <dimen name="separator_margin_LR">10dp</dimen>
 
     <!-- record header -->
-    <dimen name="small_avatar_side_length">30dp</dimen>
+    <dimen name="small_avatar_side_length">50dp</dimen>
     <dimen name="avatar_margin_LR">4dp</dimen>
     <dimen name="avatar_margin_BT">2dp</dimen>
     <dimen name="user_info_margin_B">2dp</dimen>
 
     <!-- record recycler -->
-    <dimen name="big_image_recycler_view">300dp</dimen>
-    <dimen name="small_image_recycler_view">150dp</dimen>
+    <dimen name="big_image_recycler_view">500dp</dimen>
+    <dimen name="small_image_recycler_view">250dp</dimen>
 
     <!-- record description-->
     <dimen name="description_margin_L">10dp</dimen>
-    <dimen name="description_text_size">12sp</dimen>
+    <dimen name="description_text_size">20sp</dimen>
 
     <!-- record options-->
     <dimen name="options_margin_top">10dp</dimen>

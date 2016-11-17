@@ -1,34 +1,44 @@
 <resources>
-    <string name="app_name">project</string>
-    <string name="album_name">WhichOne</string>
-    <string name="user_name_hint">Name</string>
-    <string name="user_password_hint">Password</string>
-    <string name="sign_id">Sign in</string>
-    <string name="title_activity_wall">WallActivity</string>
+    <string name="app_name">WhichOne</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_record_detail">RecordDetailActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_new_item">NewItemActivity</string>
-    <string name="title_activity_new_item_activitye">NewItemActivitye</string>
-    <string name="search">search</string>
-    <string name="search_dialog_title">Search</string>
-    <string name="sign_out">Sign out</string>
+    <!-- sign in & sign up -->
+    <string name="user_name_hint">Name</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email_hint">Email</string>
+    <string name="repeat_password_hint">Repeat password</string>
+    <string name="sign_up_success">We have sent a verification to your email</string>
+
+    <!-- remind dialog -->
+    <string name="remind_dialog_title">Remind info</string>
+    <string name="remind_dialog_btn_text">Send</string>
+    <string name="remind_info_success">Info has been sent successfully</string>
+
+    <!-- main menu -->
+    <string name="search">Search</string>
     <string name="update">Update</string>
+    <string name="sign_out">Sign out</string>
+    <string name="forgot_name_password">Forgot name or password?</string>
+
+    <!-- new record menu -->
     <string name="action_add_image">Add image</string>
     <string name="action_add_option">Add option</string>
-    <string name="sign_up">sign up</string>
-    <string name="email">Email</string>
-    <string name="forgot_name_password">Forgot name or password?</string>
+
+    <!-- new record -->
+    <string name="new_option_hint">Option</string>
+    <string name="description_hint">Description</string>
+
+    <!-- search dialog -->
+    <string name="search_dialog_title">Search</string>
+
+    <!-- record -->
+    <string name="template_username">Username</string>
+    <string name="template_title">Title</string>
+    <string name="percent">%</string>
+
+    <!-- Shared preferences -->
     <string name="user_name">user_name</string>
     <string name="user_name_opened_page">user_name_opened_page</string>
-    <string name="remind_info_success">Info has been sent successfully</string>
-    <string name="remind_info_error">Info has not been sent. Please check email and try again.</string>
-    <string name="sign_up_success">We have sent a verification to your email.</string>
-    <string name="general_error">We are sorry, but something went wrong.</string>
-    <string name="new_record_empty_record">You should add at least 1 image and 1 option</string>
-    <string name="new_record_empty_or_duplicate_option">Empty or duplicate option</string>
-    <string name="new_record_max_images">Max count of images</string>
-    <string name="new_record_max_options">Max count of options</string>
+
 </resources>

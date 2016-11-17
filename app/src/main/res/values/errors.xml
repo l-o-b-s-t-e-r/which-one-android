@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- sign in & sign up -->
     <string name="wrong_password_or_name">Username or Password is incorrect</string>
     <string name="empty_field">Field cannot be empty</string>
     <string name="password_not_match">Password does not match</string>
@@ -8,4 +9,15 @@
     <string name="existing_name">Such name already exists</string>
     <string name="existing_email">Such email already exists</string>
     <string name="incorrect_email">Email is incorrect</string>
+
+    <!-- new record -->
+    <string name="new_record_empty_record">You should add at least 1 image and 1 option</string>
+    <string name="new_record_empty_or_duplicate_option">Empty or duplicate option</string>
+    <string name="new_record_max_images">Max count of images</string>
+    <string name="new_record_max_options">Max count of options</string>
+
+    <!-- remind dialog -->
+    <string name="remind_info_error">Info has not been sent. Please check email and try again.</string>
+
+    <string name="general_error">We are sorry, but something went wrong</string>
 </resources>
