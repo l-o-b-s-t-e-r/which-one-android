@@ -3,13 +3,11 @@ package com.android.project.view.newrecord;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +19,7 @@ import android.widget.Toast;
 
 import com.android.project.R;
 import com.android.project.WhichOneApp;
+import com.android.project.model.User;
 import com.android.project.util.ImageKeeper;
 import com.android.project.util.QuizViewBuilder;
 import com.android.project.view.main.MainActivity;
@@ -41,13 +40,13 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     private final String TAG = NewRecordActivity.class.getSimpleName();
     private final int LOAD_IMAGE = 1;
     private final int MAX_IMAGES = 5;
-    private final int MAX_OPTIONS = 9;
+    private final int MAX_OPTIONS = 6;
 
     @BindView(R.id.options_container)
     LinearLayout container;
     @BindView(R.id.description)
     EditText description;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.new_item_recycler)
     RecyclerView recyclerView;
@@ -56,14 +55,19 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     NewRecordPresenter.ActionListener presenter;
     @Inject
     NewRecordRecyclerViewAdapter recyclerViewAdapter;
+    @Inject
+    QuizViewBuilder quizViewBuilder;
+    @Inject
+    User user;
 
     private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_item);
+        setContentView(R.layout.new_record_activity);
         ButterKnife.bind(this);
+
         WhichOneApp.getUserComponent()
                 .plus(new NewRecordModule(this))
                 .inject(this);
@@ -102,7 +106,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
         presenter.sendRecord(
                 recyclerViewAdapter.getAllImages(),
                 allOptions,
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(getString(R.string.user_name), ""),
+                user.getUsername(),
                 description.getText().toString().trim());
     }
 
@@ -115,7 +119,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     public void showImage(File imageFile) {
         recyclerViewAdapter.addItem(imageFile);
         mLinearLayoutManager.scrollToPosition(recyclerViewAdapter.getItemCount() - 1);
-        container.addView(QuizViewBuilder.getInstance().createNewOption(container));
+        container.addView(quizViewBuilder.createNewOption(container, this));
     }
 
     @Override
@@ -155,7 +159,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
                 return true;
             case R.id.action_add_option:
                 if (container.getChildCount() < MAX_OPTIONS) {
-                    container.addView(QuizViewBuilder.getInstance().createNewOption(container));
+                    container.addView(quizViewBuilder.createNewOption(container, this));
                 } else {
                     Toast.makeText(this, getString(R.string.new_record_max_options), Toast.LENGTH_SHORT).show();
                 }
@@ -168,7 +172,7 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override

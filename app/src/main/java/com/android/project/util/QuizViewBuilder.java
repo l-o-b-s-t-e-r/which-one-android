@@ -1,8 +1,11 @@
 package com.android.project.util;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.project.R;
-import com.android.project.WhichOneApp;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 
@@ -34,41 +36,39 @@ public class QuizViewBuilder {
     private static final String PERCENT_TEMPLATE = "0.00%";
     private static final DecimalFormat FORMAT = new DecimalFormat(PERCENT_TEMPLATE);
 
-    private static QuizViewBuilder mQuizViewBuilder;
+    private Context mContext;
 
-    private QuizViewBuilder() {
-
-    }
-
-    public static QuizViewBuilder getInstance() {
-        if (mQuizViewBuilder == null) {
-            mQuizViewBuilder = new QuizViewBuilder();
-        }
-
-        return mQuizViewBuilder;
+    public QuizViewBuilder(Application application) {
+        mContext = application.getApplicationContext();
     }
 
     public void createRadioOptions(RadioGroup radioGroup, Record record) {
         RadioButton radioButton;
 
         for (Option option : record.getOptions()) {
-            radioButton = new RadioButton(WhichOneApp.getContext());
+            radioButton = new RadioButton(mContext);
             radioButton.setText(option.getOptionName());
             radioButton.setId(radioGroup.getChildCount());
+
+            radioButton.setTextColor(Color.rgb(51, 51, 51));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                radioButton.setButtonTintList(ColorStateList.valueOf(Color.rgb(51, 51, 51)));
+            }
 
             radioGroup.addView(radioButton);
         }
     }
 
     public List<ViewHolder> createVotedOptions(RadioGroup radioGroup, Record record) {
-        LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         List<ViewHolder> viewHolderOptions = new ArrayList<>();
+        Integer allVotesCount = record.getVoteCount();
         for (Option option : record.getOptions()) {
-            View view = inflater.inflate(R.layout.quiz_option, null);
+            View view = inflater.inflate(R.layout.voted_option_layout, null);
 
             ViewHolder viewHolder = new ViewHolder(view, option);
-            viewHolder.setContent(record);
+            viewHolder.setContent(record, allVotesCount);
             viewHolderOptions.add(viewHolder);
 
             radioGroup.addView(view, radioGroup.getChildCount());
@@ -78,11 +78,11 @@ public class QuizViewBuilder {
     }
 
     public List<ViewHolder> createProgressOption(final RadioGroup radioGroup, final Record record) {
-        LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         List<ViewHolder> viewHolderOptions = new ArrayList<>();
         for (Option option : record.getOptions()) {
-            View view = inflater.inflate(R.layout.quiz_option, null);
+            View view = inflater.inflate(R.layout.voted_option_layout, null);
             ViewHolder viewHolder = new ViewHolder(view, option);
             viewHolderOptions.add(viewHolder);
             radioGroup.addView(view, radioGroup.getChildCount());
@@ -91,9 +91,9 @@ public class QuizViewBuilder {
         return viewHolderOptions;
     }
 
-    public View createNewOption(final ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) WhichOneApp.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View view = inflater.inflate(R.layout.quiz_new_option, null);
+    public View createNewOption(ViewGroup parent, Context context) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.new_option_layout, null);
 
         ImageView delete = ButterKnife.findById(view, R.id.delete);
 
@@ -106,7 +106,7 @@ public class QuizViewBuilder {
 
     public class ViewHolder {
 
-        @BindView(R.id.progressBar)
+        @BindView(R.id.progress_bar)
         ProgressBar progressBar;
         @BindView(R.id.vote_count)
         TextView voteCount;
@@ -124,13 +124,15 @@ public class QuizViewBuilder {
         public ViewHolder(View view, Option option) {
             ButterKnife.bind(this, view);
 
+            progressBar.getProgressDrawable().setColorFilter(Color.rgb(148, 148, 148), PorterDuff.Mode.SRC_IN);
+            progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(148, 148, 148), PorterDuff.Mode.SRC_IN);
+
             mOption = option;
             optionName.setText(option.getOptionName());
         }
 
-        public void setContent(Record record) {
+        public void setContent(Record record, int allVotesCount) {
             Integer optionVotesCount = record.getOption(mOption.getOptionName()).getVoteCount();
-            Integer allVotesCount = record.getVoteCount();
 
             progressBar.setIndeterminate(false);
             progressBar.setProgress(optionVotesCount);
@@ -140,7 +142,7 @@ public class QuizViewBuilder {
             percent.setText(FORMAT.format((float) optionVotesCount / allVotesCount));
 
             if (mOption.getOptionName().equals(record.getSelectedOption())) {
-                progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+                progressBar.getProgressDrawable().setColorFilter(Color.rgb(225, 0, 86), PorterDuff.Mode.SRC_IN);
             }
         }
 

@@ -4,6 +4,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     ImageView background;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wall);
+        setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
 
         WhichOneApp.getUserComponent()
@@ -107,8 +110,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         fabAnimationHideRight.setAnimationListener(getHideRightAnimationListener());
         fabAnimationHideLeft.setAnimationListener(getHideLeftAnimationListener());
 
-
-        viewPager.addOnPageChangeListener(getOnPageChangeListener());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(225, 0, 86), PorterDuff.Mode.SRC_IN);
+        }
     }
 
     @OnClick(R.id.avatar)
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         MenuItem updateItem = menu.findItem(R.id.action_update);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update, null);
+        ImageView updateActionView = (ImageView) inflater.inflate(R.layout.update_icon_layout, null);
         updateActionView.setOnClickListener(view -> {
                     view.startAnimation(mUpdateAnimation);
                     mWallFragment.showSwipeLayoutProgress();
@@ -144,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         return super.onCreateOptionsMenu(menu);
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public void updateAvatar(User user) {
         WhichOneApp.createUserComponent(user);
 
-        Glide.with(WhichOneApp.getContext())
+        Glide.with(this)
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
                 .asBitmap()
                 .into(ImageManager.getInstance().createTarget(
@@ -174,8 +178,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public void updateBackground(User user) {
         WhichOneApp.createUserComponent(user);
 
-        Glide.with(WhichOneApp.getContext())
+        Glide.with(this)
                 .load(ImageManager.IMAGE_URL + user.getBackground())
+                .placeholder(R.mipmap.ic_background)
                 .into(background);
     }
 
@@ -241,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override
@@ -263,17 +268,40 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private void setViewPager(){
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        mWallFragment = (WallFragment) WallFragment.newInstance(tabLayout);
-
+        mWallFragment = new WallFragment();
+        HomeWallFragment homeWallFragment = new HomeWallFragment();
         List<Fragment> fragments = Arrays.asList(
                 mWallFragment,
-                HomeWallFragment.newInstance(tabLayout)
+                homeWallFragment
         );
 
-        FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments, Arrays.asList("WALL", "HOME"));
+        FragmentStatePagerAdapter tabAdapter = new TabAdapter(fragmentManager, fragments);
+
         viewPager.setAdapter(tabAdapter);
+        viewPager.addOnPageChangeListener(getOnPageChangeListener());
+
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.removeAllTabs();
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_wall_page));
+
+        TabLayout.Tab homeWallTab = tabLayout.newTab().setIcon(R.mipmap.ic_home_page);
+        tabLayout.addTab(homeWallTab);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == homeWallTab.getPosition()) {
+                    homeWallFragment.loadRecords();
+                    tabLayout.removeOnTabSelectedListener(this);
+                }
+            }
+
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
     }
 
     private void setAnimations(){

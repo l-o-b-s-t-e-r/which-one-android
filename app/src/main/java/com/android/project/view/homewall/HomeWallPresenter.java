@@ -12,11 +12,13 @@ import java.util.List;
 public interface HomeWallPresenter {
 
     interface View extends CommonPresenter.View {
+
         void updateRecords(List<Record> records);
 
         void openRecordDetail(Long recordId);
 
         void clearHomeWall();
+
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {
@@ -26,6 +28,6 @@ public interface HomeWallPresenter {
         void loadNextRecords(String requestedUsername, Long lastLoadedRecordId, String targetUsername);
 
         void loadRecordDetail(Long recordId);
-    }
 
+    }
 }

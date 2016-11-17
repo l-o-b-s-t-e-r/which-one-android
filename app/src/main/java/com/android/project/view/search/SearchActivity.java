@@ -30,11 +30,11 @@ import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity implements SearchPresenter.View {
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.search_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
     @Inject
@@ -46,12 +46,14 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.search_dialog);
         ButterKnife.bind(this);
+
         WhichOneApp.getUserComponent()
                 .plus(new SearchModule(this))
                 .inject(this);
 
+        toolbar.setTitle(R.string.search_dialog_title);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -86,7 +88,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override

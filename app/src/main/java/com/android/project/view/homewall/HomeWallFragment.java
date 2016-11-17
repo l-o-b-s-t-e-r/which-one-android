@@ -4,7 +4,6 @@ package com.android.project.view.homewall;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,7 +34,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
 
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeLayout;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.home_wall_recycler)
     RecyclerView recyclerView;
@@ -50,37 +49,6 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     private String mRequestedUsername;
     private boolean refreshing = true;
 
-    public HomeWallFragment() {
-
-    }
-
-    public static Fragment newInstance(TabLayout tabLayout) {
-        HomeWallFragment fragment = new HomeWallFragment();
-        tabLayout.addTab(tabLayout.newTab());
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 1) {
-                    fragment.loadRecords();
-                    tabLayout.removeOnTabSelectedListener(this);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        return fragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +61,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home_wall, container, false);
+        View view = inflater.inflate(R.layout.home_wall_fragment, container, false);
 
         ButterKnife.bind(this, view);
         showSwipeLayoutProgress();
@@ -133,7 +101,7 @@ public class HomeWallFragment extends Fragment implements HomeWallPresenter.View
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override

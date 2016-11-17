@@ -2,6 +2,9 @@ package com.android.project.view.signin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -33,13 +36,13 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
     private static final String TAG = SignInActivity.class.getSimpleName();
 
-    @BindView(R.id.editTextName)
+    @BindView(R.id.username)
     EditText editTextName;
-    @BindView(R.id.editTextPassword)
+    @BindView(R.id.password)
     EditText editTextPassword;
     @BindView(R.id.forgot_password)
     TextView textViewForgot;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
     @Inject
@@ -68,35 +71,43 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
 
     @Override
     public void setContentView() {
-        setContentView(R.layout.activity_singin);
+        setContentView(R.layout.sing_in_activity);
         ButterKnife.bind(this);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(225, 0, 86), PorterDuff.Mode.SRC_IN);
+        }
     }
 
     @OnClick(R.id.forgot_password)
     void onForgotTextViewClick() {
-        final View view = View.inflate(this, R.layout.remind_dialog, null);
+        View view = View.inflate(this, R.layout.remind_dialog, null);
+        ProgressBar progressBar = ButterKnife.findById(view, R.id.progress_bar);
+        EditText editTextEmail = ButterKnife.findById(view, R.id.email);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            progressBar.getProgressDrawable().setColorFilter(Color.rgb(225, 0, 86), PorterDuff.Mode.SRC_IN);
+            progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(225, 0, 86), PorterDuff.Mode.SRC_IN);
+        }
 
         mRemindDialog = new AlertDialog.Builder(this, R.style.AppThemeDialogSignUp)
                 .setView(view)
-                .setTitle("REMIND INFO")
+                .setTitle(R.string.remind_dialog_title)
                 .create();
 
-        mRemindDialog.setButton(AlertDialog.BUTTON_POSITIVE, "SEND", new Message());
+        mRemindDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.remind_dialog_btn_text), new Message());
         mRemindDialog.show();
         mRemindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                EditText editTextEmail = ButterKnife.findById(view, R.id.email);
-                ProgressBar progressBar = ButterKnife.findById(view, R.id.progressBar);
-                progressBar.setIndeterminate(true);
-
                 String email = editTextEmail.getText().toString().trim();
+
                 if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     mRemindDialog.setCanceledOnTouchOutside(false);
+                    mRemindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    progressBar.setIndeterminate(true);
                     presenter.remindInfo(email);
                 } else {
                     editTextEmail.setError(getString(R.string.incorrect_email));
                 }
-
-            mRemindDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
         });
     }
 
@@ -154,7 +165,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override

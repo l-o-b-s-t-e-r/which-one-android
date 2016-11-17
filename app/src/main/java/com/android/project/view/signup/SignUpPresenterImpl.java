@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.project.api.RequestService;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -30,6 +31,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
         Subscription subscription =
                 mRequestService
                         .checkName(name)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 aVoid -> mSignUpView.showCheckNameResult(true),
                                 throwable -> mSignUpView.showCheckNameResult(false)
@@ -45,6 +47,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
         Subscription subscription =
                 mRequestService
                         .checkEmail(email)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(aVoid -> mSignUpView.showCheckEmailResult(true),
                                 throwable -> mSignUpView.showCheckEmailResult(false));
 
@@ -60,6 +63,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
                         .signUp(name, password, email)
                         .doOnSubscribe(mSignUpView::showProgress)
                         .doOnUnsubscribe(mSignUpView::hideProgress)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 aVoid -> mSignUpView.signUpResult(true),
                                 throwable -> mSignUpView.signUpResult(false)
@@ -69,7 +73,7 @@ public class SignUpPresenterImpl implements SignUpPresenter.ActionListener {
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

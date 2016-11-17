@@ -33,7 +33,7 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
     }
 
     @Override
-    public void getRecordById(Long recordId, Integer position) {
+    public void updateRecord(Long recordId, Integer position) {
         mDatabaseManager.getRecordById(recordId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -116,9 +116,8 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
         compositeSubscription.add(subscription);
     }
 
-
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

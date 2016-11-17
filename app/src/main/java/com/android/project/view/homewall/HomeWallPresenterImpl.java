@@ -74,7 +74,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

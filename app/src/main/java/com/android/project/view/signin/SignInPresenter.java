@@ -8,6 +8,7 @@ import com.android.project.util.CommonPresenter;
  */
 public interface SignInPresenter {
     interface View extends CommonPresenter.View {
+
         void setContentView();
 
         void openUserPage(User user);
@@ -17,6 +18,7 @@ public interface SignInPresenter {
         void onErrorRemind(Throwable throwable);
 
         void onErrorSingIn(Throwable throwable);
+
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {

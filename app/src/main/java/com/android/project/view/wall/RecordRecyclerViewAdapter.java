@@ -29,6 +29,7 @@ import butterknife.OnClick;
 public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = RecordRecyclerViewAdapter.class.getSimpleName();
+
     private Long mRecordId;
     private List<Image> mImages;
     private WallPresenter.ActionListener mPresenter;
@@ -46,7 +47,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.record_recycler_item, parent, false);
+                .inflate(R.layout.image_progress_layout, parent, false);
 
         return new ViewHolder(view);
     }
@@ -65,7 +66,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
 
         @BindView(R.id.record_image)
         ImageView imageView;
-        @BindView(R.id.progressBar)
+        @BindView(R.id.progress_bar)
         ProgressBar spinner;
 
         public ViewHolder(View view) {

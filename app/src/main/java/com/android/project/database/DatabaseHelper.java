@@ -10,7 +10,6 @@ import com.android.project.model.OptionEntity;
 import com.android.project.model.RecordEntity;
 import com.android.project.model.UserEntity;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -61,24 +60,5 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         TableUtils.clearTable(getConnectionSource(), OptionEntity.class);
         TableUtils.clearTable(getConnectionSource(), RecordEntity.class);
         TableUtils.clearTable(getConnectionSource(), UserEntity.class);
-    }
-
-    public Dao<ImageEntity, Integer> getImageDao() throws SQLException {
-        return getDao(ImageEntity.class);
-    }
-
-    ;
-
-    public Dao<OptionEntity, Integer> getOptionDao() throws SQLException {
-        return getDao(OptionEntity.class);
-    }
-
-
-    public Dao<RecordEntity, Integer> getRecordDao() throws SQLException {
-        return getDao(RecordEntity.class);
-    }
-
-    public Dao<UserEntity, Integer> getUserDao() throws SQLException {
-        return getDao(UserEntity.class);
     }
 }

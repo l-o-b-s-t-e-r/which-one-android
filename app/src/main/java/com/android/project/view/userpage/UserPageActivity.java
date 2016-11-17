@@ -42,7 +42,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_page);
+        setContentView(R.layout.user_page_activity);
         ButterKnife.bind(this);
         collapsingToolbar.setTitle("");
 
@@ -71,7 +71,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     public void updateAvatar(User user) {
         WhichOneApp.createUserComponent(user);
 
-        Glide.with(WhichOneApp.getContext())
+        Glide.with(this)
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
                 .asBitmap()
                 .into(ImageManager.getInstance().createTarget(
@@ -83,8 +83,9 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     public void updateBackground(User user) {
         WhichOneApp.createUserComponent(user);
 
-        Glide.with(WhichOneApp.getContext())
+        Glide.with(this)
                 .load(ImageManager.IMAGE_URL + user.getBackground())
+                .placeholder(R.mipmap.ic_background)
                 .into(background);
     }
 
@@ -102,7 +103,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override

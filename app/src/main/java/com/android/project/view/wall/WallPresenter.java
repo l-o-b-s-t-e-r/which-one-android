@@ -25,6 +25,7 @@ public interface WallPresenter {
         void updateRecord(Record record, Integer position, Boolean notify);
 
         void clearWall();
+
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {
@@ -39,7 +40,7 @@ public interface WallPresenter {
 
         void sendVote(Record record, Option option, String username, Subscriber<Record> quizSubscriber, Integer position);
 
-        void getRecordById(Long recordId, Integer position);
-    }
+        void updateRecord(Long recordId, Integer position);
 
+    }
 }

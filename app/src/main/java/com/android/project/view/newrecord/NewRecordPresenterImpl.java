@@ -67,7 +67,7 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

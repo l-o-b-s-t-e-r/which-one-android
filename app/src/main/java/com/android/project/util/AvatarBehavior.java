@@ -11,14 +11,14 @@ import android.widget.ImageView;
 import com.android.project.R;
 
 
-public class ImageBehavior extends CoordinatorLayout.Behavior<ImageView> {
+public class AvatarBehavior extends CoordinatorLayout.Behavior<ImageView> {
 
     private Toolbar toolbar;
     private float appBarHeight, toolBarHeight;
     private float deltaAppBar, deltaAppBarPercent;
     private float childStartY, childStartX;
 
-    public ImageBehavior(Context context, AttributeSet attrs) {
+    public AvatarBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

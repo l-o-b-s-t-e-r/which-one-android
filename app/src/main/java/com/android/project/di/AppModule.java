@@ -7,6 +7,9 @@ import com.android.project.api.RequestServiceImpl;
 import com.android.project.database.DatabaseHelper;
 import com.android.project.database.DatabaseManager;
 import com.android.project.database.DatabaseManagerImpl;
+import com.android.project.util.QuizViewBuilder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import javax.inject.Singleton;
@@ -43,6 +46,18 @@ public class AppModule {
     @Singleton
     public RequestService provideRequestService() {
         return new RequestServiceImpl(RequestServiceImpl.BASE_URL);
+    }
+
+    @Provides
+    @Singleton
+    public QuizViewBuilder provideQuizBuilder(Application application) {
+        return new QuizViewBuilder(application);
+    }
+
+    @Provides
+    @Singleton
+    public RequestManager provideGlide(Application application) {
+        return Glide.with(application);
     }
 
 }

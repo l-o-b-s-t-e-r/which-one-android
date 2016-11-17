@@ -34,10 +34,10 @@ public class DatabaseManagerImpl implements DatabaseManager {
         mDatabaseHelper = databaseHelper;
 
         try {
-            mRecordDao = mDatabaseHelper.getRecordDao();
-            mOptionDao = mDatabaseHelper.getOptionDao();
-            mImageDao = mDatabaseHelper.getImageDao();
-            mUserDao = mDatabaseHelper.getUserDao();
+            mRecordDao = mDatabaseHelper.getDao(RecordEntity.class);
+            mOptionDao = mDatabaseHelper.getDao(OptionEntity.class);
+            mImageDao = mDatabaseHelper.getDao(ImageEntity.class);
+            mUserDao = mDatabaseHelper.getDao(UserEntity.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }

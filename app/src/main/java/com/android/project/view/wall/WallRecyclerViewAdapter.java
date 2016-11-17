@@ -17,7 +17,7 @@ import com.android.project.model.Record;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
 import com.android.project.util.QuizViewBuilder;
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,20 +39,25 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
     private static final String TAG = WallRecyclerViewAdapter.class.getSimpleName();
 
     private boolean allRecordsLoaded;
-    private List<Record> mRecords = new ArrayList<>();
+    private List<Record> mRecords;
     private WallPresenter.ActionListener mPresenter;
     private String mUsername;
+    private QuizViewBuilder mQuizViewBuilder;
+    private RequestManager mGlide;
 
     @Inject
-    public WallRecyclerViewAdapter(WallPresenter.ActionListener presenter, User user) {
+    public WallRecyclerViewAdapter(WallPresenter.ActionListener presenter, User user, QuizViewBuilder quizViewBuilder, RequestManager glide) {
         mPresenter = presenter;
         mUsername = user.getUsername();
+        mQuizViewBuilder = quizViewBuilder;
+        mGlide = glide;
+        mRecords = new ArrayList<>();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView view = (CardView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.record, parent, false);
+                .inflate(R.layout.record_layout, parent, false);
 
         return new ViewHolder(view);
     }
@@ -84,7 +89,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             record.setRecordId(Long.valueOf(recordId));
             index = mRecords.indexOf(record);
             if (index != -1) {
-                mPresenter.getRecordById(record.getRecordId(), index);
+                mPresenter.updateRecord(record.getRecordId(), index);
             }
         }
     }
@@ -120,16 +125,12 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
         @BindView(R.id.username)
         TextView username;
-
         @BindView(R.id.description)
         TextView description;
-
         @BindView(R.id.record_recycler)
         RecyclerView recyclerView;
-
         @BindView(R.id.radio_group)
         RadioGroup radioGroup;
-
         @BindView(R.id.avatar)
         ImageView avatar;
 
@@ -147,7 +148,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
                     radioGroup.removeAllViews();
 
                     mQuizSubscriber = createQuizSubscriber(
-                            QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord)
+                            mQuizViewBuilder.createProgressOption(radioGroup, mRecord)
                     );
 
                 mPresenter.sendVote(
@@ -173,8 +174,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             username.setText(record.getUsername());
             description.setText(record.getDescription());
 
-            Glide.with(WhichOneApp.getContext())
-                    .load(ImageManager.IMAGE_URL + record.getAvatar())
+            mGlide.load(ImageManager.IMAGE_URL + record.getAvatar())
                     .asBitmap()
                     .into(ImageManager.getInstance().createTarget(
                             ImageManager.SMALL_AVATAR_SIZE, ImageManager.SMALL_AVATAR_SIZE, avatar
@@ -188,9 +188,9 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             radioGroup.removeAllViews();
 
             if (mRecord.getSelectedOption() != null) {
-                QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
+                mQuizViewBuilder.createVotedOptions(radioGroup, mRecord);
             } else {
-                QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
+                mQuizViewBuilder.createRadioOptions(radioGroup, mRecord);
             }
         }
 
@@ -220,8 +220,9 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
 
                 @Override
                 public void onNext(Record record) {
+                    Integer allVotesCount = record.getVoteCount();
                     for (QuizViewBuilder.ViewHolder viewHolder : viewHolderOptions) {
-                        viewHolder.setContent(record);
+                        viewHolder.setContent(record, allVotesCount);
                     }
                 }
             };

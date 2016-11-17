@@ -18,6 +18,7 @@ import rx.subscriptions.CompositeSubscription;
 public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionListener {
 
     private static final String TAG = RecordDetailPresenterImpl.class.getSimpleName();
+
     public RequestService mRequestService;
     public DatabaseManager mDatabaseManager;
     private RecordDetailPresenter.View mDetailView;
@@ -75,7 +76,7 @@ public class RecordDetailPresenterImpl implements RecordDetailPresenter.ActionLi
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

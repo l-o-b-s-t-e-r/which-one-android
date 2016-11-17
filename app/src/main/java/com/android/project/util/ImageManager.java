@@ -27,14 +27,14 @@ import rx.schedulers.Schedulers;
 
 public class ImageManager {
 
-
     public static final String IMAGE_URL = RequestServiceImpl.BASE_URL + RequestServiceImpl.IMAGE_FOLDER;
     public static final int LOAD_IMAGE = 1;
     public static final int LOAD_AVATAR = 2;
-    public static final int SMALL_AVATAR_SIZE = 200;
+    public static final int SMALL_AVATAR_SIZE = 120;
     private static final String TAG = ImageManager.class.getSimpleName();
-    private static final float CORNER_RADIUS = 50.0f;
-    private static final Integer MAX_SIDE_LENGTH = 600;
+    private static final float CORNER_RADIUS = 30.0f;
+    private static final int MAX_SIDE_LENGTH = 600;
+
     private static ImageManager mImageManager;
 
     private ImageManager() {

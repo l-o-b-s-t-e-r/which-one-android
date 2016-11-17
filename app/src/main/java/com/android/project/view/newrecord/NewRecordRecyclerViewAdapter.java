@@ -1,9 +1,9 @@
 package com.android.project.view.newrecord;
 
 import android.graphics.BitmapFactory;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -36,10 +36,10 @@ public class NewRecordRecyclerViewAdapter extends RecyclerView.Adapter<NewRecord
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.new_item_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.new_image_layout, parent, false);
 
-        return new ViewHolder(cardView);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -50,7 +50,6 @@ public class NewRecordRecyclerViewAdapter extends RecyclerView.Adapter<NewRecord
     public void addItem(File imageFile) {
         mImageFiles.add(imageFile);
         notifyItemInserted(mImageFiles.size());
-
     }
 
     public void removeItem(int position) {
@@ -69,14 +68,14 @@ public class NewRecordRecyclerViewAdapter extends RecyclerView.Adapter<NewRecord
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.image)
+        @BindView(R.id.record_image)
         ImageView image;
 
         private Integer mPosition;
 
-        public ViewHolder(CardView cardView) {
-            super(cardView);
-            ButterKnife.bind(this, cardView);
+        public ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
 
         public void setContent(File imageFile, int position) {

@@ -12,6 +12,7 @@ import java.io.File;
 public interface MainPresenter {
 
     interface View extends CommonPresenter.View {
+
         void showUserInfo(User user);
 
         void updateAvatar(User user);
@@ -19,9 +20,11 @@ public interface MainPresenter {
         void updateBackground(User user);
 
         void signOut();
+
     }
 
     interface ActionListener extends CommonPresenter.ActionListener {
+
         void loadUserInfo(String username);
 
         void updateAvatar(File imageFile, String name);
@@ -29,5 +32,6 @@ public interface MainPresenter {
         void updateBackground(File imageFile, String name);
 
         void clearDatabase();
+
     }
 }

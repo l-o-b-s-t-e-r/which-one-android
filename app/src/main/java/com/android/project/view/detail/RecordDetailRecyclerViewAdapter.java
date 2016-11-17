@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.project.R;
-import com.android.project.WhichOneApp;
 import com.android.project.model.Image;
 import com.android.project.util.ImageManager;
 import com.android.project.view.wall.RecordRecyclerViewAdapter;
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +28,18 @@ public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<Record
 
     private static final String TAG = RecordRecyclerViewAdapter.class.getSimpleName();
     private List<Image> mImages;
+    private RequestManager mGlide;
 
     @Inject
-    public RecordDetailRecyclerViewAdapter() {
+    public RecordDetailRecyclerViewAdapter(RequestManager glide) {
         mImages = new ArrayList<>();
+        mGlide = glide;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.detail_image, parent, false);
+                .inflate(R.layout.image_layout, parent, false);
 
         return new ViewHolder(view);
     }
@@ -61,7 +62,7 @@ public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<Record
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.record_image)
-        ImageView imageView;
+        ImageView image;
 
         public ViewHolder(View view) {
             super(view);
@@ -69,9 +70,8 @@ public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<Record
         }
 
         public void setContent(Image image) {
-            Glide.with(WhichOneApp.getContext())
-                    .load(ImageManager.IMAGE_URL + image.getImage())
-                    .into(imageView);
+            mGlide.load(ImageManager.IMAGE_URL + image.getImage())
+                    .into(this.image);
         }
     }
 }

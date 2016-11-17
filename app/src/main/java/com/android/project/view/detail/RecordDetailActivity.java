@@ -25,7 +25,7 @@ import com.android.project.util.QuizViewBuilder;
 import com.android.project.view.detail.di.RecordDetailModule;
 import com.android.project.view.userpage.UserPageActivity;
 import com.android.project.view.wall.WallFragment;
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -42,12 +42,11 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     public static final String RECORD_ID = "RECORD_ID";
     private static final String TAG = RecordDetailActivity.class.getSimpleName();
 
-
     @BindView(R.id.avatar)
     ImageView avatar;
     @BindView(R.id.username)
     TextView username;
-    @BindView(R.id.detail_recycler)
+    @BindView(R.id.record_detail_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.description)
     TextView description;
@@ -62,6 +61,10 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     RecordDetailPresenter.ActionListener presenter;
     @Inject
     RecordDetailRecyclerViewAdapter recyclerViewAdapter;
+    @Inject
+    QuizViewBuilder quizViewBuilder;
+    @Inject
+    RequestManager glide;
 
     private Record mRecord;
     private List<QuizViewBuilder.ViewHolder> mViewHolderOptions;
@@ -69,7 +72,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record_detail);
+        setContentView(R.layout.record_detail_activity);
         ButterKnife.bind(this);
         WhichOneApp.getUserComponent()
                 .plus(new RecordDetailModule(this))
@@ -96,8 +99,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
         mRecord = record;
 
-        Glide.with(WhichOneApp.getContext())
-                .load(ImageManager.IMAGE_URL + record.getAvatar())
+        glide.load(ImageManager.IMAGE_URL + record.getAvatar())
                 .asBitmap()
                 .into(ImageManager.getInstance().createTarget(
                         ImageManager.SMALL_AVATAR_SIZE, ImageManager.SMALL_AVATAR_SIZE, avatar
@@ -110,9 +112,9 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
         radioGroup.removeAllViews();
         if (mRecord.isVoted()) {
-            mViewHolderOptions = QuizViewBuilder.getInstance().createVotedOptions(radioGroup, mRecord);
+            mViewHolderOptions = quizViewBuilder.createVotedOptions(radioGroup, mRecord);
         } else {
-            QuizViewBuilder.getInstance().createRadioOptions(radioGroup, mRecord);
+            quizViewBuilder.createRadioOptions(radioGroup, mRecord);
         }
     }
 
@@ -144,9 +146,10 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         addRecordToSharedPreferences(updatedRecord);
         mRecord = updatedRecord;
 
+        Integer allVotesCount = mRecord.getVoteCount();
         if (mRecord.isVoted()) {
             for (QuizViewBuilder.ViewHolder viewHolder : mViewHolderOptions) {
-                viewHolder.setContent(mRecord);
+                viewHolder.setContent(mRecord, allVotesCount);
             }
         }
     }
@@ -164,7 +167,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         return (group, checkedId) -> {
             radioGroup.removeAllViews();
 
-            mViewHolderOptions = QuizViewBuilder.getInstance().createProgressOption(radioGroup, mRecord);
+            mViewHolderOptions = quizViewBuilder.createProgressOption(radioGroup, mRecord);
 
             presenter.sendVote(
                     mRecord,
@@ -176,7 +179,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
 
     private SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
         return () -> {
-            presenter.onStop();
+            presenter.stop();
             presenter.loadRecordFromServer(mRecord.getRecordId(), user.getUsername());
         };
     }
@@ -184,7 +187,7 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override

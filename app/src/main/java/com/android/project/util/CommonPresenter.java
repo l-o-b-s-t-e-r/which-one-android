@@ -16,7 +16,7 @@ public interface CommonPresenter {
     }
 
     interface ActionListener {
-        void onStop();
+        void stop();
     }
 
 }

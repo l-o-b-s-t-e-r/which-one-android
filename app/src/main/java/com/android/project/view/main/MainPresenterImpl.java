@@ -95,7 +95,7 @@ public class MainPresenterImpl implements MainPresenter.ActionListener {
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

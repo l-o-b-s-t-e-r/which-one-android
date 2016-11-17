@@ -13,12 +13,10 @@ import java.util.List;
 public class TabAdapter extends FragmentStatePagerAdapter {
 
     private List<Fragment> mFragments;
-    private List<String> mTabNames;
 
-    public TabAdapter(FragmentManager fragmentManager, List<Fragment> fragments, List<String> tabNames){
+    public TabAdapter(FragmentManager fragmentManager, List<Fragment> fragments) {
         super(fragmentManager);
         mFragments = fragments;
-        mTabNames = tabNames;
     }
 
     @Override
@@ -28,13 +26,7 @@ public class TabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return mTabNames.size();
+        return mFragments.size();
     }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return mTabNames.get(position);
-    }
-
 
 }

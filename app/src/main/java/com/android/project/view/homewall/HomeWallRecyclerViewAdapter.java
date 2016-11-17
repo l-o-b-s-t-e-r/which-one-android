@@ -1,12 +1,12 @@
 package com.android.project.view.homewall;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.android.project.R;
@@ -14,7 +14,7 @@ import com.android.project.WhichOneApp;
 import com.android.project.model.Record;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -36,7 +36,8 @@ import butterknife.OnClick;
 public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = HomeWallRecyclerViewAdapter.class.getSimpleName();
-    private final Long MIN_ANIMATION_DURATION = 3000L;
+
+    private final long MIN_ANIMATION_DURATION = 3000L;
     private final int DELTA = 1000;
     private boolean allRecordsLoaded;
 
@@ -44,17 +45,19 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
     private Random mAnimationRandom = new Random();
     private HomeWallPresenter.ActionListener mPresenter;
     private String mTargetUsername;
+    private RequestManager mGlide;
 
     @Inject
-    public HomeWallRecyclerViewAdapter(HomeWallPresenter.ActionListener presenter, User user) {
+    public HomeWallRecyclerViewAdapter(HomeWallPresenter.ActionListener presenter, User user, RequestManager glide) {
         mPresenter = presenter;
         mTargetUsername = user.getUsername();
+        mGlide = glide;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.homewall_card, parent, false);
+                .inflate(R.layout.homewall_record_layout, parent, false);
 
         return new ViewHolder(view);
     }
@@ -95,50 +98,49 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.image)
+        @BindView(R.id.record_image)
         ImageView image;
 
         private Record mRecord;
-        private Animation mAnimation;
-        private int currentAnimatedImage;
-        private boolean changeImage;
+        private Animator mAnimation;
+        private int mCurrentAnimatedImage;
+        private boolean mChangeImage;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
 
-            mAnimation = AnimationUtils.loadAnimation(WhichOneApp.getContext(), R.anim.items_appearance);
-            mAnimation.setAnimationListener(new Animation.AnimationListener() {
+            mAnimation = AnimatorInflater.loadAnimator(WhichOneApp.getContext(), R.animator.image_appearance);
+            mAnimation.setTarget(image);
+            mAnimation.addListener(new Animator.AnimatorListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    if (changeImage) {
-                        if (currentAnimatedImage < mRecord.getImages().size() - 1) {
-                            currentAnimatedImage++;
+                public void onAnimationRepeat(Animator animation) {
+                    if (mChangeImage) {
+                        if (mCurrentAnimatedImage < mRecord.getImages().size() - 1) {
+                            mCurrentAnimatedImage++;
                         } else {
-                            currentAnimatedImage = 0;
+                            mCurrentAnimatedImage = 0;
                         }
 
-                        Glide.with(WhichOneApp.getContext())
-                                .load(ImageManager.IMAGE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
+                        mGlide.load(ImageManager.IMAGE_URL + mRecord.getImages().get(mCurrentAnimatedImage).getImage())
                                 .into(image);
                     }
 
-                    changeImage = !changeImage;
+                    mChangeImage = !mChangeImage;
+                }
+
+                public void onAnimationStart(Animator animation) {
+                }
+
+                public void onAnimationEnd(Animator animation) {
+                }
+
+                public void onAnimationCancel(Animator animation) {
                 }
             });
         }
 
-        @OnClick(R.id.image)
+        @OnClick(R.id.record_image)
         public void onImageClick() {
             mPresenter.loadRecordDetail(mRecord.getRecordId());
         }
@@ -147,13 +149,12 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             Log.i(TAG, "setContent: record - " + record.toString());
 
             mRecord = record;
-            currentAnimatedImage = 0;
-            changeImage = false;
+            mCurrentAnimatedImage = 0;
+            mChangeImage = true;
 
             mAnimation.setDuration(animationDuration(mRecord.getImages().size()));
 
-            Glide.with(WhichOneApp.getContext())
-                    .load(ImageManager.IMAGE_URL + mRecord.getImages().get(currentAnimatedImage).getImage())
+            mGlide.load(ImageManager.IMAGE_URL + mRecord.getImages().get(mCurrentAnimatedImage).getImage())
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -162,7 +163,7 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
 
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            image.startAnimation(mAnimation);
+                            mAnimation.start();
                             return false;
                         }
                     })

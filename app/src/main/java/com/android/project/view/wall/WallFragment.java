@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +44,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     RecyclerView recyclerView;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeLayout;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
     @Inject
@@ -54,13 +53,6 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     WallPresenter.ActionListener presenter;
     @Inject
     WallRecyclerViewAdapter recyclerViewAdapter;
-
-    public static Fragment newInstance(TabLayout tabLayout) {
-        WallFragment fragment = new WallFragment();
-        tabLayout.addTab(tabLayout.newTab());
-
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +91,8 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     public void updateWall() {
+        presenter.stop();
+        clearWall();
         presenter.loadLastRecords(user.getUsername());
     }
 
@@ -129,7 +123,7 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
         recyclerViewAdapter.notifyDataSetChanged();
     }
 
@@ -164,10 +158,6 @@ public class WallFragment extends Fragment implements WallPresenter.View {
     }
 
     private SwipeRefreshLayout.OnRefreshListener getOnRefreshListener() {
-        return () -> {
-            presenter.onStop();
-            clearWall();
-            updateWall();
-        };
+        return WallFragment.this::updateWall;
     }
 }

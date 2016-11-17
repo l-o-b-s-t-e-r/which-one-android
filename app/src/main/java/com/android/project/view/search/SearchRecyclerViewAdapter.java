@@ -8,11 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.project.R;
-import com.android.project.WhichOneApp;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.RequestManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +30,20 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
     private List<User> mUsers;
     private String mSearchQuery;
-    private SearchPresenter.ActionListener presenter;
+    private SearchPresenter.ActionListener mPresenter;
+    private RequestManager mGlide;
 
     @Inject
-    public SearchRecyclerViewAdapter(SearchPresenter.ActionListener actionListener) {
-        presenter = actionListener;
+    public SearchRecyclerViewAdapter(SearchPresenter.ActionListener actionListener, RequestManager glide) {
+        mPresenter = actionListener;
+        mGlide = glide;
         mUsers = new ArrayList<>();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.record_header, parent, false);
+                .inflate(R.layout.short_user_info_layout, parent, false);
 
         return new ViewHolder(view);
     }
@@ -52,7 +52,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.setContent(mUsers.get(position));
         if (position == mUsers.size() - 1) {
-            presenter.loadNextUsers(mSearchQuery, mUsers.get(position).getUsername());
+            mPresenter.loadNextUsers(mSearchQuery, mUsers.get(position).getUsername());
         }
     }
 
@@ -68,7 +68,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     public void updateData(List<User> users) {
         if (!users.isEmpty()) {
             mUsers.addAll(users);
-            notifyDataSetChanged();
+            notifyItemRangeInserted(mUsers.size() - users.size(), users.size());
         }
     }
 
@@ -76,7 +76,6 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
         @BindView(R.id.username)
         TextView username;
-
         @BindView(R.id.avatar)
         ImageView avatar;
 
@@ -89,7 +88,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
         @OnClick({R.id.avatar, R.id.username})
         void onUserClick() {
-            presenter.loadUserPage(mUser);
+            mPresenter.loadUserPage(mUser);
         }
 
         public void setContent(User user) {
@@ -97,11 +96,10 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
             username.setText(mUser.getUsername());
 
-            Glide.with(WhichOneApp.getContext())
-                    .load(ImageManager.IMAGE_URL + user.getAvatar())
+            mGlide.load(ImageManager.IMAGE_URL + user.getAvatar())
                     .asBitmap()
                     .into(ImageManager.getInstance().createTarget(
-                            Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, avatar
+                            ImageManager.SMALL_AVATAR_SIZE, ImageManager.SMALL_AVATAR_SIZE, avatar
                     ));
         }
     }

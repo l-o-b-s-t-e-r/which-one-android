@@ -9,7 +9,6 @@ import com.android.project.di.DaggerAppComponent;
 import com.android.project.di.UserComponent;
 import com.android.project.di.UserModule;
 import com.android.project.model.User;
-import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by Lobster on 14.09.16.
@@ -46,7 +45,6 @@ public class WhichOneApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
 
         mContext = getApplicationContext();
 

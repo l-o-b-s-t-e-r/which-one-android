@@ -6,6 +6,7 @@ import com.android.project.api.RequestService;
 import com.android.project.model.User;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -15,6 +16,7 @@ import rx.subscriptions.CompositeSubscription;
 public class SearchPresenterImpl implements SearchPresenter.ActionListener {
 
     private static final String TAG = SearchPresenterImpl.class.getSimpleName();
+
     public RequestService mRequestService;
     private SearchPresenter.View mSearchView;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -33,6 +35,7 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
                         .getUsers(searchQuery)
                         .doOnSubscribe(mSearchView::showProgress)
                         .doOnUnsubscribe(mSearchView::hideProgress)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mSearchView::showUsers,
                                 mSearchView::onError
@@ -51,6 +54,7 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
                         .getUsersFromUsername(searchQuery, lastLoadedUsername)
                         .doOnSubscribe(mSearchView::showProgress)
                         .doOnUnsubscribe(mSearchView::hideProgress)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 mSearchView::showUsers,
                                 mSearchView::onError
@@ -66,7 +70,7 @@ public class SearchPresenterImpl implements SearchPresenter.ActionListener {
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

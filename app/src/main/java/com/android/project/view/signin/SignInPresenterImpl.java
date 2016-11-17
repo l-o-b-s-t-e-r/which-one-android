@@ -85,7 +85,7 @@ public class SignInPresenterImpl implements SignInPresenter.ActionListener {
     }
 
     @Override
-    public void onStop() {
+    public void stop() {
         compositeSubscription.clear();
     }
 }

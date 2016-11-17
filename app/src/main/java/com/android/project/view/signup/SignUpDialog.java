@@ -1,14 +1,16 @@
 package com.android.project.view.signup;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -30,15 +32,15 @@ import butterknife.OnClick;
 
 public class SignUpDialog extends DialogFragment implements SignUpPresenter.View {
 
-    @BindView(R.id.editTextName)
-    EditText editTextName;
-    @BindView(R.id.editTextEmail)
-    EditText editTextEmail;
-    @BindView(R.id.editTextPassword)
-    EditText editTextPassword;
-    @BindView(R.id.editTextPasswordRepeat)
-    EditText editTextPasswordRepeat;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.username)
+    EditText username;
+    @BindView(R.id.email)
+    EditText email;
+    @BindView(R.id.password)
+    EditText password;
+    @BindView(R.id.password_repeat)
+    EditText passwordRepeat;
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.btn_sign_up)
     Button buttonSignUp;
@@ -51,105 +53,105 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         WhichOneApp.getMainComponent()
                 .plus(new SignUpModule(this))
                 .inject(this);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = View.inflate(getContext(), R.layout.fragment_sign_up, null);
+        View view = View.inflate(getContext(), R.layout.sign_up_fragment, null);
         ButterKnife.bind(this, view);
 
         mDialog = new AlertDialog.Builder(getActivity(), R.style.AppThemeDialogSignUp)
                 .setView(view)
                 .create();
 
-        editTextName.setOnFocusChangeListener((v, hasFocus) -> {
+        username.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                presenter.checkName(editTextName.getText().toString().trim());
+                presenter.checkName(username.getText().toString().trim());
             }
         });
 
-        editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
+        email.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                if (Patterns.EMAIL_ADDRESS.matcher(editTextEmail.getText().toString().trim()).matches()) {
-                    presenter.checkEmail(editTextEmail.getText().toString().trim());
+                if (Patterns.EMAIL_ADDRESS.matcher(email.getText().toString().trim()).matches()) {
+                    presenter.checkEmail(email.getText().toString().trim());
                 } else {
-                    editTextEmail.setError(getString(R.string.incorrect_email));
+                    email.setError(getString(R.string.incorrect_email));
                 }
             }
         });
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            progressBar.getIndeterminateDrawable().setColorFilter(Color.rgb(225, 0, 86), PorterDuff.Mode.SRC_IN);
+        }
 
         return mDialog;
     }
 
     @OnClick(R.id.btn_sign_up)
     public void onClick() {
-        String name = editTextName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
-        String passwordRepeat = editTextPasswordRepeat.getText().toString().trim();
+        String username = this.username.getText().toString().trim();
+        String email = this.email.getText().toString().trim();
+        String password = this.password.getText().toString().trim();
+        String passwordRepeat = this.passwordRepeat.getText().toString().trim();
 
-        if (!name.matches("[a-z0-9]+")) {
-            editTextName.setError(getString(R.string.invalid_characters));
+        if (!username.matches("[a-z0-9]+")) {
+            this.username.setError(getString(R.string.invalid_characters));
         }
 
-        if (name.contains(" ")) {
-            editTextName.setError(getString(R.string.space_existence));
+        if (username.contains(" ")) {
+            this.username.setError(getString(R.string.space_existence));
             return;
         }
 
         if (password.contains(" ")) {
-            editTextPassword.setError(getString(R.string.space_existence));
+            this.password.setError(getString(R.string.space_existence));
             return;
         }
 
-        if (name.isEmpty()) {
-            editTextName.setError(getString(R.string.empty_field));
+        if (username.isEmpty()) {
+            this.username.setError(getString(R.string.empty_field));
             return;
         }
 
         if (email.isEmpty()) {
-            editTextEmail.setError(getString(R.string.empty_field));
+            this.email.setError(getString(R.string.empty_field));
             return;
         }
 
         if (password.isEmpty()) {
-            editTextPassword.setError(getString(R.string.empty_field));
+            this.password.setError(getString(R.string.empty_field));
             return;
         }
 
         if (passwordRepeat.isEmpty()) {
-            editTextPasswordRepeat.setError(getString(R.string.empty_field));
+            this.passwordRepeat.setError(getString(R.string.empty_field));
             return;
         }
 
         if (!password.equals(passwordRepeat)) {
-            editTextPasswordRepeat.setError(getString(R.string.password_not_match));
+            this.passwordRepeat.setError(getString(R.string.password_not_match));
             return;
         }
 
-        presenter.signUp(name, password, email);
+        presenter.signUp(username, password, email);
     }
 
     @Override
     public void showCheckNameResult(Boolean validName) {
         if (!validName) {
-            editTextName.setError(getString(R.string.existing_name));
+            username.setError(getString(R.string.existing_name));
         }
     }
 
     @Override
     public void showCheckEmailResult(Boolean validEmail) {
         if (!validEmail) {
-            editTextEmail.setError(getString(R.string.existing_email));
+            email.setError(getString(R.string.existing_email));
         }
     }
 
@@ -166,7 +168,7 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override
