@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- sign in & sign up -->
+    <string name="wrong_password_or_name">Imię lub hasło jest niepoprawne</string>
+    <string name="empty_field">Pole nie może być puste</string>
+    <string name="password_not_match">Hasło nie pasuje</string>
+    <string name="space_existence">Pole nie może zawierać spacji</string>
+    <string name="invalid_characters">Imię musi mieć tylko a–z and 0–9</string>
+    <string name="existing_name">Takie imię już istnieje</string>
+    <string name="existing_email">Taki email już istnieje</string>
+    <string name="incorrect_email">Email jest niepoprawny</string>
+
+    <!-- new record -->
+    <string name="new_record_empty_record">Należy dodać co najmniej 1 zdjęcie oraz 1 opcję</string>
+    <string name="new_record_empty_or_duplicate_option">Pusta lub powtarzana opcja</string>
+    <string name="new_record_max_images">Maksymalna liczba zdjęć</string>
+    <string name="new_record_max_options">Maksymalna liczba opcji</string>
+
+    <!-- remind dialog -->
+    <string name="remind_info_error">Informacja nie była wysłany. Spróbuj ponownie!</string>
+
+    <string name="general_error">Kurwa!</string>
+</resources>

@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">WhichOne</string>
+
+    <!-- sign in & sign up -->
+    <string name="user_name_hint">Ім\'я</string>
+    <string name="password_hint">Пароль</string>
+    <string name="sign_in">Увійти</string>
+    <string name="sign_up">Зареєструватися</string>
+    <string name="email_hint">Пошта</string>
+    <string name="repeat_password_hint">Повторити пароль</string>
+    <string name="sign_up_success">Ми відправили підтвердження на пошту</string>
+
+    <!-- remind dialog -->
+    <string name="remind_dialog_title">Нагадати інформацію</string>
+    <string name="remind_dialog_btn_text">Відправити</string>
+    <string name="remind_info_success">Інформація була успішно відправлена</string>
+
+    <!-- main menu -->
+    <string name="search">Пошук</string>
+    <string name="update">Оновити</string>
+    <string name="sign_out">Вийти</string>
+    <string name="forgot_name_password">Забули ім\'я або пароль?</string>
+
+    <!-- new record menu -->
+    <string name="action_add_image">Додати фото</string>
+    <string name="action_add_option">Додати варіант</string>
+
+    <!-- new record -->
+    <string name="new_option_hint">Варіант</string>
+    <string name="description_hint">Опис</string>
+
+    <!-- search dialog -->
+    <string name="search_dialog_title">Пошук</string>
+
+</resources>

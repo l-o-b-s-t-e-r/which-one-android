@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">WhichOne</string>
+
+    <!-- sign in & sign up -->
+    <string name="user_name_hint">Imię</string>
+    <string name="password_hint">Hasło</string>
+    <string name="sign_in">Zaloguj</string>
+    <string name="sign_up">Zarejestruj</string>
+    <string name="email_hint">Email</string>
+    <string name="repeat_password_hint">Powtórz hasło</string>
+    <string name="sign_up_success">Wysłaliśmy sprawdzenie na pocztę</string>
+
+    <!-- remind dialog -->
+    <string name="remind_dialog_title">Przypomnieć informację</string>
+    <string name="remind_dialog_btn_text">Wysłać</string>
+    <string name="remind_info_success">Wszystko w porządku! Informacja była wysłana</string>
+
+    <!-- main menu -->
+    <string name="search">Szukaj</string>
+    <string name="update">Odśwież</string>
+    <string name="sign_out">Wyloguj</string>
+    <string name="forgot_name_password">Zapomniałeś imię lub hasło?</string>
+
+    <!-- new record menu -->
+    <string name="action_add_image">Dodaj zdjęcie</string>
+    <string name="action_add_option">Dodaj opcję</string>
+
+    <!-- new record -->
+    <string name="new_option_hint">Opcja</string>
+    <string name="description_hint">Opisanie</string>
+
+    <!-- search dialog -->
+    <string name="search_dialog_title">Wyszukiwarka</string>
+
+</resources>

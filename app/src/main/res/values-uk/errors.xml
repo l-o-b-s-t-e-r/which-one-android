@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- sign in & sign up -->
+    <string name="wrong_password_or_name">Ім\'я або пароль невірні</string>
+    <string name="empty_field">Поле не може бути порожнім</string>
+    <string name="password_not_match">Пароль некоректний</string>
+    <string name="space_existence">Поле не може містити пропуск</string>
+    <string name="invalid_characters">Ім\'я може містити лише a–z and 0–9</string>
+    <string name="existing_name">Таке ім\'я вже існує</string>
+    <string name="existing_email">Така пошта вже існує</string>
+    <string name="incorrect_email">Пошта некоректна</string>
+
+    <!-- new record -->
+    <string name="new_record_empty_record">Ви мусите додати хоча б одне фото та один варіант</string>
+    <string name="new_record_empty_or_duplicate_option">Порожній або повторюваний варіант</string>
+    <string name="new_record_max_images">Максимальна кількість фото</string>
+    <string name="new_record_max_options">Максимальна кількість варіантів</string>
+
+    <!-- remind dialog -->
+    <string name="remind_info_error">Інформація не відправлена. Спробуйте ще!</string>
+
+    <string name="general_error">Упс, щось пішло не так</string>
+</resources>
