@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#e77b00</color>
+    <color name="colorPrimary">#e76200</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#e10056</color>
     <color name="colorOverflowIcon">#ffffff</color>
+    <color name="colorToolbarText">#ffffff</color>
     <color name="colorBackgroundFragment">#f1f1f1</color>
     <color name="colorText">#333333</color>
     <color name="colorHint">#949494</color>

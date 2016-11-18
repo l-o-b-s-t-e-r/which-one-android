@@ -2,6 +2,7 @@ package com.android.project.view.detail;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -52,6 +54,10 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
     TextView description;
     @BindView(R.id.radio_group)
     RadioGroup radioGroup;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.toolbar_title)
+    TextView toolBarTitle;
     @BindView(R.id.swipe_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -74,10 +80,13 @@ public class RecordDetailActivity extends AppCompatActivity implements RecordDet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_detail_activity);
         ButterKnife.bind(this);
+
         WhichOneApp.getUserComponent()
                 .plus(new RecordDetailModule(this))
                 .inject(this);
 
+        toolBarTitle.setTypeface(Typeface.createFromAsset(getAssets(), "Lobster-Regular.ttf"));
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

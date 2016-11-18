@@ -13,6 +13,7 @@
     <dimen name="header_username_margin_L">10dp</dimen>
     <dimen name="tablayout_separator_height">1dp</dimen>
     <dimen name="main_fab_margin">16dp</dimen>
+    <dimen name="toolbar_title_size">24sp</dimen>
 
     <dimen name="small_username_text_size">20sp</dimen>
 

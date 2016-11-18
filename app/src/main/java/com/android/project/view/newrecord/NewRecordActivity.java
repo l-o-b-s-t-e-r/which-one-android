@@ -2,12 +2,14 @@ package com.android.project.view.newrecord;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.project.R;
@@ -50,6 +53,10 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
     ProgressBar progressBar;
     @BindView(R.id.new_item_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.toolbar_title)
+    TextView toolBarTitle;
 
     @Inject
     NewRecordPresenter.ActionListener presenter;
@@ -72,6 +79,8 @@ public class NewRecordActivity extends AppCompatActivity implements NewRecordPre
                 .plus(new NewRecordModule(this))
                 .inject(this);
 
+        toolBarTitle.setTypeface(Typeface.createFromAsset(getAssets(), "Lobster-Regular.ttf"));
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

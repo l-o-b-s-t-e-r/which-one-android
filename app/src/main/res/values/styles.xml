@@ -18,24 +18,30 @@
         <item name="android:dropDownListViewStyle">@style/SearchViewStyle</item>
     </style>
 
+    <style name="ToolbarTitle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/toolbar_title_size</item>
+    </style>
+
     <style name="SearchViewStyle" parent="Widget.AppCompat.ListView.DropDown">
         <item name="android:background">@android:color/white</item>
     </style>
 
-    <style name="RecordDetailTheme" parent="Theme.AppCompat">
+    <style name="RecordDetailTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/colorText</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:textColorSecondary">@color/colorToolbarText</item>
+        <item name="android:windowBackground">@color/colorToolbarText</item>
     </style>
 
-    <style name="NewRecordTheme" parent="Theme.AppCompat.Light">
+    <style name="NewRecordTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorHint">@color/colorHint</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/colorToolbarText</item>
+        <item name="android:textColorSecondary">@color/colorToolbarText</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 

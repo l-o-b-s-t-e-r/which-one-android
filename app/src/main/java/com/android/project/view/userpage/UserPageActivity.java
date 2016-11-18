@@ -1,5 +1,6 @@
 package com.android.project.view.userpage;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
@@ -17,6 +18,8 @@ import com.android.project.view.main.MainPresenter;
 import com.android.project.view.main.di.MainModule;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 import javax.inject.Inject;
 
@@ -45,6 +48,8 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
         setContentView(R.layout.user_page_activity);
         ButterKnife.bind(this);
         collapsingToolbar.setTitle("");
+        collapsingToolbar.setCollapsedTitleTypeface(Typeface.createFromAsset(getAssets(), "Lobster-Regular.ttf"));
+        collapsingToolbar.setExpandedTitleTypeface(Typeface.createFromAsset(getAssets(), "Lobster-Regular.ttf"));
 
         WhichOneApp.getUserComponent()
                 .plus(new MainModule(this))
@@ -61,7 +66,7 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     public void showUserInfo(User user) {
-        collapsingToolbar.setTitle(user.getUsername());
+        collapsingToolbar.setTitle(WordUtils.capitalize(user.getUsername()));
 
         updateAvatar(user);
         updateBackground(user);

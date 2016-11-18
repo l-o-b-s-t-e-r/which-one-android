@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -46,6 +47,8 @@ import com.android.project.view.signin.SignInActivity;
 import com.android.project.view.wall.WallFragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.File;
 import java.util.Arrays;
@@ -101,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         showUserInfo(user);
 
         setSupportActionBar(toolbar);
+        collapsingToolbar.setCollapsedTitleTypeface(Typeface.createFromAsset(getAssets(), "Lobster-Regular.ttf"));
+        collapsingToolbar.setExpandedTitleTypeface(Typeface.createFromAsset(getAssets(), "Lobster-Regular.ttf"));
 
         setViewPager();
         setAnimations();
@@ -156,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showUserInfo(User user) {
-        collapsingToolbar.setTitle(user.getUsername());
+        collapsingToolbar.setTitle(WordUtils.capitalize(user.getUsername()));
 
         updateAvatar(user);
         updateBackground(user);

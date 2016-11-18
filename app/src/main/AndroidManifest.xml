@@ -39,11 +39,13 @@
         <activity
             android:name=".view.detail.RecordDetailActivity"
             android:configChanges="orientation"
+            android:label=""
             android:screenOrientation="sensorPortrait"
             android:theme="@style/RecordDetailTheme" />
         <activity
             android:name=".view.newrecord.NewRecordActivity"
             android:configChanges="orientation"
+            android:label=""
             android:parentActivityName=".view.main.MainActivity"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/NewRecordTheme" />

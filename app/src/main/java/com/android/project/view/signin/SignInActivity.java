@@ -16,7 +16,6 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.project.R;
@@ -40,8 +39,6 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
     EditText editTextName;
     @BindView(R.id.password)
     EditText editTextPassword;
-    @BindView(R.id.forgot_password)
-    TextView textViewForgot;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 

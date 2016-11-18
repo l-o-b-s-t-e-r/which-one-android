@@ -49,6 +49,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'org.mockito:mockito-core:2.2.15'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'org.apache.commons:commons-lang3:3.5'
 
     provided 'javax.annotation:jsr250-api:1.0'
 
