@@ -7,8 +7,6 @@ import com.android.project.database.DatabaseManager;
 import com.android.project.model.Option;
 import com.android.project.model.Record;
 
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -101,7 +99,6 @@ public class WallPresenterImpl implements WallPresenter.ActionListener {
                 mRequestService
                         .sendVote(record.getRecordId(), option.getOptionName(), username)
                         .flatMap(mDatabaseManager::update)
-                        .delay(3, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 newRecord -> {

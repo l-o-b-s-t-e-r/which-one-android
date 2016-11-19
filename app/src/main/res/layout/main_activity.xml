@@ -10,6 +10,14 @@
 
     <include layout="@layout/tab_layout" />
 
+    <View
+        android:id="@+id/separator"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/tablayout_separator_height"
+        android:layout_gravity="bottom|center"
+        android:background="@color/colorToolbarShadow"
+        app:layout_behavior="com.android.project.util.SeparatorBehavior" />
+
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/big_avatar_side_length"
