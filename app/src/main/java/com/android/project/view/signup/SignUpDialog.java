@@ -71,14 +71,14 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
 
         username.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                presenter.checkName(username.getText().toString().trim());
+                presenter.checkName(username.getText().toString().trim().toLowerCase());
             }
         });
 
         email.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 if (Patterns.EMAIL_ADDRESS.matcher(email.getText().toString().trim()).matches()) {
-                    presenter.checkEmail(email.getText().toString().trim());
+                    presenter.checkEmail(email.getText().toString().trim().toLowerCase());
                 } else {
                     email.setError(getString(R.string.incorrect_email));
                 }
@@ -138,7 +138,7 @@ public class SignUpDialog extends DialogFragment implements SignUpPresenter.View
             return;
         }
 
-        presenter.signUp(username, password, email);
+        presenter.signUp(username.toLowerCase(), password, email.toLowerCase());
     }
 
     @Override

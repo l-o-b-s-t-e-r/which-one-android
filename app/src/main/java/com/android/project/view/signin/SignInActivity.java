@@ -120,7 +120,7 @@ public class SignInActivity extends AppCompatActivity implements SignInPresenter
             return;
         }
 
-        presenter.signIn(editTextName.getText().toString().trim(), editTextPassword.getText().toString().trim());
+        presenter.signIn(editTextName.getText().toString().trim().toLowerCase(), editTextPassword.getText().toString().trim().toLowerCase());
     }
 
     @OnClick(R.id.btn_sign_up)
