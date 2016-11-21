@@ -15,6 +15,7 @@ import com.android.project.model.Record;
 import com.android.project.model.User;
 import com.android.project.util.ImageManager;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -123,6 +124,8 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
                         }
 
                         mGlide.load(ImageManager.IMAGE_URL + mRecord.getImages().get(mCurrentAnimatedImage).getImage())
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                                 .into(image);
                     }
 
@@ -155,6 +158,8 @@ public class HomeWallRecyclerViewAdapter extends RecyclerView.Adapter<HomeWallRe
             mAnimation.setDuration(animationDuration(mRecord.getImages().size()));
 
             mGlide.load(ImageManager.IMAGE_URL + mRecord.getImages().get(mCurrentAnimatedImage).getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

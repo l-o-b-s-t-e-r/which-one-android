@@ -198,7 +198,7 @@ public class WallRecyclerViewAdapter extends RecyclerView.Adapter<WallRecyclerVi
             recyclerView.setLayoutManager(new LinearLayoutManager(WhichOneApp.getContext(), LinearLayoutManager.HORIZONTAL, false));
             recyclerView.setNestedScrollingEnabled(false);
 
-            mRecordRecyclerViewAdapter = new RecordRecyclerViewAdapter(mPresenter);
+            mRecordRecyclerViewAdapter = new RecordRecyclerViewAdapter(mPresenter, mGlide);
             recyclerView.setAdapter(mRecordRecyclerViewAdapter);
         }
 

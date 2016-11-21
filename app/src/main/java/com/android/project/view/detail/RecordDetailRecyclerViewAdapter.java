@@ -11,6 +11,8 @@ import com.android.project.model.Image;
 import com.android.project.util.ImageManager;
 import com.android.project.view.wall.RecordRecyclerViewAdapter;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,8 @@ public class RecordDetailRecyclerViewAdapter extends RecyclerView.Adapter<Record
 
         public void setContent(Image image) {
             mGlide.load(ImageManager.IMAGE_URL + image.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .into(this.image);
         }
     }

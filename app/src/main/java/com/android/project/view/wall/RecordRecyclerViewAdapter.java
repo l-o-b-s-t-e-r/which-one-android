@@ -8,10 +8,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.android.project.R;
-import com.android.project.WhichOneApp;
 import com.android.project.model.Image;
 import com.android.project.util.ImageManager;
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -33,9 +33,12 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
     private Long mRecordId;
     private List<Image> mImages;
     private WallPresenter.ActionListener mPresenter;
+    private RequestManager mGlide;
 
-    public RecordRecyclerViewAdapter(WallPresenter.ActionListener presenter) {
+    public RecordRecyclerViewAdapter(WallPresenter.ActionListener presenter, RequestManager glide) {
         mPresenter = presenter;
+        mGlide = glide;
+
     }
 
     public void setContent(Long recordId, List<Image> images) {
@@ -74,7 +77,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
             ButterKnife.bind(this, view);
         }
 
-        @OnClick(R.id.record_image)
+        @OnClick({R.id.record_image, R.id.progress_bar})
         public void onImageClick() {
             mPresenter.openRecordDetail(mRecordId);
         }
@@ -82,8 +85,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecordRecycl
         public void setContent(final Image image) {
             spinner.setVisibility(View.VISIBLE);
 
-            Glide.with(WhichOneApp.getContext())
-                    .load(ImageManager.IMAGE_URL + image.getImage())
+            mGlide.load(ImageManager.IMAGE_URL + image.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
