@@ -14,7 +14,7 @@
     <dimen name="tablayout_separator_height">1dp</dimen>
     <dimen name="main_fab_margin">16dp</dimen>
 
-    <dimen name="small_username_text_size">20sp</dimen>
+    <dimen name="small_username_text_size">26sp</dimen>
 
     <!-- record -->
     <dimen name="record_margin_LR">6dp</dimen>
@@ -36,7 +36,7 @@
 
     <!-- record description-->
     <dimen name="description_margin_L">10dp</dimen>
-    <dimen name="description_text_size">20sp</dimen>
+    <dimen name="description_text_size">16sp</dimen>
 
     <!-- record options-->
     <dimen name="options_margin_top">10dp</dimen>
