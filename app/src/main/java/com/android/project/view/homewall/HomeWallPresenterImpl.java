@@ -30,7 +30,7 @@ public class HomeWallPresenterImpl implements HomeWallPresenter.ActionListener {
 
     @Override
     public void loadLastRecords(String requestedUsername, String targetUsername) {
-        Log.i(TAG, "loadLastRecords: requestedUsername - " + requestedUsername);
+        Log.i(TAG, "loadLastRecords: requestedUsername - " + requestedUsername + " targetUsername - " + targetUsername);
 
         Subscription subscription =
                 mRequestService

@@ -74,8 +74,6 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     public void updateAvatar(User user) {
-        WhichOneApp.createUserComponent(user);
-
         Glide.with(this)
                 .load(ImageManager.IMAGE_URL + user.getAvatar())
                 .asBitmap()
@@ -86,8 +84,6 @@ public class UserPageActivity extends AppCompatActivity implements MainPresenter
 
     @Override
     public void updateBackground(User user) {
-        WhichOneApp.createUserComponent(user);
-
         Glide.with(this)
                 .load(ImageManager.IMAGE_URL + user.getBackground())
                 .placeholder(R.mipmap.ic_background)
