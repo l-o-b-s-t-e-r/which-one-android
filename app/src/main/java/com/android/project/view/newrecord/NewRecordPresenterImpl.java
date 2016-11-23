@@ -47,12 +47,12 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
     }
 
     @Override
-    public void sendRecord(List<File> images, List<String> options, String username, String title) {
-        Log.i(TAG, String.format("sendRecord: images - %s, options - %s, username - %s, title - %s", images.toString(), options.toString(), username, title));
+    public void sendRecord(List<File> images, List<String> options, String username, String description) {
+        Log.i(TAG, String.format("sendRecord: images - %s, options - %s, username - %s, title - %s", images.toString(), options.toString(), username, description));
 
         Subscription subscription =
                 mRequestService
-                        .addRecord(images, options, username, title)
+                        .addRecord(images, options, username, description)
                         .doOnSubscribe(mNewRecordView::showProgress)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(

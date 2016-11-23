@@ -21,7 +21,7 @@ public interface NewRecordPresenter {
 
     interface ActionListener extends CommonPresenter.ActionListener {
 
-        void sendRecord(List<File> images, List<String> options, String username, String title);
+        void sendRecord(List<File> images, List<String> options, String username, String description);
 
         void loadImage(File imageFile);
 
