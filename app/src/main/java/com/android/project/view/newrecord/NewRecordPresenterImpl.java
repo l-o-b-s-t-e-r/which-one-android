@@ -48,7 +48,7 @@ public class NewRecordPresenterImpl implements NewRecordPresenter.ActionListener
 
     @Override
     public void sendRecord(List<File> images, List<String> options, String username, String description) {
-        Log.i(TAG, String.format("sendRecord: images - %s, options - %s, username - %s, title - %s", images.toString(), options.toString(), username, description));
+        Log.i(TAG, String.format("sendRecord: images - %s, options - %s, username - %s, description - %s", images.toString(), options.toString(), username, description));
 
         Subscription subscription =
                 mRequestService
