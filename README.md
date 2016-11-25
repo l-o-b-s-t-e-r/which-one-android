@@ -21,7 +21,7 @@ The application is based on **MVP**(Model-View-Presenter) pattern.
 
 Download this repository, import to Android Studio, let Gradle to configurate project. Run.
 
-To run app using *localhost* you need:
+To run app with local server you need:
 
 1. Run server on your local machine ([for more details](https://github.com/l-o-b-s-t-e-r/which-one-server))
 
