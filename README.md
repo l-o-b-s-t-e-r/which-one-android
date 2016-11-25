@@ -4,7 +4,8 @@
 
 WhichOne is small social network for creating quizzes and sharing them with everyone. The main idea of this application is to help people          to make desicion in daily life (e.g. "Which movie to watch?", "Which drink to buy?"). Also this app can help to know ***independent***  opinion in any questions (e.g. "Which photo is better?") and express your own point of view (***completely anonymous!***).
 
-The application is based on MVP(Model-View-Presenter) pattern.
+The application is based on **MVP**(Model-View-Presenter) pattern.
+
 ### Dependencies:
 
 * **Retrofit** - makes HTTP requests
