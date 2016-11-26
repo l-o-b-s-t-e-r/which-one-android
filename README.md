@@ -21,11 +21,11 @@ The application is based on **MVP**(Model-View-Presenter) pattern.
 
 Download this repository, import to Android Studio, let Gradle to configurate project. Run.
 
-To run app with local server you need:
+If the server does not respond, you can still see app in action by running server from local machine:
 
 1. Run server on your local machine ([for more details](https://github.com/l-o-b-s-t-e-r/which-one-server))
 
-2. Change **BASE_URL** in *RequestServiceImpl.java*
+2. Change **BASE_URL** in *[RequestServiceImpl.java](https://github.com/l-o-b-s-t-e-r/which-one-android/blob/master/app/src/main/java/com/android/project/api/RequestServiceImpl.java)*
 
 ### Requirements
 
