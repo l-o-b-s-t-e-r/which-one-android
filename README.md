@@ -2,7 +2,7 @@
 
 ## Introduction
 
-WhichOne is small social network for creating quizzes and sharing them with everyone. The main idea of this application is to help people          to make desicion in daily life (e.g. "Which movie to watch?", "Which drink to buy?"). Also this app can help to know ***independent***  opinion in any questions (e.g. "Which product is better?", "Which design is more attractive?") and express your own point of view (***completely anonymous!***).
+WhichOne is small social network for creating quizzes and sharing them with everyone. The main idea of this application is to help people          to make desicion in daily life (e.g. "Which movie to watch?", "Which drink to buy?"). Also this app can help to know ***independent***  opinion in any questions (e.g. "Which product is better?", "Which design is more attractive?") and express your own point of view (***completely anonymous!***). [Click to download.](https://github.com/l-o-b-s-t-e-r/which-one-android/releases)
 
 The application is based on **MVP**(Model-View-Presenter) pattern.
 
@@ -21,7 +21,7 @@ The application is based on **MVP**(Model-View-Presenter) pattern.
 
 Download this repository, import to Android Studio, let Gradle to configurate project. Run.
 
-If the server does not respond, you can still see app in action by running server from local machine:
+If the server does not respond, you can still see app in action by running server on local machine:
 
 1. Run server on your local machine ([for more details](https://github.com/l-o-b-s-t-e-r/which-one-server))
 
