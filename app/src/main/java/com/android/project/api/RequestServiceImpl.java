@@ -20,9 +20,9 @@ import rx.schedulers.Schedulers;
  */
 public class RequestServiceImpl implements RequestService {
 
-    //public static final String BASE_URL = "http://10.0.3.2:8080/which-one/"; // for Genimotion
-    //public static final String BASE_URL = "http://10.0.2.2:8080/which-one/"; // for native emulator
-    public static final String BASE_URL = "http://54.196.58.5:8080/which-one/";
+    //public static final String BASE_URL = "http://10.0.3.2:8080/which-one/"; // using local server for Genimotion emulator
+    //public static final String BASE_URL = "http://10.0.2.2:8080/which-one/"; // using local server for Native emulator
+    public static final String BASE_URL = "http://54.196.58.5:8080/which-one/"; //using remote server
 
     public static final String IMAGE_FOLDER = "images/";
     private static final String TAG = RequestServiceImpl.class.getName();
