@@ -25,7 +25,7 @@ To run app with local server you need:
 
 1. Run server on your local machine ([for more details](https://github.com/l-o-b-s-t-e-r/which-one-server))
 
-2. Change **BASE_USL** in *RequestServiceImpl.java*
+2. Change **BASE_URL** in *RequestServiceImpl.java*
 
 ### Requirements
 
