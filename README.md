@@ -31,6 +31,15 @@ If the server does not respond, you can still see app in action by running serve
 
 * Platform Version: Android 4.4
 
+### Existing accounts
+
+| Username | Password| 
+| ---------|---------|
+| admin    | admin   | 
+| sanfran  | sanfran | 
+| netflix  | netflix |
+| lobster  | lobster |
+
 ### Screenshots
 
 <img src="https://github.com/l-o-b-s-t-e-r/which-one-android/blob/master/screenshots/log_in_screen.png" width="288">
